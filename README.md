@@ -1,26 +1,36 @@
-GaMerZ File Explorer
-====================
+# GaMerZ File Explorer
 
 Enables you to browse a folder on the web like Windows Explorer. It has the ability to search for folders and files too.
 
 ## Installation
 
 #### Config
-* `$root_directory = '';` - The Absolute Path Of The Folder That You Want To Show It's Contents (Without Trailing Slash). Example: `/home/user/public_html/files`
-* `$root_url = '';` - The URL To That Folder (Without Trailing Slash). Example: `http://yoursite.com/files`
-* `$gfe_directory = '';` - The Absolute Path Of The Folder You Uploaded The Files Of GaMerZ File Explorer (Without Trailing Slash). Note: You Can Upload GaMerZ File Explorer Into The Same Folder As The Contents That You Want To Show. Example: `/home/user/public_html/gfe`
-* `$gfe_url = '';` - The URL That Folder (Without Trailing Slash). Note: You Can Upload GaMerZ File Explorer Into The Same Folder As The Contents That You Want To Show. Example: `$gfe_url = 'http://yoursite.com/gfe';`
-* `$site_name = 'GaMerZ File Explorer';` - Your Site Name
-* `$root_filename = 'index.php';` - Webserver Directory Index. Note: Normally You Do Not Need To Change This.
-* `$nice_url = false;` - Example Nice URL: `http://yoursite.com/gfe/browse/folder1/`. Example Normal URL: `http://yoursite.com/gfe/index.php?dir=folder1`.
- * If You Want To Use 'Nice URL', Set It To 'true' Instead Of 'false' And Do The Following:
-  * Upload '.htaccess' To The Folder Where You Uploaded GaMerZ File Explorer.
-  * Open up '.htaccess' And Replace All References Of `/files/` To The Folder Path After Your Domain Name Of `$gfe_url`.
-  * For Example: `$gfe_url = 'http://yoursite.com/gfe';`
-  * Your Should Replace `/files/` To `/gfe/`
-* `$can_search = true;` - By setting This To 'true', You Allow Users To Search For Files In GaMerZ File Explorer. It Is Best To Set It To 'false' If You Are On A High Traffic Site.
-* `$default_sort_by = 'date';` - Default Sort Field. Values Can Be `name`, `size`, `type` or `date`.
-* `$default_sort_order = 'desc';` - Default Sort Order. Values Can Be `asc` or `desc`.
+* `$root_directory` - The absolute path of the folder that you want to show it's contents (without trailing slash).
+ * Example: `/home/user/public_html/files`
+* `$root_url` - The URL to that folder (without trailing slash).
+ * Example: `http://yoursite.com/files`
+* `$gfe_directory` - The absolute path of the folder you uploaded the files of GaMerZ File Explorer (without trailing slash).
+ * Note: You Can Upload GaMerZ File Explorer Into The Same Folder As The Contents That You Want To Show.
+ * Example: `/home/user/public_html/gfe`
+* `$gfe_url` - The URL to that folder (without trailing slash).
+ * Note: You can upload GaMerZ File Explorer into the same folder as the contents that you want to show.
+ * Example: `http://yoursite.com/gfe`
+* `$site_name` - Your site name
+* `$root_filename` - Webserver directory index. Normally you do not need to change this.
+* `$nice_url` - Search engine friendly URLs. See below.
+ * Example Nice URL: `http://yoursite.com/gfe/browse/folder1/`.
+ * Example Normal URL: `http://yoursite.com/gfe/index.php?dir=folder1`.
+* `$can_search` - By setting to true, you allow users to search for files in GaMerZ File Explorer.
+* `$default_sort_by` - Default sort field.
+ * Values can be `name`, `size`, `type` or `date`.
+* `$default_sort_order` - Default sort order.
+ * Values can be `asc` or `desc`.
+
+#### To Enable Search Engine Friendly URLs
+* Upload '.htaccess' to the folder where you uploaded GaMerZ File Explorer.
+* Open up '.htaccess' and replace all references of `/files/` to the folder path after your domain name of `$gfe_url`.
+* Example: `$gfe_url = 'http://yoursite.com/gfe';`
+* Your should replace `/files/` To `/gfe/`
 
 #### Upload These Files To The Directory You Specify In `$gfe_directory`
 * Folder: resources
@@ -60,7 +70,7 @@ Enables you to browse a folder on the web like Windows Explorer. It has the abil
 * NEW: settings.php Will Now Contain Most Of The Default Settings, So For Future Versions, You Do Not Need To Overwrite config.php Anymore
 * NEW: Ability To Sort By Type
 * NEW: Proper HTML Error Page
-* NEW: title="" Being Added To Almost Every <td>
+* NEW: `title=""` Being Added To Almost Every `<td>`
 * NEW: favicon.ico Added
 * NEW: .mdb|.mov|.msi|.ra|.rm|.tif|.wma|.wmv Extensions Added
 * FIXED: Extension Not Showing When It Is In Upper Case
