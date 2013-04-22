@@ -1,0 +1,13 @@
+# BEGIN GFE
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /files/
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^sortby/(.+[^/])/sortorder/(.+[^/])/?$ /files/index.php?by=$1&order=$2 [QSA,L]
+RewriteRule ^browse/(.+[^/])/sortby/(.+[^/])/sortorder/(.+[^/])/?$ /files/index.php?dir=$1&by=$2&order=$3 [QSA,L]
+RewriteRule ^browse/(.+[^/])/?$ /files/index.php?dir=$1 [QSA,L]
+RewriteRule ^viewing/(.+[^/])/?$ /files/view.php?file=$1 [QSA,L]
+RewriteRule ^download/(.+[^/])/?$ /files/view.php?file=$1&dl=1 [QSA,L]
+</IfModule>
+# END GFE
