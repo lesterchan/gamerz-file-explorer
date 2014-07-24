@@ -1,5 +1,5 @@
+[![Build Status](https://travis-ci.org/lesterchan/gamerz-file-explorer.svg?branch=master)](https://travis-ci.org/lesterchan/gamerz-file-explorer)
 # GaMerZ File Explorer
-
 Enables you to browse a folder on the web like Windows Explorer. It has the ability to search for folders and files too.
 
 ## Installation
