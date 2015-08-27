@@ -199,8 +199,8 @@ function url($url, $mode) {
 	global $gfe_url, $nice_url, $root_filename, $sort_by, $sort_order;
 	$temp_url = '';
 	$temp_url_nice = '';
-	$GET_sortby = trim($_GET['by']);
-	$GET_sortorder = trim($_GET['order']);
+	$GET_sortby = ! empty( $_GET['by'] ) ? trim( $_GET['by'] ) : '';
+	$GET_sortorder = ! empty( $_GET['order'] ) ? trim( $_GET['order'] ) : '';
 	$url = urldecode($url);
 	$url = urlencode($url);
 	$url = str_replace('%2F', '/', $url);
@@ -272,7 +272,7 @@ function create_sort_url($sortby) {
 ### Function: Create Sorting Image
 function create_sort_image($sortby) {
 	global $sort_order_image, $sort_order_text;
-	if(trim($_GET['by']) == $sortby) {
+	if( ! empty( $_GET['by'] ) && trim( $_GET['by'] ) === $sortby ) {
 		return "<img src=\"$sort_order_image\" alt=\"Sorted By ".ucfirst($sortby)." In $sort_order_text Order\" />";
 	}
 }

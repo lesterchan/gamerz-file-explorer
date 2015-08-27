@@ -31,13 +31,13 @@ if(!$can_search) {
 }
 
 ### Variables Variables Variables
-$get_sort_order = trim($_GET['order']);
-$get_sort_by = trim($_GET['by']);
-$search_keyword = trim(strip_tags(stripslashes($_GET['search'])));
-$search_in = trim(strip_tags(stripslashes($_GET['in'])));
+$get_sort_order = ! empty( $_GET['order'] ) ? trim( $_GET['order'] ) : '';
+$get_sort_by = ! empty( $_GET['by'] ) ? trim( $_GET['by'] ) : '';
+$search_keyword = ! empty( $_GET['search'] ) ? trim( strip_tags( stripslashes( $_GET['search'] ) ) ) : '';
+$search_in = ! empty( $_GET['in'] ) ? trim( strip_tags( stripslashes( $_GET['in'] ) ) )  : '';
 
 ### Process Search
-if(!empty($_GET['search'])) {
+if( ! empty( $_GET['search'] ) ) {
 	// Variables Variables Variables
 	$sort_order = '';
 	$sort_order_text = '';

@@ -26,7 +26,7 @@ require('functions.php');
 StartTimer();
 
 ### Get And Check File Path
-$file = urldecode(stripslashes(trim($_GET['file'])));
+$file = ! empty( $_GET['file'] ) ? urldecode( stripslashes( trim( $_GET['file'] ) ) ) : '';
 if(strpos($file, '../') !== false || strpos($file, './') !== false || strpos($file, '//') !== false) {
 	display_error('Invalid Directory');
 }

@@ -26,7 +26,7 @@ require('functions.php');
 StartTimer();
 
 ### Get And Check Current Directory Path
-$url_path = urldecode(trim(stripslashes($_GET['dir'])));
+$url_path = ! empty( $_GET['dir'] ) ? urldecode( trim( stripslashes( $_GET['dir'] ) ) ) : '';
 if(strpos($url_path, '../') !== false || strpos($url_path, './') !== false || strpos($url_path, '//') !== false) {
 	display_error('Invalid Directory');
 }
@@ -37,8 +37,8 @@ if(in_array($url_path, $ignore_folders)) {
 }
 
 ### Variables Variables Variables
-$get_sort_order = trim($_GET['order']);
-$get_sort_by = trim($_GET['by']);
+$get_sort_order = ! empty( $_GET['order'] ) ? trim( $_GET['order'] ) : '';
+$get_sort_by = ! empty( $_GET['by'] ) ? trim( $_GET['by'] ) : '';
 $full_directory_path = '';
 $directories_before_current = '';
 $directories_before_current_path = '';
