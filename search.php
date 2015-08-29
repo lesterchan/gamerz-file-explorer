@@ -40,7 +40,7 @@ $search_in = ! empty( $_GET['in'] ) ? trim( strip_tags( stripslashes( $_GET['in'
 if( ! empty( $_GET['search'] ) ) {
 	// Variables Variables Variables
 	$sort_order = '';
-	$sort_order_text = '';
+	$sort_order_text = 'Ascending';
 	$sort_order_image = '';
 	$sort_by = '';
 	$search_results = array();

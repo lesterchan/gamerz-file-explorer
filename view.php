@@ -54,7 +54,7 @@ if(!is_file($root_directory.'/'.$file)) {
 }
 
 ### If User Wants To Download Text Or Image
-if(intval($_GET['dl']) == 1) {
+if( ! empty( $_GET['dl'] ) && intval ($_GET['dl'] ) === 1 ) {
 	$download_filename = $file_name;
 	$download_filename = preg_replace('/\s/', '_', $download_filename);
 	header("Pragma: public");
