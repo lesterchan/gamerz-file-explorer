@@ -36,15 +36,15 @@ $get_sort_by = ! empty( $_GET['by'] ) ? trim( $_GET['by'] ) : '';
 $search_keyword = ! empty( $_GET['search'] ) ? trim( strip_tags( stripslashes( $_GET['search'] ) ) ) : '';
 $search_in = ! empty( $_GET['in'] ) ? trim( strip_tags( stripslashes( $_GET['in'] ) ) )  : '';
 
+// Variables Variables Variables
+$sort_order = '';
+$sort_order_image = '';
+$search_results = array();
+$sort_by = 'date';
+$sort_order_text = 'Descending';
+
 ### Process Search
 if( ! empty( $_GET['search'] ) ) {
-	// Variables Variables Variables
-	$sort_order = '';
-	$sort_order_text = 'Ascending';
-	$sort_order_image = '';
-	$sort_by = '';
-	$search_results = array();
-
 	// Determine Sort Order
 	if(empty($get_sort_order)) { $get_sort_order = $default_sort_order; }
 	switch($get_sort_order) {
@@ -185,6 +185,7 @@ if( ! empty( $_GET['search'] ) ) {
 <?php
 	### If Not Searching, Don't Display Results Page
 	if(!empty($search_keyword)) {
+		$total_size = 0;
 ?>
 	<!-- List Search Results Files -->
 	<table cellspacing="0" cellpadding="3" style="width: 100%; border: 0px;">
