@@ -231,7 +231,7 @@ if(in_array($file_ext, $text_ext)) {
 ### Display Download
 } else {
 	$download_filename = $file_name;
-	$download_filename = preg_replace("/\s/e" , "_" , $download_filename);
+	$download_filename = preg_replace('/\s+/', '_', $download_filename );
 	header("Pragma: public");
 	header("Expires: 0");
 	header("Cache-Control: must-revalidate, post-check=0, pre-check=0"); 
