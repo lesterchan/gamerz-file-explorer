@@ -1,57 +1,34 @@
 <?php
-/*
-+----------------------------------------------------------------+
-|																							|
-|	GaMerZ File Explorer Version 1.20											|
-|	Copyright (c) 2004-2008 Lester "GaMerZ" Chan							|
-|																							|
-|	File Written By:																	|
-|	- Lester "GaMerZ" Chan															|
-|	- http://lesterchan.net															|
-|																							|
-|	File Information:																	|
-|	- Configuration File																|
-|	- config.php																		|
-|																							|
-+----------------------------------------------------------------+
-*/
-
-
 ### The Absolute Path Of The Folder That You Want To Show It's Contents (Without Trailing Slash)
-// Example: /home/user/public_html/files
-$root_directory = '';
+define( 'GFE_ROOT_DIR', '/home/user/public_html/files' );
 
 ### The URL To That Folder (Without Trailing Slash)
-// Example: http://www.yoursite.com/files
-$root_url = '';
+define( 'GFE_ROOT_URL', 'http://files.yoursite.com' );
 
 ### The Absolute Path Of The Folder You Uploaded The Files Of GaMerZ File Explorer (Without Trailing Slash)
-// Example: /home/user/public_html/gfe
-$gfe_directory = '';
+define( 'GFE_DIR', '/home/user/public_html/files' );
 
 ### The URL That Folder (Without Trailing Slash)
-// Example: http://www.yoursite.com/gfe
-$gfe_url = '';
+define( 'GFE_URL', 'http://files.yoursite.com' );
 
 ### Your Site Name
-$site_name = 'GaMerZ.File.Explorer';
+define( 'GFE_SITE_NAME', 'GaMerZ File Explorer' );
 
 ### Root File Name
-$root_filename = 'index.php';
+define( 'GFE_ROOT_FILENAME', 'index.php' );
 
 ### Enable The Use Of Nice URL (Requires Apache To Have mod_rewrite Enabled)
 // true: Enable | false: Disable
-$nice_url = true;
+define( 'GFE_NICE_URL', true );
 
 ### Enable Searching Of Files (Please Disable This If You Are On A High Traffic Site)
 // true: Enable | false: Disable
-$can_search = true;
+define( 'GFE_CAN_SEARCH', true );
 
 ### Default Sort Field
 // name | size | type | date
-$default_sort_by = 'date';
+define( 'GFE_DEFAULT_SORT_BY', 'date' );
 
 ### Default Sort Order
 // asc | desc
-$default_sort_order = 'desc';
-?>
+define( 'GFE_DEFAULT_SORT_ORDER', 'desc' );

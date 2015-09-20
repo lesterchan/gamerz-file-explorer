@@ -5,36 +5,34 @@ Enables you to browse a folder on the web like Windows Explorer. It has the abil
 ## Installation
 
 #### Config
-* `$root_directory` - The absolute path of the folder that you want to show it's contents (without trailing slash).
+* `GFE_ROOT_DIR` - The absolute path of the folder that you want to show it's contents (without trailing slash).
  * Example: `/home/user/public_html/files`
-* `$root_url` - The URL to that folder (without trailing slash).
- * Example: `http://yoursite.com/files`
-* `$gfe_directory` - The absolute path of the folder you uploaded the files of GaMerZ File Explorer (without trailing slash).
+* `GFE_ROOT_URL` - The URL to that folder (without trailing slash).
+ * Example: `http://files.yoursite.com`
+* `GFE_DIR` - The absolute path of the folder you uploaded the files of GaMerZ File Explorer (without trailing slash).
  * Note: You Can Upload GaMerZ File Explorer Into The Same Folder As The Contents That You Want To Show.
- * Example: `/home/user/public_html/gfe`
-* `$gfe_url` - The URL to that folder (without trailing slash).
+ * Example: `/home/user/public_html/files`
+* `GFE_URL` - The URL to that folder (without trailing slash).
  * Note: You can upload GaMerZ File Explorer into the same folder as the contents that you want to show.
- * Example: `http://yoursite.com/gfe`
-* `$site_name` - Your site name
-* `$root_filename` - Webserver directory index. Normally you do not need to change this.
-* `$nice_url` - Search engine friendly URLs. See below.
- * Example Nice URL: `http://yoursite.com/gfe/browse/folder1/`.
- * Example Normal URL: `http://yoursite.com/gfe/index.php?dir=folder1`.
-* `$can_search` - By setting to true, you allow users to search for files in GaMerZ File Explorer.
-* `$default_sort_by` - Default sort field.
+ * Example: `http://files.yoursite.com`
+* `GFE_SITE_NAME` - Your site name
+* `GFE_ROOT_FILENAME` - Webserver directory index. Normally you do not need to change this.
+* `GFE_NICE_URL` - Search engine friendly URLs. See below.
+ * Example Nice URL: `http://files.yoursite.com/browse/folder1/`.
+ * Example Normal URL: `http://files.yoursite.com/index.php?dir=folder1`.
+* `GFE_CAN_SEARCH` - By setting to true, you allow users to search for files in GaMerZ File Explorer.
+* `GFE_DEFAULT_SORT_BY` - Default sort field.
  * Values can be `name`, `size`, `type` or `date`.
-* `$default_sort_order` - Default sort order.
+* `GFE_DEFAULT_SORT_ORDER` - Default sort order.
  * Values can be `asc` or `desc`.
 
 #### To Enable Search Engine Friendly URLs
 * Upload '.htaccess' to the folder where you uploaded GaMerZ File Explorer.
-* Open up '.htaccess' and replace all references of `/files/` to the folder path after your domain name of `$gfe_url`.
-* Example: `$gfe_url = 'http://yoursite.com/gfe';`
-* Your should replace `/files/` To `/gfe/`
 
-#### Upload These Files To The Directory You Specify In `$gfe_directory`
+#### Upload These Files To The Directory You Specify In `GFE_DIR`
 * Folder: resources
 * File: .htaccess (might be hidden)
+* File: 404.php
 * File: config.php
 * File: functions.php
 * File: index.php
@@ -44,7 +42,10 @@ Enables you to browse a folder on the web like Windows Explorer. It has the abil
 
 ## Changelog
 
-#### Version 1.20 (01-02-2006)
+### Version 2.0.0 Beta 1 (21-09-2015)
+* NEW: New design using Bootstrap with Font Awesome
+
+#### Version 1.2.0 (01-02-2006)
 * NEW: XHTML 1.1 Comptible Now
 
 #### Version 1.20 Beta 3 (24-10-2006)
