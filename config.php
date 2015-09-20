@@ -14,6 +14,9 @@ define( 'GFE_URL', 'http://files.yoursite.com' );
 ### Your Site Name
 define( 'GFE_SITE_NAME', 'GaMerZ File Explorer' );
 
+### Your Site Description
+define( 'GFE_SITE_DESCRIPTION', 'Enables you to browse and search for folders/files on the web just like Windows Explorer.' );
+
 ### Root File Name
 define( 'GFE_ROOT_FILENAME', 'index.php' );
 

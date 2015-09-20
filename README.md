@@ -16,7 +16,8 @@ Enables you to browse a folder on the web like Windows Explorer. It has the abil
  * Note: You can upload GaMerZ File Explorer into the same folder as the contents that you want to show.
  * Example: `http://files.yoursite.com`
 * `GFE_SITE_NAME` - Your site name
-* `GFE_ROOT_FILENAME` - Webserver directory index. Normally you do not need to change this.
+* `GFE_SITE_DESCRIPTION` - Your site description
+* `GFE_ROOT_FILENAME` - Web Server directory index. Normally you do not need to change this.
 * `GFE_NICE_URL` - Search engine friendly URLs. See below.
  * Example Nice URL: `http://files.yoursite.com/browse/folder1/`.
  * Example Normal URL: `http://files.yoursite.com/index.php?dir=folder1`.

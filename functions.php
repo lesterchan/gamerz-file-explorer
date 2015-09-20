@@ -324,12 +324,26 @@ function template_header( $title = '' ) {
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title><?php echo GFE_SITE_NAME; ?><?php echo $title; ?></title>
+        <title><?php echo GFE_SITE_NAME . $title; ?></title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <meta http-equiv="x-dns-prefetch-control" content="on">
+        <meta name="copyright" content="Copyright &copy; <?php echo date( 'Y' ); ?> Lester Chan, All Rights Reserved.">
+        <meta name="author" content="Lester Chan">
+        <meta name="description" content="<?php echo GFE_SITE_DESCRIPTION; ?>">
+        <meta property="og:site_name" content="<?php echo GFE_SITE_NAME; ?>">
+        <meta property="og:title" content="<?php echo GFE_SITE_NAME . $title; ?>">
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="<?php echo GFE_URL . $_SERVER['REQUEST_URI']; ?>">
+        <meta property="og:image" content="<?php echo GFE_URL; ?>/resources/icon.png">
+        <meta property="og:description" content="<?php echo GFE_SITE_DESCRIPTION; ?>">
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:title" content="<?php echo GFE_SITE_NAME . $title; ?>">
+        <meta name="twitter:url" content="<?php echo GFE_URL . $_SERVER['REQUEST_URI']; ?>">
+        <meta name="twitter:image" content="<?php echo GFE_URL; ?>/resources/icon.png">
+        <meta name="twitter:description" content="<?php echo GFE_SITE_DESCRIPTION; ?>">
         <link rel="dns-prefetch" href="//www.google-analytics.com">
-        <link rel="shortcut icon" href="<?php echo GFE_URL; ?>/favicon.ico" type="image/x-icon">
-        <link rel="icon" href="<?php echo GFE_URL; ?>/favicon.ico" type="image/x-icon">
+        <link rel="shortcut icon" href="<?php echo GFE_URL; ?>/resources/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="<?php echo GFE_URL; ?>/resources/favicon.ico" type="image/x-icon">
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.min.css">
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/styles/default.min.css">
