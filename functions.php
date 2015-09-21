@@ -74,7 +74,7 @@ function list_files( $path ) {
                         $file_ext = strtolower( pathinfo( $filename, PATHINFO_EXTENSION ) );
                         if( ! in_array( $file_ext, $ignore_ext ) && ! in_array( $file_path, $ignore_files ) && ! in_array( $file_folder, $ignore_folders ) ) {
                             if ( ! empty ( $extensions[$file_ext][0] ) ) {
-                                $gmz_files[] = [ 'name' => $filename, 'ext' => $file_ext, 'path' => $file_path, 'type' => $extensions[$file_ext][0], 'size' => filesize( $path . '/' . $filename ), 'date' => filemtime( $path . '/' . $filename ) ];
+                                $gmz_files[] = [ 'name' => $filename, 'ext' => $file_ext, 'path' => $file_path, 'type' => ( ! empty( $extensions[$file_ext][0] ) ? $extensions[$file_ext][0] : 'Unknown' ), 'size' => filesize( $path . '/' . $filename ), 'date' => filemtime( $path . '/' . $filename ) ];
                             }
                         }
                     }
@@ -96,7 +96,7 @@ function list_directories_files( $path ) {
                 if( is_file( $path . '/' . $filename ) && ! in_array( $directories_before_current_path . $current_directory_path . $filename, $ignore_files ) ) {
                     $file_ext = strtolower( pathinfo( $filename, PATHINFO_EXTENSION ) );
                     if( ! in_array( $file_ext, $ignore_ext ) ) {
-                        $gmz_files[] = [ 'name' => $filename, 'ext' => $file_ext, 'type' => $extensions[$file_ext][0], 'size' => filesize( $path . '/' . $filename ), 'date' => filemtime( $path . '/' . $filename ) ];
+                        $gmz_files[] = [ 'name' => $filename, 'ext' => $file_ext, 'type' => ( ! empty( $extensions[$file_ext][0] ) ? $extensions[$file_ext][0] : 'Unknown' ), 'size' => filesize( $path . '/' . $filename ), 'date' => filemtime( $path . '/' . $filename ) ];
                     }
                 }
                 if( is_dir( $path . '/' . $filename ) && ! in_array( $directories_before_current_path . $current_directory_path . $filename, $ignore_folders ) ) {
