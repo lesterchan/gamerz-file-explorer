@@ -10,7 +10,7 @@ Enables you to browse a folder on the web like Windows Explorer. It has the abil
 * `GFE_ROOT_URL` - The URL to that folder (without trailing slash).
  * Example: `http://files.yoursite.com`
 * `GFE_DIR` - The absolute path of the folder you uploaded the files of GaMerZ File Explorer (without trailing slash).
- * Note: You Can Upload GaMerZ File Explorer Into The Same Folder As The Contents That You Want To Show.
+ * Note: You can upload GaMerZ File Explorer into the same folder as the contents that you want to show.
  * Example: `/home/user/public_html/files`
 * `GFE_URL` - The URL to that folder (without trailing slash).
  * Note: You can upload GaMerZ File Explorer into the same folder as the contents that you want to show.
@@ -28,7 +28,19 @@ Enables you to browse a folder on the web like Windows Explorer. It has the abil
  * Values can be `asc` or `desc`.
 
 #### To Enable Search Engine Friendly URLs
-* Upload '.htaccess' to the folder where you uploaded GaMerZ File Explorer.
+If you are using Apache, upload `.htaccess` to the folder where you uploaded GaMerZ File Explorer.
+
+If you are using Nginx, paste the below configuration in your nginx.conf file.
+```nginx
+location / {
+    try_files $uri $uri/ /index.php;
+}
+rewrite ^/sortby/(.+[^/])/sortorder/(.+[^/])/?$ /index.php?by=$1&order=$2 last;
+rewrite ^/browse/(.+[^/])/sortby/(.+[^/])/sortorder/(.+[^/])/?$ /index.php?dir=$1&by=$2&order=$3 last;
+rewrite ^/browse/(.+[^/])/?$ /index.php?dir=$1 last;
+rewrite ^/viewing/(.+[^/])/?$ /view.php?file=$1 last;
+rewrite ^/download/(.+[^/])/?$ /view.php?file=$1&dl=1 last;
+```
 
 #### Upload These Files To The Directory You Specify In `GFE_DIR`
 * Folder: resources
