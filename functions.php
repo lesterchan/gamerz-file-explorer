@@ -350,11 +350,8 @@ function template_header( $title = '' ) {
     </head>
     <body>
         <div class="container">
-            <!-- Title -->
             <h1><?php echo GFE_SITE_NAME; ?></h1>
             <hr>
-
-            <!-- Breadcrumbs -->
             <ol class="breadcrumb">
                 <?php echo breadcrumbs(); ?>
             </ol>
@@ -365,14 +362,12 @@ function template_footer() {
     global $full_url;
 ?>
     <?php if( ! empty( $full_url ) ): ?>
-        <!-- Current File Directory Path -->
         <ol class="breadcrumb">
           <li><?php echo $full_url; ?></li>
         </ol>
     <?php endif; ?>
     <?php if( GFE_CAN_SEARCH ): ?>
         <?php if( basename( $_SERVER['SCRIPT_FILENAME'] ) !== 'search.php' ): ?>
-            <!-- Search Engine -->
             <form class="form-inline" method="get" action="<?php echo GFE_URL; ?>/search.php">
                 <div class="form-group">
                     <label class="sr-only" for="search-bottom-keyword">Search for files</label>
@@ -387,17 +382,16 @@ function template_footer() {
             </form>
         <?php endif; ?>
     <?php endif; ?>
-        <!-- Copyright -->
         <div class="row">
             <div class="col-sm-12">
                 <hr>
                 <p class="text-center">
                     <small class="text-muted">
-                        Powered By <a href="https://lesterchan.net/">GaMerZ File Explorer Version <?php echo GFE_VERSION; ?></a>. Page Generated In <?php echo stop_timer(); ?>s.</a>
+                        Powered By <a href="https://github.com/lesterchan/gamerz-file-explorer">GaMerZ File Explorer Version <?php echo GFE_VERSION; ?></a>. Page Generated In <?php echo stop_timer(); ?>s.</a>
                     </small>
                     <br />
                     <small class="text-muted">
-                        Copyright &copy; <?php echo date( 'Y' ); ?> Lester Chan, All Rights Reserved.
+                        Copyright &copy; <?php echo date( 'Y' ); ?> <a href="https://lesterchan.net">Lester Chan</a>, All Rights Reserved.
                     </small>
                 </p>
             </div>
@@ -406,6 +400,14 @@ function template_footer() {
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/highlight.min.js"></script>
         <script type="text/javascript">
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+            ga('create', 'UA-71871-4', 'auto');
+            ga('send', 'pageview');
+
             $(document).ready(function() {
                 hljs.initHighlightingOnLoad();
             });
