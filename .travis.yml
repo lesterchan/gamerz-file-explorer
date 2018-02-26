@@ -1,7 +1,9 @@
 language: php
 php:
   - "5.4"
-  - "5.3"
+  - "7.0"
+  - "7.1"
+  - "7.2"
 
 script:
   - find . \( -name '*.php' \) -exec php -lf {} \;
