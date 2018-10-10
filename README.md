@@ -1,5 +1,5 @@
 <h1 align=center>
-<img src="logo/1024 Logotype.svg" width=70%>
+<img src="logo/1024 Logotype II.svg" width=70%>
 </h1>
 
 [![Build Status](https://travis-ci.org/lesterchan/gamerz-file-explorer.svg?branch=master)](https://travis-ci.org/lesterchan/gamerz-file-explorer)
