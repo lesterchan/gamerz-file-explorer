@@ -8,15 +8,15 @@ require 'functions.php';
 start_timer();
 
 ### Check Whether Search Is Enabled
-if (!GFE_CAN_SEARCH) {
+if (! GFE_CAN_SEARCH) {
     display_error('The Administrator Has Disabled The Searching Of Files');
 }
 
 ### Variables Variables Variables
-$get_sort_order = !empty($_GET['order']) ? trim($_GET['order']) : '';
-$get_sort_by = !empty($_GET['by']) ? trim($_GET['by']) : '';
-$search_keyword = !empty($_GET['search']) ? trim(strip_tags(stripslashes($_GET['search']))) : '';
-$search_in = !empty($_GET['in']) ? trim(strip_tags(stripslashes($_GET['in']))) : '';
+$get_sort_order = ! empty($_GET['order']) ? trim($_GET['order']) : '';
+$get_sort_by = ! empty($_GET['by']) ? trim($_GET['by']) : '';
+$search_keyword = ! empty($_GET['search']) ? trim(strip_tags(stripslashes($_GET['search']))) : '';
+$search_in = ! empty($_GET['in']) ? trim(strip_tags(stripslashes($_GET['in']))) : '';
 
 // Variables Variables Variables
 $sort_order = '';
@@ -26,7 +26,7 @@ $sort_by = 'date';
 $sort_order_text = 'Descending';
 
 ### Process Search
-if (!empty($_GET['search'])) {
+if (! empty($_GET['search'])) {
     // Determine Sort Order
     if (empty($get_sort_order)) {
         $get_sort_order = GFE_DEFAULT_SORT_ORDER;
@@ -97,71 +97,71 @@ if (!empty($_GET['search'])) {
 }
 ?>
 
-<?php template_header(!empty($search_keyword) ? ' - Search - ' . $search_keyword : ' - Search'); ?>
+<?php template_header(! empty($search_keyword) ? ' - Search - '.$search_keyword : ' - Search'); ?>
 
-    <!-- Search Files -->
-    <form class="form" method="get" action="<?php echo GFE_URL; ?>/search.php">
-        <div class="form-group row">
-            <label for="search-term" class="col-sm-2 form-control-label">Search Term</label>
-            <div class="col-sm-10">
-                <input type="text" name="search" class="form-control" id="search-term" placeholder="Files ..."
-                       value="<?php echo $search_keyword; ?>">
-            </div>
+<!-- Search Files -->
+<form class="form" method="get" action="<?php echo GFE_URL; ?>/search.php">
+    <div class="form-group row">
+        <label for="search-term" class="col-sm-2 form-control-label">Search Term</label>
+        <div class="col-sm-10">
+            <input type="text" name="search" class="form-control" id="search-term" placeholder="Files ..."
+                   value="<?php echo $search_keyword; ?>">
         </div>
-        <div class="form-group row">
-            <label for="search-in" class="col-sm-2 form-control-label">Search In</label>
-            <div class="col-sm-10">
-                <select id="search-in" name="in" class="form-control" size="1">
-                    <option value="all">All Folders</option>
-                    <?php
-                    foreach ($gmz_directories as $gmz_directory) {
-                        if ($gmz_directory === $search_in) {
-                            echo '<option value="' . $gmz_directory . '" selected="selected">' . $gmz_directory . '</option>';
-                        } else {
-                            echo '<option value="' . $gmz_directory . '">' . $gmz_directory . '</option>';
-                        }
+    </div>
+    <div class="form-group row">
+        <label for="search-in" class="col-sm-2 form-control-label">Search In</label>
+        <div class="col-sm-10">
+            <select id="search-in" name="in" class="form-control" size="1">
+                <option value="all">All Folders</option>
+                <?php
+                foreach ($gmz_directories as $gmz_directory) {
+                    if ($gmz_directory === $search_in) {
+                        echo '<option value="'.$gmz_directory.'" selected="selected">'.$gmz_directory.'</option>';
+                    } else {
+                        echo '<option value="'.$gmz_directory.'">'.$gmz_directory.'</option>';
                     }
-                    ?>
-                </select>
-            </div>
+                }
+                ?>
+            </select>
         </div>
-        <div class="form-group row">
-            <label for="sort-by" class="col-sm-2 form-control-label">Sort By</label>
-            <div class="col-sm-10">
-                <select id="sort-by" name="by" class="form-control" size="1">
-                    <option value="name"<?php echo($sort_by === 'name' ? ' selected="selected"' : ''); ?>>File Name
-                    </option>
-                    <option value="size"<?php echo($sort_by === 'size' ? ' selected="selected"' : ''); ?>>File Size
-                    </option>
-                    <option value="type"<?php echo($sort_by === 'type' ? ' selected="selected"' : ''); ?>>File Type
-                    </option>
-                    <option value="date"<?php echo($sort_by === 'date' ? ' selected="selected"' : ''); ?>>File Date
-                    </option>
-                </select>
-            </div>
+    </div>
+    <div class="form-group row">
+        <label for="sort-by" class="col-sm-2 form-control-label">Sort By</label>
+        <div class="col-sm-10">
+            <select id="sort-by" name="by" class="form-control" size="1">
+                <option value="name"<?php echo($sort_by === 'name' ? ' selected="selected"' : ''); ?>>File Name
+                </option>
+                <option value="size"<?php echo($sort_by === 'size' ? ' selected="selected"' : ''); ?>>File Size
+                </option>
+                <option value="type"<?php echo($sort_by === 'type' ? ' selected="selected"' : ''); ?>>File Type
+                </option>
+                <option value="date"<?php echo($sort_by === 'date' ? ' selected="selected"' : ''); ?>>File Date
+                </option>
+            </select>
         </div>
-        <div class="form-group row">
-            <label for="sort-order" class="col-sm-2 form-control-label">Sort Order</label>
-            <div class="col-sm-10">
-                <select id="sort-order" name="order" class="form-control" size="1">
-                    <option value="asc"<?php echo($sort_order_text === 'Ascending' ? ' selected="selected"' : ''); ?>>
-                        Ascending
-                    </option>
-                    <option value="desc"<?php echo($sort_order_text === 'Descending' ? ' selected="selected"' : ''); ?>>
-                        Descending
-                    </option>
-                </select>
-            </div>
+    </div>
+    <div class="form-group row">
+        <label for="sort-order" class="col-sm-2 form-control-label">Sort Order</label>
+        <div class="col-sm-10">
+            <select id="sort-order" name="order" class="form-control" size="1">
+                <option value="asc"<?php echo($sort_order_text === 'Ascending' ? ' selected="selected"' : ''); ?>>
+                    Ascending
+                </option>
+                <option value="desc"<?php echo($sort_order_text === 'Descending' ? ' selected="selected"' : ''); ?>>
+                    Descending
+                </option>
+            </select>
         </div>
-        <div class="form-group row">
-            <div class="col-sm-offset-2 col-sm-10">
-                <button type="submit" class="btn btn-primary">Search</button>
-            </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-primary">Search</button>
         </div>
-    </form>
+    </div>
+</form>
 <?php
 ### If Not Searching, Don't Display Results Page
-if (!empty($search_keyword)) {
+if (! empty($search_keyword)) {
     $total_size = 0;
     ?>
     <!-- List Search Results Files -->
@@ -177,7 +177,7 @@ if (!empty($search_keyword)) {
             </thead>
             <tbody>
             <?php
-            if (!empty($search_results)) {
+            if (! empty($search_results)) {
                 foreach ($search_results as $key => $value) {
                     $file_name = $value['name'];
                     $file_size = format_size($value['size']);
@@ -185,14 +185,14 @@ if (!empty($search_keyword)) {
                     $file_extension = $value['type'];
                     $total_size += $value['size'];
                     echo '<tr>';
-                    echo '<td><a href="' . url($value['path'], 'file') . '" title="File: ' . $file_name . ' (' . $file_size . ')"><i class="fa fa-fw ' . file_icon($value['ext']) . '"></i>&nbsp;' . $file_name . '</a></td>';
-                    echo '<td>' . $file_size . '</td>';
-                    echo '<td>' . $file_extension . '</td>';
-                    echo '<td>' . $file_date . '</td>';
+                    echo '<td><a href="'.url($value['path'], 'file').'" title="File: '.$file_name.' ('.$file_size.')"><i class="fa fa-fw '.file_icon($value['ext']).'"></i>&nbsp;'.$file_name.'</a></td>';
+                    echo '<td>'.$file_size.'</td>';
+                    echo '<td>'.$file_extension.'</td>';
+                    echo '<td>'.$file_date.'</td>';
                     echo '</tr>';
                 }
             } else {
-                echo '<tr class="table-info"><td class="text-center" colspan="4">No files found with the search term \'' . $search_keyword . '\'.</td></tr>';
+                echo '<tr class="table-info"><td class="text-center" colspan="4">No files found with the search term \''.$search_keyword.'\'.</td></tr>';
             }
 
             // File Stats Variables
@@ -203,7 +203,7 @@ if (!empty($search_keyword)) {
             </tbody>
             <tfoot>
             <tr>
-                <td><strong><?php echo $total_files . ' ' . $total_files_name; ?></strong></td>
+                <td><strong><?php echo $total_files.' '.$total_files_name; ?></strong></td>
                 <td><strong><?php echo $total_size; ?></strong></td>
                 <td>-</td>
                 <td>-</td>

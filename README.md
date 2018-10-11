@@ -1,4 +1,7 @@
 [![Build Status](https://travis-ci.org/lesterchan/gamerz-file-explorer.svg?branch=master)](https://travis-ci.org/lesterchan/gamerz-file-explorer)
+
+![Logo](https://files.lesterchan.net/resources/icon.png)
+
 # GaMerZ File Explorer
 Enables you to browse a folder on the web like Windows Explorer. It has the ability to search for folders and files too.
 
@@ -54,6 +57,10 @@ rewrite ^/download/(.+[^/])/?$ /view.php?file=$1&dl=1 last;
 * File: view.php
 
 ## Changelog
+
+### Version 2.0.0 Beta 2 (11-10-2018)
+* NEW: Logo by @mirzazulfan
+* NEW: Added .editorconfig and tidy up code
 
 ### Version 2.0.0 Beta 1 (21-09-2015)
 * NEW: New design using Bootstrap with Font Awesome

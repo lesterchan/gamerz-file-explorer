@@ -8,7 +8,7 @@ require 'functions.php';
 start_timer();
 
 ### Get And Check Current Directory Path
-$url_path = !empty($_GET['dir']) ? urldecode(trim(stripslashes($_GET['dir']))) : '';
+$url_path = ! empty($_GET['dir']) ? urldecode(trim(stripslashes($_GET['dir']))) : '';
 if (strpos($url_path, '../') !== false || strpos($url_path, './') !== false || strpos($url_path, '//') !== false) {
     display_error('Invalid Directory');
 }
@@ -19,8 +19,8 @@ if (in_array($url_path, $ignore_folders, true)) {
 }
 
 ### Variables Variables Variables
-$get_sort_order = !empty($_GET['order']) ? trim($_GET['order']) : '';
-$get_sort_by = !empty($_GET['by']) ? trim($_GET['by']) : '';
+$get_sort_order = ! empty($_GET['order']) ? trim($_GET['order']) : '';
+$get_sort_by = ! empty($_GET['by']) ? trim($_GET['by']) : '';
 $full_directory_path = '';
 $directories_before_current = '';
 $directories_before_current_path = '';
@@ -40,9 +40,9 @@ $current_directory_name = $directory_names[count($directory_names) - 1];
 unset($directory_names[count($directory_names) - 1]);
 
 ### Directory Path Up To Current Directory
-if (!empty($directory_names)) {
+if (! empty($directory_names)) {
     foreach ($directory_names as $directory_name) {
-        $directories_before_current .= $directory_name . '/';
+        $directories_before_current .= $directory_name.'/';
     }
     $directories_before_current = substr($directories_before_current, 0, -1);
 }
@@ -51,21 +51,21 @@ if (!empty($directory_names)) {
 if (empty($url_path)) {
     $full_directory_path = GFE_ROOT_DIR;
 } else {
-    $full_directory_path = GFE_ROOT_DIR . '/' . $url_path;
+    $full_directory_path = GFE_ROOT_DIR.'/'.$url_path;
 }
 
 ### If Current Directory Is Not Empty, Add A Trailing Slash
-if (!empty($current_directory_name)) {
-    $current_directory_path = $current_directory_name . '/';
+if (! empty($current_directory_name)) {
+    $current_directory_path = $current_directory_name.'/';
 }
 
 ### If There Is Directory Before The Current Directory, Add A Trailing Slash
-if (!empty($directories_before_current)) {
-    $directories_before_current_path = $directories_before_current . '/';
+if (! empty($directories_before_current)) {
+    $directories_before_current_path = $directories_before_current.'/';
 }
 
 ### Full URL
-$full_url = GFE_ROOT_URL . '/' . $directories_before_current_path . $current_directory_path;
+$full_url = GFE_ROOT_URL.'/'.$directories_before_current_path.$current_directory_path;
 
 ### Determine Sort Order
 if (empty($get_sort_order)) {
@@ -115,7 +115,7 @@ if ($sort_by === 'name') {
     }
 }
 ?>
-<?php template_header(!empty($current_directory_name) ? ' - Viewing Directory - ' . $current_directory_name : ''); ?>
+<?php template_header(! empty($current_directory_name) ? ' - Viewing Directory - '.$current_directory_name : ''); ?>
 
     <!-- List Directories/Files -->
     <div class="table-responsive">
@@ -139,42 +139,42 @@ if ($sort_by === 'name') {
             <tbody>
             <?php
             // If It Is Down One Level, Provide "Up One Level"
-            if (!empty($url_path)) {
-                if (!empty($directory_names)) {
+            if (! empty($url_path)) {
+                if (! empty($directory_names)) {
                     $parent_directory = $directories_before_current;
                 } else {
                     $parent_directory = 'home';
                 }
                 echo '<tr class="table-warning">';
-                echo '<td colspan="4"><a href="' . url($parent_directory, 'dir') . '" title="Parent Directory"><i class="fa fa-chevron-left"></i>&nbsp;Parent Directory</a></td>';
+                echo '<td colspan="4"><a href="'.url($parent_directory, 'dir').'" title="Parent Directory"><i class="fa fa-chevron-left"></i>&nbsp;Parent Directory</a></td>';
                 echo '</tr>';
             }
             // If There Is Directory
-            if (!empty($gmz_directories)) {
+            if (! empty($gmz_directories)) {
                 foreach ($gmz_directories as $key => $value) {
                     $directory_name = $value['name'];
                     $directory_size = format_size($value['size']);
                     $directory_date = date('jS F Y', $value['date']);
                     echo '<tr>';
-                    echo '<td><a href="' . url($directories_before_current_path . $current_directory_path . $directory_name, 'dir') . '" title="Folder: ' . $directory_name . ' (' . $directory_size . ')"><i class="fa fa-fw fa-folder"></i>&nbsp;' . $directory_name . '</a></td>';
-                    echo '<td>' . $directory_size . '</td>';
+                    echo '<td><a href="'.url($directories_before_current_path.$current_directory_path.$directory_name, 'dir').'" title="Folder: '.$directory_name.' ('.$directory_size.')"><i class="fa fa-fw fa-folder"></i>&nbsp;'.$directory_name.'</a></td>';
+                    echo '<td>'.$directory_size.'</td>';
                     echo '<td>File Folder</td>';
-                    echo '<td>' . $directory_date . '</td>';
+                    echo '<td>'.$directory_date.'</td>';
                     echo '</tr>';
                 }
             }
             // If There Is Files
-            if (!empty($gmz_files)) {
+            if (! empty($gmz_files)) {
                 foreach ($gmz_files as $key => $value) {
                     $file_name = $value['name'];
                     $file_size = format_size($value['size']);
                     $file_date = date('jS F Y', $value['date']);
                     $file_extension = $value['type'];
                     echo '<tr>';
-                    echo '<td><a href="' . url($directories_before_current_path . $current_directory_path . $file_name, 'file') . '" title="File: ' . $file_name . ' (' . $file_size . ')"><i class="fa fa-fw ' . file_icon($value['ext']) . '"></i>&nbsp;' . $file_name . '</a></td>';
-                    echo '<td>' . $file_size . '</td>';
-                    echo '<td>' . $file_extension . '</td>';
-                    echo '<td>' . $file_date . '</td>';
+                    echo '<td><a href="'.url($directories_before_current_path.$current_directory_path.$file_name, 'file').'" title="File: '.$file_name.' ('.$file_size.')"><i class="fa fa-fw '.file_icon($value['ext']).'"></i>&nbsp;'.$file_name.'</a></td>';
+                    echo '<td>'.$file_size.'</td>';
+                    echo '<td>'.$file_extension.'</td>';
+                    echo '<td>'.$file_date.'</td>';
                     echo '</tr>';
                 }
             } else {
@@ -186,7 +186,7 @@ if ($sort_by === 'name') {
             $total_size = format_size(dir_size($full_directory_path));
             $total_folders_name = ($total_folders > 1 ? 'folders' : 'folder');
             $total_files_name = ($total_files > 1 ? 'files' : 'file');
-            $total_folders_files = $total_folders . ' ' . $total_folders_name . ', ' . $total_files . ' ' . $total_files_name;
+            $total_folders_files = $total_folders.' '.$total_folders_name.', '.$total_files.' '.$total_files_name;
             ?>
             </tbody>
             <tfoot>

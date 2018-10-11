@@ -8,7 +8,7 @@ require 'functions.php';
 start_timer();
 
 ### Get And Check File Path
-$file = !empty($_GET['file']) ? urldecode(stripslashes(trim($_GET['file']))) : '';
+$file = ! empty($_GET['file']) ? urldecode(stripslashes(trim($_GET['file']))) : '';
 if (strpos($file, '../') !== false || strpos($file, './') !== false || strpos($file, '//') !== false) {
     display_error('Invalid Directory');
 }
@@ -29,15 +29,15 @@ if (in_array($file_ext, $ignore_ext, true)) {
 }
 
 ### Check Whether File Exists
-if (!is_file(GFE_ROOT_DIR . '/' . $file)) {
+if (! is_file(GFE_ROOT_DIR.'/'.$file)) {
     display_error('File Does Not Exist');
 }
 
 ### Full URL
-$full_url = GFE_ROOT_URL . '/' . $file;
+$full_url = GFE_ROOT_URL.'/'.$file;
 
 ### If User Wants To Download Text Or Image
-if (!empty($_GET['dl']) && (int)$_GET['dl'] === 1) {
+if (! empty($_GET['dl']) && (int) $_GET['dl'] === 1) {
     $download_filename = $file_name;
     $download_filename = preg_replace('/\s+/', '_', $download_filename);
     header('Pragma: public');
@@ -46,31 +46,31 @@ if (!empty($_GET['dl']) && (int)$_GET['dl'] === 1) {
     header('Content-Type: application/force-download');
     header('Content-Type: application/octet-stream');
     header('Content-Type: application/download');
-    header('Content-Disposition: attachment; filename=' . basename(GFE_ROOT_DIR . '/' . $download_filename) . ';');
+    header('Content-Disposition: attachment; filename='.basename(GFE_ROOT_DIR.'/'.$download_filename).';');
     header('Content-Transfer-Encoding: binary');
-    header('Content-Length: ' . filesize(GFE_ROOT_DIR . '/' . $file));
-    @readfile(GFE_ROOT_DIR . '/' . $file);
+    header('Content-Length: '.filesize(GFE_ROOT_DIR.'/'.$file));
+    @readfile(GFE_ROOT_DIR.'/'.$file);
     exit();
 }
 
 ### Display Text
 if (in_array($file_ext, $text_ext, true)) {
     // Get Number Of Lines In Text File
-    $lines = get_line_count(GFE_ROOT_DIR . '/' . $file);
+    $lines = get_line_count(GFE_ROOT_DIR.'/'.$file);
     $lines_text = ($lines > 1 ? 'Lines' : 'Line');
-    $text_size = format_size(filesize(GFE_ROOT_DIR . '/' . $file));
+    $text_size = format_size(filesize(GFE_ROOT_DIR.'/'.$file));
     ?>
-    <?php template_header(' - Viewing Text File - ' . $file_name); ?>
+    <?php template_header(' - Viewing Text File - '.$file_name); ?>
 
     <div class="card">
         <div class="card-header">
             <?php echo $file_name; ?>
         </div>
         <div class="card-block">
-            <pre><code><?php echo htmlspecialchars(file_get_contents(GFE_ROOT_DIR . '/' . $file)); ?></code></pre>
+            <pre><code><?php echo htmlspecialchars(file_get_contents(GFE_ROOT_DIR.'/'.$file)); ?></code></pre>
         </div>
         <ul class="list-group list-group-flush">
-            <li class="list-group-item"><?php echo $lines . ' ' . $lines_text; ?></li>
+            <li class="list-group-item"><?php echo $lines.' '.$lines_text; ?></li>
             <li class="list-group-item">Size: <?php echo $text_size; ?></li>
         </ul>
         <div class="card-footer text-center">
@@ -81,21 +81,21 @@ if (in_array($file_ext, $text_ext, true)) {
     <?php
 ### Dispay Image
 } elseif (in_array($file_ext, $image_ext, true)) {
-    $temp_getimagesize = getimagesize(GFE_ROOT_DIR . '/' . $file);
-    if (!$temp_getimagesize) {
+    $temp_getimagesize = getimagesize(GFE_ROOT_DIR.'/'.$file);
+    if (! $temp_getimagesize) {
         display_error('File Is Not A Valid Image');
     }
     list($image_width, $image_height, $image_type, $image_attr) = $temp_getimagesize;
-    $image_size = format_size(filesize(GFE_ROOT_DIR . '/' . $file));
+    $image_size = format_size(filesize(GFE_ROOT_DIR.'/'.$file));
     ?>
-    <?php template_header(' - Viewing Image - ' . $file_name); ?>
+    <?php template_header(' - Viewing Image - '.$file_name); ?>
 
     <div class="card">
         <div class="card-header">
             <?php echo $file_name; ?>
         </div>
         <div class="card-block text-center">
-            <img class="img-responsive" src="<?php echo GFE_ROOT_URL . '/' . $file; ?>" <?php echo $image_attr; ?>
+            <img class="img-responsive" src="<?php echo GFE_ROOT_URL.'/'.$file; ?>" <?php echo $image_attr; ?>
                  alt="Viewing Image - <?php echo $file_name; ?>">
         </div>
         <ul class="list-group list-group-flush">
@@ -120,9 +120,9 @@ if (in_array($file_ext, $text_ext, true)) {
     header('Content-Type: application/force-download');
     header('Content-Type: application/octet-stream');
     header('Content-Type: application/download');
-    header('Content-Disposition: attachment; filename=' . basename(GFE_ROOT_DIR . '/' . $download_filename) . ';');
+    header('Content-Disposition: attachment; filename='.basename(GFE_ROOT_DIR.'/'.$download_filename).';');
     header('Content-Transfer-Encoding: binary');
-    header('Content-Length: ' . filesize(GFE_ROOT_DIR . '/' . $file));
-    @readfile(GFE_ROOT_DIR . '/' . $file);
+    header('Content-Length: '.filesize(GFE_ROOT_DIR.'/'.$file));
+    @readfile(GFE_ROOT_DIR.'/'.$file);
     exit();
 }
