@@ -66,7 +66,7 @@ rewrite ^/download/(.+[^/])/?$ /view.php?file=$1&dl=1 last;
 * NEW: New design using Bootstrap with Font Awesome
 
 #### Version 1.2.0 (01-02-2006)
-* NEW: XHTML 1.1 Comptible Now
+* NEW: XHTML 1.1 Compatible Now
 
 #### Version 1.20 Beta 3 (24-10-2006)
 * FIXED: Error Displaying File Size More Than 2GB
@@ -86,7 +86,7 @@ rewrite ^/download/(.+[^/])/?$ /view.php?file=$1&dl=1 last;
 * FIXED: File Type Will Be 'Unknown' If File Type Is Not Registered In settings.php Instead Of Blank
 
 #### Version 1.10 (01-12-2005)
-* NEW: Now Support Nice URL Via Apache's mod_rewrite. User Can Choose To Enable/Disble Nice URL Option It In config.php
+* NEW: Now Support Nice URL Via Apache's mod_rewrite. User Can Choose To Enable/Disable Nice URL Option It In config.php
 * NEW: Rewrote The Codes That Displays The Files And Folders, Now There Will Be No '/' In Front Of Any Folders Or Files
 * NEW: settings.php Will Now Contain Most Of The Default Settings, So For Future Versions, You Do Not Need To Overwrite config.php Anymore
 * NEW: Ability To Sort By Type
@@ -99,7 +99,7 @@ rewrite ^/download/(.+[^/])/?$ /view.php?file=$1&dl=1 last;
 * FIXED: No More Use Of PHP Short Tag
 * FIXED: Unknown Or Undefined File Extension, The File Extension Image Will Now Be unknown.gif
 * FIXED: Invalid Checking Of Directory in view.php
-* FIXED: Grammer Mistakes For Singular And Pural
+* FIXED: Grammar Mistakes For Singular And Plural
 * FIXED: No Extension Given If There Is Spaces In The File Name That Is Being Downloaded
 
 #### Version 1.00 (09-09-2005)
