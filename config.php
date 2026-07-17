@@ -1,15 +1,18 @@
 <?php
+
+declare(strict_types=1);
+
 ### The Absolute Path Of The Folder That You Want To Show Its Contents (Without Trailing Slash)
 define('GFE_ROOT_DIR', '/home/user/public_html/files');
 
 ### The URL To That Folder (Without Trailing Slash)
-define('GFE_ROOT_URL', 'http://files.yoursite.com');
+define('GFE_ROOT_URL', 'https://files.yoursite.com');
 
 ### The Absolute Path Of The Folder You Uploaded The Files Of GaMerZ File Explorer (Without Trailing Slash)
 define('GFE_DIR', '/home/user/public_html/files');
 
 ### The URL To That Folder (Without Trailing Slash)
-define('GFE_URL', 'http://files.yoursite.com');
+define('GFE_URL', 'https://files.yoursite.com');
 
 ### Your Site Name
 define('GFE_SITE_NAME', 'GaMerZ File Explorer');

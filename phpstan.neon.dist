@@ -1,0 +1,23 @@
+parameters:
+    level: 6
+    paths:
+        - 404.php
+        - config.php
+        - functions.php
+        - index.php
+        - search.php
+        - settings.php
+        - view.php
+    typeAliases:
+        GfeSettings: 'array{ignore_files: list<string>, ignore_ext: list<string>, ignore_folders: list<string>, text_ext: list<string>, image_ext: list<string>, extensions: array<string, array{0: string, 1: string}>}'
+        GfeEntry: 'array{name: string, ext?: string, path?: string, type?: string, size: int, date: int}'
+    dynamicConstantNames:
+        - GFE_NICE_URL
+        - GFE_CAN_SEARCH
+        - GFE_ROOT_DIR
+        - GFE_ROOT_URL
+        - GFE_URL
+        - GFE_DIR
+        - GFE_ROOT_FILENAME
+        - GFE_DEFAULT_SORT_BY
+        - GFE_DEFAULT_SORT_ORDER

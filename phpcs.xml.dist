@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<ruleset name="GaMerZ File Explorer">
+    <description>PSR-12 coding standard for GaMerZ File Explorer.</description>
+
+    <file>404.php</file>
+    <file>config.php</file>
+    <file>functions.php</file>
+    <file>index.php</file>
+    <file>search.php</file>
+    <file>settings.php</file>
+    <file>view.php</file>
+
+    <arg name="colors"/>
+    <arg value="sp"/>
+
+    <!-- Errors fail the build; warnings are informational only. -->
+    <config name="ignore_warnings_on_exit" value="1"/>
+
+    <rule ref="PSR12"/>
+
+    <!-- The entry scripts intentionally declare helpers and execute page logic. -->
+    <rule ref="PSR1.Files.SideEffects.FoundWithSymbols">
+        <exclude-pattern>*.php</exclude-pattern>
+    </rule>
+</ruleset>

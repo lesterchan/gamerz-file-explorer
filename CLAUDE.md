@@ -41,8 +41,12 @@ Every entry point starts with `require 'config.php'; require 'settings.php'; req
 
 ## Verify
 
-- Lint all PHP: `find . -name '*.php' -exec php -lf {} \;`
-- There is no test suite or build step.
+- Syntax-check all PHP: `find . -name '*.php' -exec php -lf {} \;`
+- Static analysis (PHPStan level 6): `composer analyse`
+- Coding standard (PSR-12): `composer lint` (`composer lint:fix` to autofix)
+- `composer test` runs all three. The runtime itself stays dependency-free — Composer
+  is dev-only tooling; the `GfeSettings`/`GfeEntry` array-shape aliases live in
+  `phpstan.neon.dist`. There is no unit-test suite or build step.
 
 ## Releasing
 

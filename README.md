@@ -56,6 +56,14 @@ rewrite ^/download/(.+[^/])/?$ /view.php?file=$1&dl=1 last;
 
 ## Changelog
 
+### Version 3.0.0 (18-07-2026)
+* NEW: Requires PHP 8.1 or newer
+* NEW: Upgraded the frontend to Bootstrap 5.3 and Font Awesome 6, added Subresource Integrity to all CDN assets, and dropped the jQuery dependency
+* NEW: Recognises many more file types (webp, avif, svg, mp4, webm, mkv, json, md, yml, and more)
+* IMPROVED: Rewrote the code with `declare(strict_types=1)`, full type declarations, and removed all shared global state in favour of passed parameters
+* IMPROVED: Sortable column headers are now real links instead of inline JavaScript
+* DEV: Added PHPStan (level 6) and PHP_CodeSniffer (PSR-12) via Composer for static analysis and linting
+
 ### Version 2.1.0 (17-07-2026)
 * SECURITY: Fixed reflected XSS via the `search` parameter and other output sinks by escaping all output with `htmlspecialchars()`
 * FIX: Fixed deprecated `case` statement terminated with a semicolon in functions.php

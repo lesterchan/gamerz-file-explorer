@@ -1,0 +1,39 @@
+{
+    "name": "lesterchan/gamerz-file-explorer",
+    "description": "Enables you to browse and search for folders/files on the web just like Windows Explorer.",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Lester Chan",
+            "email": "lesterchan@gmail.com",
+            "homepage": "https://lesterchan.net"
+        }
+    ],
+    "require": {
+        "php": ">=8.1"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^2.0",
+        "squizlabs/php_codesniffer": "^3.10"
+    },
+    "scripts": {
+        "lint": "phpcs",
+        "lint:fix": "phpcbf",
+        "analyse": "phpstan analyse",
+        "test": [
+            "@php -l 404.php",
+            "@php -l config.php",
+            "@php -l functions.php",
+            "@php -l index.php",
+            "@php -l search.php",
+            "@php -l settings.php",
+            "@php -l view.php",
+            "@lint",
+            "@analyse"
+        ]
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

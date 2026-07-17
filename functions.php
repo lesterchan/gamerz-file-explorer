@@ -1,409 +1,429 @@
 <?php
-### Function: Start Timer
-function start_timer() {
-    global $timestart;
-    $mtime = microtime();
-    $mtime = explode( ' ',$mtime );
-    $mtime = $mtime[1] + $mtime[0];
-    $timestart = $mtime;
-    return true;
-}
 
-### Function: Stop Timer
-function stop_timer( $precision = 5 ) {
-    global $timestart;
-    $mtime = microtime();
-    $mtime = explode( ' ',$mtime );
-    $mtime = $mtime[1] + $mtime[0];
-    $timeend = $mtime;
-    $timetotal = $timeend - $timestart;
-    return number_format( $timetotal, $precision );
-}
+declare(strict_types=1);
 
-### Function: Format Size
-function format_size( $size ) {
-    if( ( $size / 1073741824 ) > 1 ) {
-        return round( $size / 1073741824, 1 ) . 'GB';
-    } elseif( ( $size / 1048576 ) > 1 ) {
-        return round( $size / 1048576, 1 ) . 'MB';
-    } elseif( ( $size / 1024 ) > 1) {
-        return round( $size / 1024, 1 ) . 'KB';
-    } else {
-        return round( $size, 1 ) . 'b';
+/**
+ * GaMerZ File Explorer — shared functions.
+ *
+ * The GfeSettings and GfeEntry array-shape type aliases are declared globally
+ * in phpstan.neon.dist so every file can reference them.
+ */
+
+### Function: Format A Byte Count Into A Human-Readable String
+function format_size(int|float $size): string
+{
+    if ($size / 1073741824 > 1) {
+        return round($size / 1073741824, 1) . 'GB';
     }
-}
-
-
-### Function: List All Directory
-function list_directories( $path ) {
-    global $gmz_directories, $ignore_folders;
-    if( $handle = @opendir( $path ) ) {
-        while( false !== ( $filename = readdir( $handle ) ) ) {
-            if ( ! in_array( $filename, [ '.', '..', '.git', '.svn' ], true ) ) {
-                $file_path = substr( $path . '/' . $filename, strlen( GFE_ROOT_DIR ) + 1, strlen( $path . '/' . $filename ) );
-                if( is_dir( $path . '/' . $filename ) ) {
-                    if( ! in_array( $file_path, $ignore_folders, true ) ) {
-                        $gmz_directories[] = $file_path;
-                    }
-                    list_directories( $path . '/' . $filename );
-                }
-            }
-        }
-        closedir( $handle );
-    }  else {
-        display_error( 'Invalid Directory' );
+    if ($size / 1048576 > 1) {
+        return round($size / 1048576, 1) . 'MB';
     }
-}
-
-### Function: List All Files
-function list_files( $path ) {
-    global $gmz_files, $gmz_directories, $extensions, $ignore_files, $ignore_ext, $ignore_folders;
-    if( $handle = @opendir( $path ) ) {
-        while( false !== ( $filename = readdir( $handle ) ) ) {
-           if( ! in_array( $filename, [ '.', '..', '.git', '.svn' ], true ) ) {
-                $file_path = substr( $path . '/' . $filename, strlen( GFE_ROOT_DIR ) + 1, strlen( $path . '/'. $filename ) );
-                $file_folder = substr( $file_path, 0, - ( strlen( $filename ) + 1 ) );
-                if( is_dir( $path . '/' . $filename ) ) {
-                    if( ! in_array( $file_path, $ignore_folders, true ) ) {
-                        $gmz_directories[] = $file_path;
-                    }
-                    list_files( $path . '/' . $filename );
-                } else {
-                    if( is_file( $path . '/' . $filename ) ) {
-                        $file_ext = strtolower( pathinfo( $filename, PATHINFO_EXTENSION ) );
-                        if( ! in_array( $file_ext, $ignore_ext, true ) && ! in_array( $file_path, $ignore_files, true ) && ! in_array( $file_folder, $ignore_folders, true ) ) {
-                            if ( ! empty ( $extensions[$file_ext][0] ) ) {
-                                $gmz_files[] = [ 'name' => $filename, 'ext' => $file_ext, 'path' => $file_path, 'type' => ! empty( $extensions[$file_ext][0] ) ? $extensions[$file_ext][0] : 'Unknown', 'size' => filesize( $path . '/' . $filename ), 'date' => filemtime( $path . '/' . $filename ) ];
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        closedir( $handle );
-    }  else {
-        display_error( 'Invalid Directory' );
+    if ($size / 1024 > 1) {
+        return round($size / 1024, 1) . 'KB';
     }
+    return round($size, 1) . 'b';
 }
 
-### Function: List Directory Files
-function list_directories_files( $path ) {
-    global $gmz_files, $gmz_directories, $extensions, $ignore_files, $ignore_ext, $ignore_folders, $directories_before_current_path, $current_directory_path;
-    if( $handle = @opendir( $path ) ) {
-        while( false !== ( $filename = readdir( $handle ) ) ) {
-            if( ! in_array( $filename, [ '.', '..', '.git', '.svn' ], true ) ) {
-                if( is_file( $path . '/' . $filename ) && ! in_array( $directories_before_current_path . $current_directory_path . $filename, $ignore_files, true ) ) {
-                    $file_ext = strtolower( pathinfo( $filename, PATHINFO_EXTENSION ) );
-                    if( ! in_array( $file_ext, $ignore_ext, true ) ) {
-                        $gmz_files[] = [ 'name' => $filename, 'ext' => $file_ext, 'type' => ! empty( $extensions[$file_ext][0] ) ? $extensions[$file_ext][0] : 'Unknown', 'size' => filesize( $path . '/' . $filename ), 'date' => filemtime( $path . '/' . $filename ) ];
-                    }
-                }
-                if( is_dir( $path . '/' . $filename ) && ! in_array( $directories_before_current_path . $current_directory_path . $filename, $ignore_folders, true ) ) {
-                    $gmz_directories[] = [ 'name' => $filename, 'size' => dir_size( $path . '/' . $filename ), 'date' => filemtime( $path . '/' . $filename ) ];
-                }
-            }
-        }
-        closedir( $handle );
-    }  else {
-        display_error( 'Invalid Directory' );
-    }
-}
-
-### Function: Find Directory Size
-function dir_size( $dir ) {
-    $totalsize = 0;
-    if( $dirstream = @opendir( $dir ) )  {
-        while(false !== ( $filename = readdir( $dirstream) ) ) {
-            if( ! in_array( $filename, [ '.', '..', '.git', '.svn' ], true ) ) {
-                if( is_file( $dir . '/' . $filename ) ) {
-                    $totalsize += filesize( $dir . '/' . $filename );
-                }
-                if( is_dir( $dir . '/' . $filename ) ) {
-                    $totalsize += dir_size( $dir . '/' . $filename );
-                }
-            }
-        }
-        closedir( $dirstream );
-    }
-    return $totalsize;
-}
-
-### Function: Determine File Extension Icon
-function file_icon( $ext ) {
-    global $extensions;
-    if( array_key_exists( $ext, $extensions ) ) {
-        return $extensions[$ext][1];
-    }
-
-    return 'fa-question';
-}
-
-### Function: Sort Array By Alphabets
-function array_alphabetsort() {
-   $arguments = func_get_args();
-   $arrays = $arguments[0];
-   for( $c = ( count( $arguments ) - 1 ); $c > 0; $c-- ) {
-       if( in_array( $arguments[$c], [ SORT_ASC , SORT_DESC ], true ) ) {
-           continue;
-       }
-       usort( $arrays, function($a, $b) use ($arguments, $c) {
-           return strcasecmp($a[$arguments[$c]], $b[$arguments[$c]]);
-       } );
-       if( $arguments[$c+1] === SORT_DESC ) {
-           $arrays = array_reverse( $arrays );
-       }
-   }
-   return $arrays;
-}
-
-### Function: Sort Array By Numbers
-function array_numbersort( $a, $b ) {
-    global $sort_by;
-    if( $a[$sort_by] === $b[$sort_by] ) {
+### Function: Recursively Total The Size Of A Directory
+function dir_size(string $dir): int
+{
+    $handle = @opendir($dir);
+    if ($handle === false) {
         return 0;
     }
-    return ( $a[$sort_by] < $b[$sort_by] ) ? -1 : 1;
-}
-
-### Function: Check Key In Multiple Arrays
-function in_multi_array( $needle, $haystack ) {
-    $in_multi_array = false;
-    if( in_array( $needle, $haystack, true ) ) {
-        $in_multi_array = true;
-    } else {
-        foreach( (array) $haystack as $key => $val ) {
-            if( is_array( $val ) && in_multi_array( $needle, $val ) ) {
-                $in_multi_array = true;
-                break;
-            }
+    $total = 0;
+    while (($filename = readdir($handle)) !== false) {
+        if (in_array($filename, ['.', '..', '.git', '.svn'], true)) {
+            continue;
+        }
+        $path = $dir . '/' . $filename;
+        if (is_file($path)) {
+            $total += (int) filesize($path);
+        } elseif (is_dir($path)) {
+            $total += dir_size($path);
         }
     }
-    return $in_multi_array;
+    closedir($handle);
+    return $total;
 }
 
-### Function: Form Sorting URL
-function url( $url, $mode ) {
-    global $sort_by;
-    $temp_url = '';
-    $temp_url_nice = '';
-    $GET_sortby = ! empty( $_GET['by'] ) ? trim( $_GET['by'] ) : '';
-    $GET_sortorder = ! empty( $_GET['order'] ) ? trim( $_GET['order'] ) : '';
-    $url = urldecode( $url );
-    $url = urlencode( $url );
-    $url = str_replace( '%2F', '/', $url );
-    switch( $mode ) {
-        case 'dir':
-            if( $url === 'home' ) {
-                $temp_url = GFE_URL . '/' . GFE_ROOT_FILENAME;
-                $temp_url_nice = GFE_URL . '/';
-            } else {
-                $temp_url = GFE_URL . '/' . GFE_ROOT_FILENAME . '?' . http_build_query( [ 'dir' => $url ] );
-                $temp_url_nice = GFE_URL . '/browse/' . $url . '/';
+### Function: Recursively Collect Every File Under A Path (Used By Search)
+/**
+ * @param  GfeSettings $settings
+ * @return list<GfeEntry>
+ */
+function list_files(string $path, array $settings): array
+{
+    $handle = @opendir($path);
+    if ($handle === false) {
+        return [];
+    }
+    $files = [];
+    while (($filename = readdir($handle)) !== false) {
+        if (in_array($filename, ['.', '..', '.git', '.svn'], true)) {
+            continue;
+        }
+        $full = $path . '/' . $filename;
+        $relative = substr($full, strlen(GFE_ROOT_DIR) + 1);
+        $folder = substr($relative, 0, -(strlen($filename) + 1));
+        if (is_dir($full)) {
+            $files = array_merge($files, list_files($full, $settings));
+            continue;
+        }
+        if (! is_file($full)) {
+            continue;
+        }
+        $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        if (
+            in_array($ext, $settings['ignore_ext'], true)
+            || in_array($relative, $settings['ignore_files'], true)
+            || in_array($folder, $settings['ignore_folders'], true)
+            || empty($settings['extensions'][$ext][0])
+        ) {
+            continue;
+        }
+        $files[] = [
+            'name' => $filename,
+            'ext' => $ext,
+            'path' => $relative,
+            'type' => $settings['extensions'][$ext][0],
+            'size' => (int) filesize($full),
+            'date' => (int) filemtime($full),
+        ];
+    }
+    closedir($handle);
+    return $files;
+}
+
+### Function: Recursively Collect Every Sub-Directory Path (Used By Search Filter)
+/**
+ * @param  GfeSettings $settings
+ * @return list<string>
+ */
+function list_directories(string $path, array $settings): array
+{
+    $handle = @opendir($path);
+    if ($handle === false) {
+        return [];
+    }
+    $directories = [];
+    while (($filename = readdir($handle)) !== false) {
+        if (in_array($filename, ['.', '..', '.git', '.svn'], true)) {
+            continue;
+        }
+        $full = $path . '/' . $filename;
+        if (! is_dir($full)) {
+            continue;
+        }
+        $relative = substr($full, strlen(GFE_ROOT_DIR) + 1);
+        if (! in_array($relative, $settings['ignore_folders'], true)) {
+            $directories[] = $relative;
+        }
+        $directories = array_merge($directories, list_directories($full, $settings));
+    }
+    closedir($handle);
+    return $directories;
+}
+
+### Function: List The Files And Directories In A Single Directory Level
+/**
+ * @param  GfeSettings $settings
+ * @return array{files: list<GfeEntry>, directories: list<GfeEntry>}
+ */
+function list_directory(string $path, array $settings, string $prefix): array
+{
+    $handle = @opendir($path);
+    if ($handle === false) {
+        display_error('Invalid Directory');
+    }
+    $files = [];
+    $directories = [];
+    while (($filename = readdir($handle)) !== false) {
+        if (in_array($filename, ['.', '..', '.git', '.svn'], true)) {
+            continue;
+        }
+        $full = $path . '/' . $filename;
+        if (is_file($full) && ! in_array($prefix . $filename, $settings['ignore_files'], true)) {
+            $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+            if (! in_array($ext, $settings['ignore_ext'], true)) {
+                $files[] = [
+                    'name' => $filename,
+                    'ext' => $ext,
+                    'type' => $settings['extensions'][$ext][0] ?? 'Unknown',
+                    'size' => (int) filesize($full),
+                    'date' => (int) filemtime($full),
+                ];
             }
-            if( ! empty( $GET_sortby ) ) {
-                if( strpos( $temp_url, '?' ) === false ) {
-                    $temp_url .= '?' . http_build_query( [ 'by' => $sort_by, 'order' => $GET_sortorder ] );
-                } else {
-                    $temp_url .= http_build_query( [ 'by' => $sort_by, 'order' => $GET_sortorder ] );
-                }
-                $temp_url_nice .= 'sortby/' . $sort_by . '/sortorder/' . $GET_sortorder . '/';
+        }
+        if (is_dir($full) && ! in_array($prefix . $filename, $settings['ignore_folders'], true)) {
+            $directories[] = [
+                'name' => $filename,
+                'size' => dir_size($full),
+                'date' => (int) filemtime($full),
+            ];
+        }
+    }
+    closedir($handle);
+    return ['files' => $files, 'directories' => $directories];
+}
+
+### Function: Determine The Font Awesome Icon Class For A File Extension
+/**
+ * @param array<string, array{0: string, 1: string}> $extensions
+ */
+function file_icon(string $ext, array $extensions): string
+{
+    return $extensions[$ext][1] ?? 'fa-regular fa-file';
+}
+
+### Function: Sort A List Of Entries By A Field And Order
+/**
+ * @param  list<GfeEntry> $entries
+ * @return list<GfeEntry>
+ */
+function sort_entries(array $entries, string $sortBy, int $sortOrder): array
+{
+    /**
+     * @param GfeEntry $a
+     * @param GfeEntry $b
+     */
+    usort($entries, static function (array $a, array $b) use ($sortBy): int {
+        if ($sortBy === 'name' || $sortBy === 'type') {
+            return strcasecmp((string) ($a[$sortBy] ?? ''), (string) ($b[$sortBy] ?? ''));
+        }
+        return ($a[$sortBy] ?? 0) <=> ($b[$sortBy] ?? 0);
+    });
+    if ($sortOrder === SORT_DESC) {
+        $entries = array_reverse($entries);
+    }
+    return $entries;
+}
+
+### Function: Count The Number Of Lines In A Text File
+function get_line_count(string $file): int
+{
+    $handle = @fopen($file, 'rb');
+    if ($handle === false) {
+        return 0;
+    }
+    $lines = 0;
+    while (! feof($handle)) {
+        fgets($handle);
+        $lines++;
+    }
+    fclose($handle);
+    return max($lines - 1, 0);
+}
+
+### Function: Build A Link For A Directory, File Or Download
+function url(string $path, string $mode, string $sortBy = '', string $sortOrder = ''): string
+{
+    $path = str_replace('%2F', '/', urlencode(urldecode($path)));
+    switch ($mode) {
+        case 'dir':
+            if ($path === 'home') {
+                $link = GFE_URL . '/' . GFE_ROOT_FILENAME;
+                $nice = GFE_URL . '/';
+            } else {
+                $link = GFE_URL . '/' . GFE_ROOT_FILENAME . '?' . http_build_query(['dir' => $path]);
+                $nice = GFE_URL . '/browse/' . $path . '/';
+            }
+            if ($sortBy !== '') {
+                $link .= (str_contains($link, '?') ? '&' : '?') . http_build_query(['by' => $sortBy, 'order' => $sortOrder]);
+                $nice .= 'sortby/' . $sortBy . '/sortorder/' . $sortOrder . '/';
             }
             break;
         case 'file':
-            $temp_url = GFE_URL . '/view.php?' . http_build_query( [ 'dir' => $url ] );
-            $temp_url_nice = GFE_URL . '/viewing/' . $url . '/';
+            $link = GFE_URL . '/view.php?' . http_build_query(['file' => $path]);
+            $nice = GFE_URL . '/viewing/' . $path . '/';
             break;
         case 'download':
-            $temp_url = GFE_URL . '/view.php?' . http_build_query( [ 'file' => $url, 'dl' => 1 ] );
-            $temp_url_nice = GFE_URL . '/download/' . $url . '/';
+            $link = GFE_URL . '/view.php?' . http_build_query(['file' => $path, 'dl' => 1]);
+            $nice = GFE_URL . '/download/' . $path . '/';
             break;
+        default:
+            $link = GFE_URL;
+            $nice = GFE_URL;
     }
-    if( GFE_NICE_URL ) {
-        return $temp_url_nice;
-    } else {
-        return $temp_url;
-    }
+    return GFE_NICE_URL ? $nice : $link;
 }
 
-### Function: Create Sorting URL
-function create_sort_url( $sortby ) {
-    global $directories_before_current_path, $current_directory_name, $sort_order;
-    $directories_before_current_path = urldecode( $directories_before_current_path );
-    $directories_before_current_path = urlencode( $directories_before_current_path );
-    $directories_before_current_path = str_replace( '%2F', '/', $directories_before_current_path );
-    $current_directory_name = urldecode( $current_directory_name );
-    $current_directory_name = urlencode( $current_directory_name );
-    $current_directory_name = str_replace( '%2F', '/', $current_directory_name );
-    if( $sort_order === SORT_DESC ) {
-        $sortorder = 'asc';
+### Function: Build The Toggle Link For A Sortable Column Header
+function create_sort_url(string $sortBy, string $beforePath, string $currentName, int $currentSortOrder): string
+{
+    $beforePath = str_replace('%2F', '/', urlencode(urldecode($beforePath)));
+    $currentName = str_replace('%2F', '/', urlencode(urldecode($currentName)));
+    $order = $currentSortOrder === SORT_DESC ? 'asc' : 'desc';
+    if ($currentName === '') {
+        $link = '?' . http_build_query(['by' => $sortBy, 'order' => $order]);
+        $nice = GFE_URL . '/sortby/' . $sortBy . '/sortorder/' . $order . '/';
     } else {
-        $sortorder = 'desc';
+        $dir = $beforePath . $currentName;
+        $link = '?' . http_build_query(['dir' => $dir, 'by' => $sortBy, 'order' => $order]);
+        $nice = GFE_URL . '/browse/' . $dir . '/sortby/' . $sortBy . '/sortorder/' . $order . '/';
     }
-    if( empty( $current_directory_name ) ) {
-        $temp_url = '?' . http_build_query( [ 'by' => $sortby, 'order' => $sortorder ] );
-        $temp_url_nice = GFE_URL . '/sortby/' . $sortby . '/sortorder/' . $sortorder . '/';
-    } else {
-        $temp_url = '?' . http_build_query( [ 'dir' => $directories_before_current_path . $current_directory_name, 'by' => $sortby, 'order' => $sortorder ] );
-        $temp_url_nice = GFE_URL . '/browse/' . $directories_before_current_path . $current_directory_name . '/sortby/' . $sortby . '/sortorder/' . $sortorder . '/';
-    }
-    if( GFE_NICE_URL ) {
-        return $temp_url_nice;
-    } else {
-        return $temp_url;
-    }
+    return GFE_NICE_URL ? $nice : $link;
 }
 
-### Function: Create Sorting Image
-function create_sort_image( $sortby ) {
-    if( ! empty( $_GET['by'] ) && trim( $_GET['by'] ) === $sortby ) {
-        $get_sort_order = ! empty( $_GET['order'] ) ? trim( $_GET['order'] ) : '';
-        if( $get_sort_order === 'asc' ) {
-            return '<i class="fa fa-fw fa-sort-asc"></i>';
-        } else {
-            return '<i class="fa fa-fw fa-sort-desc"></i>';
+### Function: Render The Sort Direction Icon For A Column Header
+function create_sort_image(string $sortBy, string $currentSortBy, string $currentSortOrder): string
+{
+    if ($currentSortBy === $sortBy) {
+        return $currentSortOrder === 'asc'
+            ? '<i class="fa-solid fa-fw fa-sort-up"></i>'
+            : '<i class="fa-solid fa-fw fa-sort-down"></i>';
+    }
+    return '<i class="fa-solid fa-fw fa-sort"></i>';
+}
+
+### Function: Build The Breadcrumb Trail
+/**
+ * @param array{
+ *     directory_names?: list<string>,
+ *     current_directory_name?: string,
+ *     file?: string,
+ *     file_name?: string,
+ *     search_keyword?: string,
+ *     sort_by?: string,
+ *     sort_order?: string
+ * } $context
+ */
+function breadcrumbs(array $context): string
+{
+    $sortBy = $context['sort_by'] ?? '';
+    $sortOrder = $context['sort_order'] ?? '';
+    $html = '<li class="breadcrumb-item"><a href="' . url('home', 'dir', $sortBy, $sortOrder) . '">Home</a></li>';
+
+    $directoryNames = $context['directory_names'] ?? [];
+    if (! empty($context['file'])) {
+        $directoryNames = explode('/', $context['file']);
+        array_pop($directoryNames);
+    }
+    $trail = '';
+    foreach ($directoryNames as $name) {
+        if ($name === '') {
+            continue;
         }
+        $trail .= $name . '/';
+        $html .= '<li class="breadcrumb-item"><a href="' . url(rtrim($trail, '/'), 'dir', $sortBy, $sortOrder) . '">'
+            . htmlspecialchars($name, ENT_QUOTES, 'UTF-8') . '</a></li>';
     }
-
-    return '<i class="fa fa-fw fa-sort"></i>';
+    if (! empty($context['current_directory_name'])) {
+        $html .= '<li class="breadcrumb-item active" aria-current="page">'
+            . htmlspecialchars($context['current_directory_name'], ENT_QUOTES, 'UTF-8') . '</li>';
+    }
+    if (! empty($context['file_name'])) {
+        $html .= '<li class="breadcrumb-item active" aria-current="page">'
+            . htmlspecialchars($context['file_name'], ENT_QUOTES, 'UTF-8') . '</li>';
+    }
+    if (! empty($context['search_keyword'])) {
+        $html .= '<li class="breadcrumb-item"><a href="' . GFE_URL . '/search.php">Search</a></li>';
+        $html .= '<li class="breadcrumb-item active" aria-current="page">'
+            . htmlspecialchars($context['search_keyword'], ENT_QUOTES, 'UTF-8') . '</li>';
+    }
+    return $html;
 }
 
-### Function: Determine the number of lines in a text file
-function get_line_count( $file ) {
-    $lines = 0;
-    $handle = fopen( $file, 'r' );
-    while( ! feof( $handle ) ) {
-        fgets( $handle );
-        $lines++;
-    }
-    fclose( $handle );
-    return $lines - 1;
-}
-
-### Function: Breadcrumbs
-function breadcrumbs() {
-    global $directory_names, $current_directory_name, $file_name, $file, $search_keyword;
-    $temp_breadcrumb_path = '';
-    $temp_breadcrumb = '<li class="breadcrumb-item"><a href="' . url( 'home', 'dir' ) . '">Home</a></li>';
-    if( ! empty( $file ) ) {
-        $directory_names = explode( '/', $file );
-        unset( $directory_names[count( $directory_names ) - 1] );
-    }
-    if( ! empty( $directory_names ) ) {
-        foreach( $directory_names as $directory_name ) {
-            $temp_breadcrumb_path .= $directory_name.'/';
-            $temp_breadcrumb_url = substr( $temp_breadcrumb_path, 0, -1 );
-            $temp_breadcrumb .= '<li><a href="' . url( $temp_breadcrumb_url, 'dir' ) . '">' . htmlspecialchars( $directory_name, ENT_QUOTES, 'UTF-8' ) . '</a></li>';
-        }
-    }
-    if( ! empty( $current_directory_name ) ) {
-        $temp_breadcrumb .= '<li class="breadcrumb-item">' . htmlspecialchars( $current_directory_name, ENT_QUOTES, 'UTF-8' ) . '</li>';
-    }
-    if( ! empty( $file_name ) ) {
-        $temp_breadcrumb .= '<li class="breadcrumb-item">' . htmlspecialchars( $file_name, ENT_QUOTES, 'UTF-8' ) . '</li>';
-    }
-    if( ! empty( $search_keyword ) ) {
-        $temp_breadcrumb .= '<li class="breadcrumb-item"><a href="' . GFE_URL . '/search.php">Search</a></li>';
-        $temp_breadcrumb .= '<li class="breadcrumb-item">' . htmlspecialchars( $search_keyword, ENT_QUOTES, 'UTF-8' ) . '</li>';
-    }
-    return $temp_breadcrumb;
-}
-
-### Function: Display Error Message
-function display_error( $msg ) {
-    template_header( ' - Error - ' . $msg );
-    echo '<div class="alert alert-danger" role="alert"><strong>' . $msg . '</strong>. You can <a href="' . GFE_URL . '">go back to the main site</a> or <a href="' . GFE_URL . '" onclick="return false; javascript: history.go(-1);">go back to the previous page</a>.</div>';
+### Function: Display An Error Message And Stop
+function display_error(string $msg): never
+{
+    template_header(' - Error - ' . $msg, breadcrumbs([]));
+    echo '<div class="alert alert-danger" role="alert"><strong>' . htmlspecialchars($msg, ENT_QUOTES, 'UTF-8')
+        . '</strong>. You can <a href="' . GFE_URL . '">go back to the main site</a> or '
+        . '<a href="' . GFE_URL . '" onclick="history.back(); return false;">go back to the previous page</a>.</div>';
     template_footer();
     exit();
 }
 
-
-function template_header( $title = '' ) {
-?>
+### Function: Render The Page Header And Open The Body
+function template_header(string $title, string $breadcrumbs): void
+{
+    $requestUri = htmlspecialchars(GFE_URL . ($_SERVER['REQUEST_URI'] ?? ''), ENT_QUOTES, 'UTF-8');
+    $fullTitle = htmlspecialchars(GFE_SITE_NAME . $title, ENT_QUOTES, 'UTF-8');
+    $siteName = htmlspecialchars(GFE_SITE_NAME, ENT_QUOTES, 'UTF-8');
+    $description = htmlspecialchars(GFE_SITE_DESCRIPTION, ENT_QUOTES, 'UTF-8');
+    ?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title><?php echo htmlspecialchars( GFE_SITE_NAME . $title, ENT_QUOTES, 'UTF-8' ); ?></title>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="x-dns-prefetch-control" content="on">
-        <meta name="copyright" content="Copyright &copy; <?php echo date( 'Y' ); ?> Lester Chan, All Rights Reserved.">
+        <title><?php echo $fullTitle; ?></title>
+        <meta name="copyright" content="Copyright &copy; <?php echo date('Y'); ?> Lester Chan, All Rights Reserved.">
         <meta name="author" content="Lester Chan">
-        <meta name="description" content="<?php echo GFE_SITE_DESCRIPTION; ?>">
-        <meta property="og:site_name" content="<?php echo GFE_SITE_NAME; ?>">
-        <meta property="og:title" content="<?php echo htmlspecialchars( GFE_SITE_NAME . $title, ENT_QUOTES, 'UTF-8' ); ?>">
+        <meta name="description" content="<?php echo $description; ?>">
+        <meta property="og:site_name" content="<?php echo $siteName; ?>">
+        <meta property="og:title" content="<?php echo $fullTitle; ?>">
         <meta property="og:type" content="website">
-        <meta property="og:url" content="<?php echo htmlspecialchars( GFE_URL . $_SERVER['REQUEST_URI'], ENT_QUOTES, 'UTF-8' ); ?>">
+        <meta property="og:url" content="<?php echo $requestUri; ?>">
         <meta property="og:image" content="<?php echo GFE_URL; ?>/resources/icon.png">
-        <meta property="og:description" content="<?php echo GFE_SITE_DESCRIPTION; ?>">
+        <meta property="og:description" content="<?php echo $description; ?>">
         <meta name="twitter:card" content="summary">
-        <meta name="twitter:title" content="<?php echo htmlspecialchars( GFE_SITE_NAME . $title, ENT_QUOTES, 'UTF-8' ); ?>">
-        <meta name="twitter:url" content="<?php echo htmlspecialchars( GFE_URL . $_SERVER['REQUEST_URI'], ENT_QUOTES, 'UTF-8' ); ?>">
+        <meta name="twitter:title" content="<?php echo $fullTitle; ?>">
+        <meta name="twitter:url" content="<?php echo $requestUri; ?>">
         <meta name="twitter:image" content="<?php echo GFE_URL; ?>/resources/icon.png">
-        <meta name="twitter:description" content="<?php echo GFE_SITE_DESCRIPTION; ?>">
-        <link rel="dns-prefetch" href="//www.google-analytics.com">
-        <link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
-        <link rel="shortcut icon" href="<?php echo GFE_URL; ?>/resources/favicon.ico" type="image/x-icon">
-        <link rel="icon" href="<?php echo GFE_URL; ?>/resources/favicon.ico" type="image/x-icon">
-        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.min.css">
-        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+        <meta name="twitter:description" content="<?php echo $description; ?>">
+        <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+        <link rel="icon" href="<?php echo GFE_URL; ?>/resources/favicon.ico" sizes="any">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css" integrity="sha512-jnSuA4Ss2PkkikSOLtYs8BlYIeeIK1h99ty4YfvRPAlzr377vr3CXDb7sb7eEEBYjDtcYj+AjBH3FLv5uSJuXg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" integrity="sha512-hasIneQUHlh06VNBe7f6ZcHmeRTLIaQWFd43YriJ0UND19bvYRauxthDg8E4eVNPm9bRUhr5JGeqH7FRFXQu5g==" crossorigin="anonymous" referrerpolicy="no-referrer">
     </head>
     <body>
-        <div class="container">
-            <h1><?php echo GFE_SITE_NAME; ?></h1>
-            <hr>
-            <ol class="breadcrumb">
-                <?php echo breadcrumbs(); ?>
-            </ol>
-<?php
+        <div class="container my-4">
+            <h1 class="h2 mb-3"><?php echo $siteName; ?></h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <?php echo $breadcrumbs; ?>
+                </ol>
+            </nav>
+    <?php
 }
 
-function template_footer() {
-    global $full_url;
-?>
-    <?php if( ! empty( $full_url ) ): ?>
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item"><?php echo $full_url; ?></li>
-        </ol>
+### Function: Close The Body And Render The Page Footer
+function template_footer(string $fullUrl = ''): void
+{
+    $start = defined('GFE_START') ? (float) GFE_START : microtime(true);
+    $generatedIn = number_format(microtime(true) - $start, 5);
+    $onSearch = basename($_SERVER['SCRIPT_FILENAME'] ?? '') === 'search.php';
+    ?>
+    <?php if ($fullUrl !== '') : ?>
+            <nav aria-label="current path">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($fullUrl, ENT_QUOTES, 'UTF-8'); ?></li>
+                </ol>
+            </nav>
     <?php endif; ?>
-    <?php if( GFE_CAN_SEARCH ): ?>
-        <?php if( basename( $_SERVER['SCRIPT_FILENAME'] ) !== 'search.php' ): ?>
-            <form class="form-inline" method="get" action="<?php echo GFE_URL; ?>/search.php">
-                <div class="form-group">
-                    <label class="sr-only" for="search-bottom-keyword">Search for files</label>
+    <?php if (GFE_CAN_SEARCH && ! $onSearch) : ?>
+            <form class="row row-cols-lg-auto g-2 align-items-center mb-3" method="get" action="<?php echo GFE_URL; ?>/search.php">
+                <div class="col-12">
+                    <label class="visually-hidden" for="search-bottom-keyword">Search for files</label>
                     <input type="text" class="form-control" id="search-bottom-keyword" name="search" placeholder="Search for files ...">
                 </div>
-                <button type="submit" class="btn btn-primary">Search</button>
-                <p>
-                    <small class="text-muted">
-                        <a href="<?php echo GFE_URL; ?>/search.php">Advanced Search</a>
-                    </small>
-                </p>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+                <div class="col-12">
+                    <small class="text-body-secondary"><a href="<?php echo GFE_URL; ?>/search.php">Advanced Search</a></small>
+                </div>
             </form>
-        <?php endif; ?>
     <?php endif; ?>
-        <div class="row">
-            <div class="col-sm-12">
-                <hr>
-                <p class="text-center">
-                    <small class="text-muted">
-                        Powered By <a href="https://github.com/lesterchan/gamerz-file-explorer">GaMerZ File Explorer Version <?php echo GFE_VERSION; ?></a>. Page Generated In <?php echo stop_timer(); ?>s.</a>
-                    </small>
-                    <br />
-                    <small class="text-muted">
-                        Copyright &copy; <?php echo date( 'Y' ); ?> <a href="https://lesterchan.net">Lester Chan</a>, All Rights Reserved.
-                    </small>
-                </p>
-            </div>
+            <hr>
+            <p class="text-center">
+                <small class="text-body-secondary">
+                    Powered By <a href="https://github.com/lesterchan/gamerz-file-explorer">GaMerZ File Explorer Version <?php echo GFE_VERSION; ?></a>. Page Generated In <?php echo $generatedIn; ?>s.
+                </small>
+                <br>
+                <small class="text-body-secondary">
+                    Copyright &copy; <?php echo date('Y'); ?> <a href="https://lesterchan.net">Lester Chan</a>, All Rights Reserved.
+                </small>
+            </p>
         </div>
-        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/js/bootstrap.min.js"></script>
-        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
-        <script type="text/javascript">
-            $(document).ready(function() {
-                hljs.initHighlightingOnLoad();
-            });
-        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js" integrity="sha512-7Pi/otdlbbCR+LnW+F7PwFcSDJOuUJB3OxtEHbg4vSMvzvJjde4Po1v4BR9Gdc9aXNUNFVUY+SK51wWT8WF0Gg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script>hljs.highlightAll();</script>
     </body>
 </html>
-<?php
+    <?php
 }
