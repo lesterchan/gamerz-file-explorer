@@ -38,3 +38,7 @@ define('GFE_DEFAULT_SORT_BY', 'date');
 ### Default Sort Order
 // asc | desc
 define('GFE_DEFAULT_SORT_ORDER', 'desc');
+
+### Google Analytics Measurement ID (Leave Empty To Disable Tracking)
+// Example: 'G-XXXXXXXXXX'
+define('GFE_GA_MEASUREMENT_ID', '');
