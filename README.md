@@ -3,6 +3,9 @@
 # GaMerZ File Explorer
 Enables you to browse a folder on the web like Windows Explorer. It has the ability to search for folders and files too.
 
+## Requirements
+* PHP 8.1 or newer
+
 ## Installation
 
 #### Config
@@ -33,6 +36,14 @@ If you are using Apache, upload `.htaccess` to the folder where you uploaded GaM
 
 If you are using Nginx, paste the below configuration in your nginx.conf file.
 ```nginx
+# Deny web access to tooling / metadata files. They are hidden from the listing,
+# but that alone does not stop Nginx from serving them. Denied by exact name so
+# that browsable content files (.json/.md/.xml/...) are unaffected. The CLI-only
+# tests directory is blocked wholesale.
+location ~ /\.(?!well-known\/) { deny all; }
+location ~* ^/(?:composer\.(?:json|lock)|phpstan\.neon\.dist|phpcs\.xml\.dist|phpunit\.xml\.dist|deploy\.sh|CLAUDE\.md)$ { deny all; }
+location ^~ /tests/ { deny all; }
+
 location / {
     try_files $uri $uri/ /index.php;
 }
@@ -60,9 +71,11 @@ rewrite ^/download/(.+[^/])/?$ /view.php?file=$1&dl=1 last;
 * NEW: Requires PHP 8.1 or newer
 * NEW: Upgraded the frontend to Bootstrap 5.3 and Font Awesome 6, added Subresource Integrity to all CDN assets, and dropped the jQuery dependency
 * NEW: Recognises many more file types (webp, avif, svg, mp4, webm, mkv, json, md, yml, and more)
+* NEW: Respects the visitor's light/dark colour scheme preference
 * IMPROVED: Rewrote the code with `declare(strict_types=1)`, full type declarations, and removed all shared global state in favour of passed parameters
 * IMPROVED: Sortable column headers are now real links instead of inline JavaScript
-* DEV: Added PHPStan (level 6) and PHP_CodeSniffer (PSR-12) via Composer for static analysis and linting
+* SECURITY: Added .htaccess/Nginx rules and a CLI-only guard so tooling and metadata files (composer.json, *.dist, CLAUDE.md, tests) cannot be served
+* DEV: Added PHPStan (level 6), PHP_CodeSniffer (PSR-12), and a PHPUnit suite with 100% coverage, run in GitHub Actions on PHP 8.1–8.4
 
 ### Version 2.1.0 (17-07-2026)
 * SECURITY: Fixed reflected XSS via the `search` parameter and other output sinks by escaping all output with `htmlspecialchars()`

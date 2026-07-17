@@ -7,6 +7,7 @@ define('GFE_VERSION', '3.0.0');
 
 ### What Files Not To Show In The List
 $ignore_files = [
+    '.editorconfig',
     '.gitignore',
     '.htaccess',
     '404.php',
@@ -19,6 +20,7 @@ $ignore_files = [
     'phpcs.xml.dist',
     'phpinfo.php',
     'phpstan.neon.dist',
+    'phpunit.xml.dist',
     'robots.txt',
     'search.php',
     'settings.php',
@@ -31,9 +33,12 @@ $ignore_ext = ['htaccess'];
 ### What Folders Not To Show In The List
 $ignore_folders = [
     '.github',
+    '.phpunit.cache',
     '.well-known',
+    'build',
     'cgi-bin',
     'resources',
+    'tests',
     'uploads',
     'vendor',
 ];

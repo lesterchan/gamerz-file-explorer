@@ -1,3 +1,16 @@
+# Deny web access to development, tooling and metadata files. They are hidden from
+# the listing, but that alone does not stop the web server from serving them. Matched
+# by exact name so that browsable content files (.json/.md/.xml/...) are unaffected.
+<FilesMatch "^(composer\.(json|lock)|phpstan\.neon\.dist|phpcs\.xml\.dist|phpunit\.xml\.dist|deploy\.sh|CLAUDE\.md|\.editorconfig|\.gitignore)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
 # BEGIN GFE
 <IfModule mod_rewrite.c>
 RewriteEngine On

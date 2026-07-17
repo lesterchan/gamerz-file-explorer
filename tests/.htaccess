@@ -1,0 +1,9 @@
+# This directory contains CLI-only developer tooling. Deny all web access.
+# (The PHP files also refuse to run under any non-CLI SAPI as a second layer.)
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+</IfModule>
