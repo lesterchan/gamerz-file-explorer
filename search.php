@@ -105,7 +105,7 @@ if (! empty($_GET['search'])) {
         <label for="search-term" class="col-sm-2 form-control-label">Search Term</label>
         <div class="col-sm-10">
             <input type="text" name="search" class="form-control" id="search-term" placeholder="Files ..."
-                   value="<?php echo $search_keyword; ?>">
+                   value="<?php echo htmlspecialchars($search_keyword, ENT_QUOTES, 'UTF-8'); ?>">
         </div>
     </div>
     <div class="form-group row">
@@ -115,10 +115,11 @@ if (! empty($_GET['search'])) {
                 <option value="all">All Folders</option>
                 <?php
                 foreach ($gmz_directories as $gmz_directory) {
+                    $gmz_directory_escaped = htmlspecialchars($gmz_directory, ENT_QUOTES, 'UTF-8');
                     if ($gmz_directory === $search_in) {
-                        echo '<option value="'.$gmz_directory.'" selected="selected">'.$gmz_directory.'</option>';
+                        echo '<option value="'.$gmz_directory_escaped.'" selected="selected">'.$gmz_directory_escaped.'</option>';
                     } else {
-                        echo '<option value="'.$gmz_directory.'">'.$gmz_directory.'</option>';
+                        echo '<option value="'.$gmz_directory_escaped.'">'.$gmz_directory_escaped.'</option>';
                     }
                 }
                 ?>
@@ -179,10 +180,10 @@ if (! empty($search_keyword)) {
             <?php
             if (! empty($search_results)) {
                 foreach ($search_results as $key => $value) {
-                    $file_name = $value['name'];
+                    $file_name = htmlspecialchars($value['name'], ENT_QUOTES, 'UTF-8');
                     $file_size = format_size($value['size']);
                     $file_date = date('jS F Y', $value['date']);
-                    $file_extension = $value['type'];
+                    $file_extension = htmlspecialchars($value['type'], ENT_QUOTES, 'UTF-8');
                     $total_size += $value['size'];
                     echo '<tr>';
                     echo '<td><a href="'.url($value['path'], 'file').'" title="File: '.$file_name.' ('.$file_size.')"><i class="fa fa-fw '.file_icon($value['ext']).'"></i>&nbsp;'.$file_name.'</a></td>';
@@ -192,7 +193,7 @@ if (! empty($search_keyword)) {
                     echo '</tr>';
                 }
             } else {
-                echo '<tr class="table-info"><td class="text-center" colspan="4">No files found with the search term \''.$search_keyword.'\'.</td></tr>';
+                echo '<tr class="table-info"><td class="text-center" colspan="4">No files found with the search term \''.htmlspecialchars($search_keyword, ENT_QUOTES, 'UTF-8').'\'.</td></tr>';
             }
 
             // File Stats Variables

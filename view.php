@@ -64,7 +64,7 @@ if (in_array($file_ext, $text_ext, true)) {
 
     <div class="card">
         <div class="card-header">
-            <?php echo $file_name; ?>
+            <?php echo htmlspecialchars($file_name, ENT_QUOTES, 'UTF-8'); ?>
         </div>
         <div class="card-block">
             <pre><code><?php echo htmlspecialchars(file_get_contents(GFE_ROOT_DIR.'/'.$file)); ?></code></pre>
@@ -79,7 +79,7 @@ if (in_array($file_ext, $text_ext, true)) {
     </div>
     <?php template_footer(); ?>
     <?php
-### Dispay Image
+### Display Image
 } elseif (in_array($file_ext, $image_ext, true)) {
     $temp_getimagesize = getimagesize(GFE_ROOT_DIR.'/'.$file);
     if (! $temp_getimagesize) {
@@ -92,11 +92,11 @@ if (in_array($file_ext, $text_ext, true)) {
 
     <div class="card">
         <div class="card-header">
-            <?php echo $file_name; ?>
+            <?php echo htmlspecialchars($file_name, ENT_QUOTES, 'UTF-8'); ?>
         </div>
         <div class="card-block text-center">
-            <img class="img-responsive" src="<?php echo GFE_ROOT_URL.'/'.$file; ?>" <?php echo $image_attr; ?>
-                 alt="Viewing Image - <?php echo $file_name; ?>">
+            <img class="img-responsive" src="<?php echo htmlspecialchars(GFE_ROOT_URL.'/'.$file, ENT_QUOTES, 'UTF-8'); ?>" <?php echo $image_attr; ?>
+                 alt="Viewing Image - <?php echo htmlspecialchars($file_name, ENT_QUOTES, 'UTF-8'); ?>">
         </div>
         <ul class="list-group list-group-flush">
             <li class="list-group-item">Width: <?php echo $image_width; ?>px</li>

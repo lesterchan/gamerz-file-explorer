@@ -153,10 +153,11 @@ if ($sort_by === 'name') {
             if (! empty($gmz_directories)) {
                 foreach ($gmz_directories as $key => $value) {
                     $directory_name = $value['name'];
+                    $directory_name_escaped = htmlspecialchars($directory_name, ENT_QUOTES, 'UTF-8');
                     $directory_size = format_size($value['size']);
                     $directory_date = date('jS F Y', $value['date']);
                     echo '<tr>';
-                    echo '<td><a href="'.url($directories_before_current_path.$current_directory_path.$directory_name, 'dir').'" title="Folder: '.$directory_name.' ('.$directory_size.')"><i class="fa fa-fw fa-folder"></i>&nbsp;'.$directory_name.'</a></td>';
+                    echo '<td><a href="'.url($directories_before_current_path.$current_directory_path.$directory_name, 'dir').'" title="Folder: '.$directory_name_escaped.' ('.$directory_size.')"><i class="fa fa-fw fa-folder"></i>&nbsp;'.$directory_name_escaped.'</a></td>';
                     echo '<td>'.$directory_size.'</td>';
                     echo '<td>File Folder</td>';
                     echo '<td>'.$directory_date.'</td>';
@@ -167,11 +168,12 @@ if ($sort_by === 'name') {
             if (! empty($gmz_files)) {
                 foreach ($gmz_files as $key => $value) {
                     $file_name = $value['name'];
+                    $file_name_escaped = htmlspecialchars($file_name, ENT_QUOTES, 'UTF-8');
                     $file_size = format_size($value['size']);
                     $file_date = date('jS F Y', $value['date']);
-                    $file_extension = $value['type'];
+                    $file_extension = htmlspecialchars($value['type'], ENT_QUOTES, 'UTF-8');
                     echo '<tr>';
-                    echo '<td><a href="'.url($directories_before_current_path.$current_directory_path.$file_name, 'file').'" title="File: '.$file_name.' ('.$file_size.')"><i class="fa fa-fw '.file_icon($value['ext']).'"></i>&nbsp;'.$file_name.'</a></td>';
+                    echo '<td><a href="'.url($directories_before_current_path.$current_directory_path.$file_name, 'file').'" title="File: '.$file_name_escaped.' ('.$file_size.')"><i class="fa fa-fw '.file_icon($value['ext']).'"></i>&nbsp;'.$file_name_escaped.'</a></td>';
                     echo '<td>'.$file_size.'</td>';
                     echo '<td>'.$file_extension.'</td>';
                     echo '<td>'.$file_date.'</td>';

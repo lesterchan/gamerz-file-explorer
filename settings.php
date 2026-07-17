@@ -4,7 +4,6 @@ $ignore_files = [
     '.gitignore',
     '.htaccess',
     '404.php',
-    'circle.yml',
     'config.php',
     'deploy.sh',
     'functions.php',
@@ -16,12 +15,11 @@ $ignore_files = [
     'view.php',
 ];
 
-### What Extentsions Not To Show In The List
+### What Extensions Not To Show In The List
 $ignore_ext = ['htaccess'];
 
 ### What Folders Not To Show In The List
 $ignore_folders = [
-    '.circleci',
     '.well-known',
     'cgi-bin',
     'resources',
@@ -88,4 +86,4 @@ $extensions = [
 ];
 
 ### GaMerZ File Explorer Version (Please Do Not Edit This)
-define('GFE_VERSION', '2.0.0');
+define('GFE_VERSION', '2.1.0');

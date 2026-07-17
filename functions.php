@@ -213,7 +213,7 @@ function url( $url, $mode ) {
             $temp_url = GFE_URL . '/view.php?' . http_build_query( [ 'dir' => $url ] );
             $temp_url_nice = GFE_URL . '/viewing/' . $url . '/';
             break;
-        case 'download';
+        case 'download':
             $temp_url = GFE_URL . '/view.php?' . http_build_query( [ 'file' => $url, 'dl' => 1 ] );
             $temp_url_nice = GFE_URL . '/download/' . $url . '/';
             break;
@@ -292,18 +292,18 @@ function breadcrumbs() {
         foreach( $directory_names as $directory_name ) {
             $temp_breadcrumb_path .= $directory_name.'/';
             $temp_breadcrumb_url = substr( $temp_breadcrumb_path, 0, -1 );
-            $temp_breadcrumb .= '<li><a href="' . url( $temp_breadcrumb_url, 'dir' ) . '">' . $directory_name . '</a></li>';
+            $temp_breadcrumb .= '<li><a href="' . url( $temp_breadcrumb_url, 'dir' ) . '">' . htmlspecialchars( $directory_name, ENT_QUOTES, 'UTF-8' ) . '</a></li>';
         }
     }
     if( ! empty( $current_directory_name ) ) {
-        $temp_breadcrumb .= '<li class="breadcrumb-item">' . $current_directory_name . '</li>';
+        $temp_breadcrumb .= '<li class="breadcrumb-item">' . htmlspecialchars( $current_directory_name, ENT_QUOTES, 'UTF-8' ) . '</li>';
     }
     if( ! empty( $file_name ) ) {
-        $temp_breadcrumb .= '<li class="breadcrumb-item">' . $file_name . '</li>';
+        $temp_breadcrumb .= '<li class="breadcrumb-item">' . htmlspecialchars( $file_name, ENT_QUOTES, 'UTF-8' ) . '</li>';
     }
     if( ! empty( $search_keyword ) ) {
         $temp_breadcrumb .= '<li class="breadcrumb-item"><a href="' . GFE_URL . '/search.php">Search</a></li>';
-        $temp_breadcrumb .= '<li class="breadcrumb-item">' . $search_keyword . '</li>';
+        $temp_breadcrumb .= '<li class="breadcrumb-item">' . htmlspecialchars( $search_keyword, ENT_QUOTES, 'UTF-8' ) . '</li>';
     }
     return $temp_breadcrumb;
 }
@@ -322,21 +322,21 @@ function template_header( $title = '' ) {
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title><?php echo GFE_SITE_NAME . $title; ?></title>
+        <title><?php echo htmlspecialchars( GFE_SITE_NAME . $title, ENT_QUOTES, 'UTF-8' ); ?></title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <meta http-equiv="x-dns-prefetch-control" content="on">
         <meta name="copyright" content="Copyright &copy; <?php echo date( 'Y' ); ?> Lester Chan, All Rights Reserved.">
         <meta name="author" content="Lester Chan">
         <meta name="description" content="<?php echo GFE_SITE_DESCRIPTION; ?>">
         <meta property="og:site_name" content="<?php echo GFE_SITE_NAME; ?>">
-        <meta property="og:title" content="<?php echo GFE_SITE_NAME . $title; ?>">
+        <meta property="og:title" content="<?php echo htmlspecialchars( GFE_SITE_NAME . $title, ENT_QUOTES, 'UTF-8' ); ?>">
         <meta property="og:type" content="website">
-        <meta property="og:url" content="<?php echo GFE_URL . $_SERVER['REQUEST_URI']; ?>">
+        <meta property="og:url" content="<?php echo htmlspecialchars( GFE_URL . $_SERVER['REQUEST_URI'], ENT_QUOTES, 'UTF-8' ); ?>">
         <meta property="og:image" content="<?php echo GFE_URL; ?>/resources/icon.png">
         <meta property="og:description" content="<?php echo GFE_SITE_DESCRIPTION; ?>">
         <meta name="twitter:card" content="summary">
-        <meta name="twitter:title" content="<?php echo GFE_SITE_NAME . $title; ?>">
-        <meta name="twitter:url" content="<?php echo GFE_URL . $_SERVER['REQUEST_URI']; ?>">
+        <meta name="twitter:title" content="<?php echo htmlspecialchars( GFE_SITE_NAME . $title, ENT_QUOTES, 'UTF-8' ); ?>">
+        <meta name="twitter:url" content="<?php echo htmlspecialchars( GFE_URL . $_SERVER['REQUEST_URI'], ENT_QUOTES, 'UTF-8' ); ?>">
         <meta name="twitter:image" content="<?php echo GFE_URL; ?>/resources/icon.png">
         <meta name="twitter:description" content="<?php echo GFE_SITE_DESCRIPTION; ?>">
         <link rel="dns-prefetch" href="//www.google-analytics.com">

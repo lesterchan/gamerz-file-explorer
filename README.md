@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/lesterchan/gamerz-file-explorer.svg?branch=master)](https://travis-ci.org/lesterchan/gamerz-file-explorer)
-
 ![Logo](https://files.lesterchan.net/resources/icon.png)
 
 # GaMerZ File Explorer
@@ -8,7 +6,7 @@ Enables you to browse a folder on the web like Windows Explorer. It has the abil
 ## Installation
 
 #### Config
-* `GFE_ROOT_DIR` - The absolute path of the folder that you want to show it's contents (without trailing slash).
+* `GFE_ROOT_DIR` - The absolute path of the folder that you want to show its contents (without trailing slash).
  * Example: `/home/user/public_html/files`
 * `GFE_ROOT_URL` - The URL to that folder (without trailing slash).
  * Example: `http://files.yoursite.com`
@@ -57,6 +55,10 @@ rewrite ^/download/(.+[^/])/?$ /view.php?file=$1&dl=1 last;
 * File: view.php
 
 ## Changelog
+
+### Version 2.1.0 (17-07-2026)
+* SECURITY: Fixed reflected XSS via the `search` parameter and other output sinks by escaping all output with `htmlspecialchars()`
+* FIX: Fixed deprecated `case` statement terminated with a semicolon in functions.php
 
 ### Version 2.0.0 Beta 2 (11-10-2018)
 * NEW: Logo by @mirzazulfan
