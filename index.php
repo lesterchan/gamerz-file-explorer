@@ -11,7 +11,7 @@ $settings = require 'settings.php';
 require 'functions.php';
 
 ### Get And Check Current Directory Path
-$url_path = trim($_GET['dir'] ?? '');
+$url_path = urldecode(trim($_GET['dir'] ?? ''));
 if (str_contains($url_path, '../') || str_contains($url_path, './') || str_contains($url_path, '//')) {
     display_error('Invalid Directory');
 }

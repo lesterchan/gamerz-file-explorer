@@ -11,7 +11,7 @@ $settings = require 'settings.php';
 require 'functions.php';
 
 ### Get And Check File Path
-$file = trim($_GET['file'] ?? '');
+$file = urldecode(trim($_GET['file'] ?? ''));
 if (str_contains($file, '../') || str_contains($file, './') || str_contains($file, '//')) {
     display_error('Invalid Directory');
 }
