@@ -349,6 +349,16 @@ function template_header(string $title, string $breadcrumbs): void
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="x-dns-prefetch-control" content="on">
+        <script>
+            (function () {
+                var media = window.matchMedia('(prefers-color-scheme: dark)');
+                var apply = function () {
+                    document.documentElement.setAttribute('data-bs-theme', media.matches ? 'dark' : 'light');
+                };
+                apply();
+                media.addEventListener('change', apply);
+            })();
+        </script>
         <title><?php echo $fullTitle; ?></title>
         <meta name="copyright" content="Copyright &copy; <?php echo date('Y'); ?> Lester Chan, All Rights Reserved.">
         <meta name="author" content="Lester Chan">
