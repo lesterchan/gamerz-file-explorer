@@ -23,14 +23,6 @@ directory.
 
 Every entry point starts with `require 'config.php'; require 'settings.php'; require 'functions.php';` in that order.
 
-## Keep in sync with the live deployment
-
-This project is deployed at **files.lesterchan.net**, whose repo
-(local checkout: `~/git/lesterchan/files.lesterchan.net`) carries a copy of these app
-files alongside its served content. **Any change to the app code — bug fix, typo, security
-fix — must be applied to both repos.** Deployment-specific values (`config.php` paths/URLs,
-`settings.php` ignore lists) legitimately differ and are not mirrored.
-
 ## Conventions
 
 - Procedural PHP, 4-space indent, short array syntax `[]`, `snake_case` functions/vars,
