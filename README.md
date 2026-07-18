@@ -81,7 +81,7 @@ rewrite ^/download/(.+[^/])/?$ /view.php?file=$1&dl=1 last;
 * SECURITY: Downloads now send an RFC 5987 `Content-Disposition`, so filenames with quotes, control characters, or non-ASCII characters are delivered safely
 * DEV: Moved the styles and scripts into `resources/style.css` and `resources/script.js`
 * DEV: Added a `README`, an MIT `LICENSE`, and an `AGENTS.md` that points to `CLAUDE.md`
-* DEV: Added an empty `robots.txt` placeholder (allow-all, avoids 404 log noise)
+* DEV: Added a `robots.txt` that keeps crawlers off sort permutations, downloads, and search (both nice-URL and query forms)
 * DEV: Tidied the `settings.php` ignore list to hide only files that exist — covering the `README`/`LICENSE`/`AGENTS.md` and other metadata
 * DEV: Serve the favicon from `resources/favicon.ico` (linked in the template) and dropped the redundant root copy
 * DEV: Pin the `exif` extension in CI to cover the EXIF summary; the runtime stays dependency-free and degrades gracefully without it

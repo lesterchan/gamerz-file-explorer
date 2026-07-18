@@ -1,0 +1,19 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+
+# Sort permutations — the same listing repeated in every order.
+# Nice URLs: /browse/<path>/sortby/<by>/sortorder/<order>/ and /sortby/.../sortorder/.../
+# Query form: ?by=<by>&order=<order>
+Disallow: /*sortby/
+Disallow: /*by=
+Disallow: /*order=
+
+# Downloads — identical bytes to the viewing page, no need to crawl.
+# Nice URL: /download/<path>/   Query form: ?dl=1
+Disallow: /download/
+Disallow: /*dl=
+
+# Search — low value and an effectively unbounded query space.
+# Nice URL / entry point: /search.php   Query form: ?search=<term>
+Disallow: /search.php
+Disallow: /*search=
