@@ -36,8 +36,39 @@ final class FunctionsTest extends TestCase
 
     public function testDirSize(): void
     {
-        $this->assertGreaterThan(0, dir_size($this->root()));
-        $this->assertSame(0, dir_size($this->root() . '/does-not-exist'));
+        $root = $this->root();
+        $this->assertGreaterThan(0, dir_size($root, $this->settings));
+        $this->assertSame(0, dir_size($root . '/does-not-exist', $this->settings));
+
+        // A folder with only plain files totals their bytes exactly.
+        $this->assertSame(
+            (int) filesize($root . '/Sub Folder/inner.txt'),
+            dir_size($root . '/Sub Folder', $this->settings)
+        );
+
+        // Ignored files, ignored extensions and ignored folders are excluded from the size:
+        // the ignore-aware total equals a naive walk minus exactly those bytes.
+        $naive = static function (string $dir) use (&$naive): int {
+            $total = 0;
+            foreach (scandir($dir) ?: [] as $item) {
+                if ($item === '.' || $item === '..') {
+                    continue;
+                }
+                $path = $dir . '/' . $item;
+                if (is_file($path)) {
+                    $total += (int) filesize($path);
+                } elseif (is_dir($path)) {
+                    /** @var callable(string): int $naive */
+                    $total += $naive($path);
+                }
+            }
+            return $total;
+        };
+        $ignoredBytes = (int) filesize($root . '/config.php')       // ignored filename
+            + (int) filesize($root . '/.htaccess')                  // ignored extension
+            + (int) filesize($root . '/backup.htaccess')            // ignored extension
+            + (int) filesize($root . '/resources/icon.png');        // inside an ignored folder
+        $this->assertSame($naive($root) - $ignoredBytes, dir_size($root, $this->settings));
     }
 
     public function testListFilesReturnsVisibleFilesAndHonoursIgnores(): void

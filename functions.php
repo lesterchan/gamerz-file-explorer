@@ -52,8 +52,14 @@ function is_safe_path(string $path): bool
         && ! str_contains($path, '//');
 }
 
-### Function: Recursively Total The Size Of A Directory
-function dir_size(string $dir): int
+### Function: Recursively Total The Size Of A Directory, Excluding Ignored Content
+/**
+ * Mirrors the listing's ignore rules so the reported size matches what is shown:
+ * ignored files/extensions are skipped and ignored folders are not descended into.
+ *
+ * @param GfeSettings $settings
+ */
+function dir_size(string $dir, array $settings): int
 {
     $handle = @opendir($dir);
     if ($handle === false) {
@@ -65,11 +71,24 @@ function dir_size(string $dir): int
             continue;
         }
         $path = $dir . '/' . $filename;
-        if (is_file($path)) {
-            $total += (int) filesize($path);
-        } elseif (is_dir($path)) {
-            $total += dir_size($path);
+        $relative = substr($path, strlen(GFE_ROOT_DIR) + 1);
+        if (is_dir($path)) {
+            if (! in_array($relative, $settings['ignore_folders'], true)) {
+                $total += dir_size($path, $settings);
+            }
+            continue;
         }
+        if (! is_file($path)) {
+            continue;
+        }
+        $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        if (
+            in_array($relative, $settings['ignore_files'], true)
+            || in_array($ext, $settings['ignore_ext'], true)
+        ) {
+            continue;
+        }
+        $total += (int) filesize($path);
     }
     closedir($handle);
     return $total;
@@ -186,7 +205,7 @@ function list_directory(string $path, array $settings, string $prefix): array
         if (is_dir($full) && ! in_array($prefix . $filename, $settings['ignore_folders'], true)) {
             $directories[] = [
                 'name' => $filename,
-                'size' => dir_size($full),
+                'size' => dir_size($full, $settings),
                 'date' => (int) filemtime($full),
             ];
         }

@@ -115,10 +115,14 @@ $breadcrumbs = breadcrumbs([
                         } elseif ($gmz_directories === []) {
                             echo '<tr class="gfe-row-empty"><td class="text-center" colspan="4">This folder is empty.</td></tr>';
                         }
-                        // Folder And File Stats
+                        // Folder And File Stats — the total is summed from the sizes already
+                        // gathered above, so the whole tree is walked once, not twice.
                         $total_folders = count($gmz_directories);
                         $total_files = count($gmz_files);
-                        $total_size = format_size(dir_size($full_directory_path));
+                        $total_size = format_size(
+                            array_sum(array_column($gmz_files, 'size'))
+                            + array_sum(array_column($gmz_directories, 'size'))
+                        );
                         $total_folders_name = $total_folders === 1 ? 'folder' : 'folders';
                         $total_files_name = $total_files === 1 ? 'file' : 'files';
                         $total_folders_files = $total_folders . ' ' . $total_folders_name . ', ' . $total_files . ' ' . $total_files_name;
