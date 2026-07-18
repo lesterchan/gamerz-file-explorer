@@ -79,6 +79,17 @@ $breadcrumbs = breadcrumbs(['file' => $file, 'file_name' => $file_name]);
 ### Canonical (Nice-URL) Permalink For This File's Viewing Page
 $canonical = url($file, 'file');
 
+### Sibling Files In This Folder, In Listing Order — Powers The Previous/Next Controls
+$parent_dir = implode('/', $parts);
+$parent_prefix = $parent_dir !== '' ? $parent_dir . '/' : '';
+$parent_path = $parent_dir !== '' ? GFE_ROOT_DIR . '/' . $parent_dir : GFE_ROOT_DIR;
+$siblings = sort_entries(
+    list_directory($parent_path, $settings, $parent_prefix)['files'],
+    sort_field(GFE_DEFAULT_SORT_BY),
+    sort_direction(GFE_DEFAULT_SORT_ORDER)
+);
+$nav = sibling_nav($siblings, $file_name, $parent_prefix);
+
 ### Display Text
 if (in_array($file_ext, $settings['text_ext'], true)) {
     $text_content = (string) file_get_contents($full_path);
@@ -98,7 +109,11 @@ if (in_array($file_ext, $settings['text_ext'], true)) {
                     <li class="list-group-item">Size: <?php echo $text_size; ?></li>
                 </ul>
                 <div class="card-footer text-center">
-                    <a href="<?php echo url($file, 'download'); ?>" title="Download" class="btn btn-primary">Download</a>
+                    <div class="btn-group" role="group" aria-label="File navigation">
+                        <?php echo $nav['prev']; ?>
+                        <a href="<?php echo url($file, 'download'); ?>" title="Download" class="btn btn-primary">Download</a>
+                        <?php echo $nav['next']; ?>
+                    </div>
                 </div>
             </div>
     <?php template_footer($full_url, $full_url_href); ?>
@@ -132,7 +147,11 @@ if (in_array($file_ext, $settings['text_ext'], true)) {
                     <?php endforeach; ?>
                 </ul>
                 <div class="card-footer text-center">
-                    <a href="<?php echo url($file, 'download'); ?>" title="Download" class="btn btn-primary">Download</a>
+                    <div class="btn-group" role="group" aria-label="File navigation">
+                        <?php echo $nav['prev']; ?>
+                        <a href="<?php echo url($file, 'download'); ?>" title="Download" class="btn btn-primary">Download</a>
+                        <?php echo $nav['next']; ?>
+                    </div>
                 </div>
             </div>
     <?php template_footer($full_url, $full_url_href); ?>
@@ -156,7 +175,11 @@ if (in_array($file_ext, $settings['text_ext'], true)) {
                     <li class="list-group-item">Size: <?php echo $media_size; ?></li>
                 </ul>
                 <div class="card-footer text-center">
-                    <a href="<?php echo url($file, 'download'); ?>" title="Download" class="btn btn-primary">Download</a>
+                    <div class="btn-group" role="group" aria-label="File navigation">
+                        <?php echo $nav['prev']; ?>
+                        <a href="<?php echo url($file, 'download'); ?>" title="Download" class="btn btn-primary">Download</a>
+                        <?php echo $nav['next']; ?>
+                    </div>
                 </div>
             </div>
     <?php template_footer($full_url, $full_url_href); ?>

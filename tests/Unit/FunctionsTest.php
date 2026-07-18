@@ -207,6 +207,42 @@ final class FunctionsTest extends TestCase
         $this->assertSame(['first', 'second'], array_column($missing, 'name'));
     }
 
+    public function testSiblingNav(): void
+    {
+        $files = [
+            ['name' => 'a.txt', 'ext' => 'txt', 'type' => 'Text', 'size' => 1, 'date' => 1],
+            ['name' => 'b.txt', 'ext' => 'txt', 'type' => 'Text', 'size' => 1, 'date' => 2],
+            ['name' => 'c.txt', 'ext' => 'txt', 'type' => 'Text', 'size' => 1, 'date' => 3],
+        ];
+
+        // A middle file links to both neighbours.
+        $middle = sibling_nav($files, 'b.txt', '');
+        $this->assertStringContainsString('href="' . url('a.txt', 'file') . '"', $middle['prev']);
+        $this->assertStringContainsString('Previous', $middle['prev']);
+        $this->assertStringContainsString('href="' . url('c.txt', 'file') . '"', $middle['next']);
+        $this->assertStringContainsString('Next', $middle['next']);
+
+        // The first file has no previous — a disabled placeholder — but still links forward.
+        $first = sibling_nav($files, 'a.txt', '');
+        $this->assertStringContainsString('disabled', $first['prev']);
+        $this->assertStringNotContainsString('href=', $first['prev']);
+        $this->assertStringContainsString('href="' . url('b.txt', 'file') . '"', $first['next']);
+
+        // The last file has no next — a disabled placeholder — but still links back.
+        $last = sibling_nav($files, 'c.txt', '');
+        $this->assertStringContainsString('href="' . url('b.txt', 'file') . '"', $last['prev']);
+        $this->assertStringContainsString('disabled', $last['next']);
+        $this->assertStringNotContainsString('href=', $last['next']);
+
+        // The folder prefix is prepended to the neighbour's viewing link.
+        $nested = sibling_nav($files, 'a.txt', 'Docs/');
+        $this->assertStringContainsString('href="' . url('Docs/b.txt', 'file') . '"', $nested['next']);
+
+        // A lone file yields no controls; an unknown file yields none either.
+        $this->assertSame(['prev' => '', 'next' => ''], sibling_nav([$files[0]], 'a.txt', ''));
+        $this->assertSame(['prev' => '', 'next' => ''], sibling_nav($files, 'missing.txt', ''));
+    }
+
     public function testSortField(): void
     {
         $this->assertSame('name', sort_field('name'));
