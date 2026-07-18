@@ -72,6 +72,7 @@ rewrite ^/download/(.+[^/])/?$ /view.php?file=$1&dl=1 last;
 * NEW: Added a three-way colour theme switch (auto/light/dark) that remembers your choice
 * NEW: Colour-coded file-type icons, a home icon in the breadcrumb, and a clickable current-path permalink aligned with the breadcrumb
 * NEW: Entire listing rows are now clickable, not just the file/folder name
+* NEW: View PDFs, videos, and audio inline (browser-playable formats), the same way images are shown
 * NEW: The active sort column and its direction are highlighted
 * IMPROVED: Unified the listing typography with aligned figures, and hide the type column on small screens
 * IMPROVED: Tightened spacing and border-radius consistency, and added clear keyboard focus styles

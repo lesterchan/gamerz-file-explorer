@@ -78,6 +78,21 @@ $image_ext = [
     'webp',
 ];
 
+### File Extension To Be Embedded As Video (Browser-Playable Formats Only)
+$video_ext = [
+    'mov',
+    'mp4',
+    'webm',
+];
+
+### File Extension To Be Embedded As Audio (Browser-Playable Formats Only)
+$audio_ext = [
+    'flac',
+    'm4a',
+    'mp3',
+    'wav',
+];
+
 ### File Extensions Description => [Label, Font Awesome 6 Icon Class]
 $extensions = [
     '7z' => ['7-Zip Archive', 'fa-solid fa-file-zipper'],
@@ -159,5 +174,7 @@ return [
     'ignore_folders' => $ignore_folders,
     'text_ext' => $text_ext,
     'image_ext' => $image_ext,
+    'video_ext' => $video_ext,
+    'audio_ext' => $audio_ext,
     'extensions' => $extensions,
 ];

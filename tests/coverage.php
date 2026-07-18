@@ -97,7 +97,10 @@ $scenarios = [
     ['target' => 'view.php', 'query' => 'file=code.php', 'expect' => ['&lt;?php']], // source shown escaped
     ['target' => 'view.php', 'query' => 'file=pixel.png', 'expect' => ['Viewing Image', 'img-fluid']],
     ['target' => 'view.php', 'query' => 'file=broken.png', 'expect' => ['File Is Not A Valid Image']],
+    ['target' => 'view.php', 'query' => 'file=report.pdf', 'expect' => ['Viewing PDF', 'gfe-embed-pdf']], // inline PDF
     ['target' => 'view.php', 'query' => 'file=report.pdf&dl=1', 'expect' => ['%PDF-1.4 fake']], // download serves bytes
+    ['target' => 'view.php', 'query' => 'file=clip.mp4', 'expect' => ['Viewing Video', 'gfe-embed-video']], // inline video
+    ['target' => 'view.php', 'query' => 'file=song.mp3', 'expect' => ['Viewing Audio', 'gfe-embed-audio']], // inline audio
     ['target' => 'view.php', 'query' => 'file=archive.bin', 'expect' => ['binary']], // force-download branch
     // Regression: a space encoded as '+' (Apache re-encodes to %2B) must resolve to the real file.
     ['target' => 'view.php', 'query' => 'file=My%2BFile.txt',

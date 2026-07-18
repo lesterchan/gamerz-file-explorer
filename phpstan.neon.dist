@@ -9,7 +9,7 @@ parameters:
         - settings.php
         - view.php
     typeAliases:
-        GfeSettings: 'array{ignore_files: list<string>, ignore_ext: list<string>, ignore_folders: list<string>, text_ext: list<string>, image_ext: list<string>, extensions: array<string, array{0: string, 1: string}>}'
+        GfeSettings: 'array{ignore_files: list<string>, ignore_ext: list<string>, ignore_folders: list<string>, text_ext: list<string>, image_ext: list<string>, video_ext: list<string>, audio_ext: list<string>, extensions: array<string, array{0: string, 1: string}>}'
         GfeEntry: 'array{name: string, ext?: string, path?: string, type?: string, size: int, date: int}'
     dynamicConstantNames:
         - GFE_NICE_URL

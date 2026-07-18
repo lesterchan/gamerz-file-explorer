@@ -33,8 +33,11 @@ function gfe_make_content(?string $root = null): string
     file_put_contents($root . '/broken.png', "not really a png\n");
     // Binary-ish file with an unknown extension (force-download branch).
     file_put_contents($root . '/archive.bin', "\x00\x01\x02binary\x03\x04");
-    // A PDF (mapped type, force-download branch).
+    // A PDF (inline iframe embed branch).
     file_put_contents($root . '/report.pdf', "%PDF-1.4 fake\n");
+    // A video and audio file (inline <video>/<audio> embed branches; content is not parsed).
+    file_put_contents($root . '/clip.mp4', "fake mp4 bytes\n");
+    file_put_contents($root . '/song.mp3', "fake mp3 bytes\n");
     // A file whose extension is ignored ($ignore_ext = htaccess).
     file_put_contents($root . '/.htaccess', "deny\n");
     // A file whose name is on the ignore list.

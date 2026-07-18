@@ -502,3 +502,18 @@ a:focus-visible,
 @media (prefers-reduced-motion: reduce) {
     * { transition: none !important; }
 }
+
+.gfe-embed-pdf {
+    display: block;
+    width: 100%;
+    height: 80vh;
+    border: 0;
+}
+.gfe-embed-video {
+    max-width: 100%;
+    max-height: 80vh;
+    border-radius: 8px;
+}
+.gfe-embed-audio {
+    width: 100%;
+}

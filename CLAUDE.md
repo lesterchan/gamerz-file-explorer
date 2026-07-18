@@ -14,11 +14,11 @@ directory.
 | File | Role |
 |------|------|
 | `config.php` | Site constants (`GFE_ROOT_DIR`, `GFE_ROOT_URL`, `GFE_URL`, names, toggles). Edited per-install. |
-| `settings.php` | Ignore lists (`$ignore_files`, `$ignore_ext`, `$ignore_folders`), extension→label/icon map, and `GFE_VERSION`. |
+| `settings.php` | Ignore lists (`$ignore_files`, `$ignore_ext`, `$ignore_folders`), inline-view lists (`$text_ext`/`$image_ext`/`$video_ext`/`$audio_ext`), extension→label/icon map, and `GFE_VERSION`. |
 | `functions.php` | Shared helpers and the HTML templates (`template_header`, `template_footer`, `breadcrumbs`, `display_error`, listing/sort helpers). |
 | `index.php` | Directory listing. Reads `$_GET['dir']`, `by`, `order`. |
 | `search.php` | Search UI + results. Reads `$_GET['search']`, `in`, `by`, `order`. |
-| `view.php` | View (text/image) or download a file. Reads `$_GET['file']`, `dl`. |
+| `view.php` | View (text/image/PDF/video/audio) or download a file. Reads `$_GET['file']`, `dl`. |
 | `404.php` | Error page. |
 
 Every entry point starts with `require 'config.php'; require 'settings.php'; require 'functions.php';` in that order.
