@@ -38,7 +38,8 @@ Every entry point starts with `require 'config.php'; require 'settings.php'; req
   as `+`, which the web server passes as `%2B`; skipping the decode breaks paths with spaces
   (the 3.0.0 regression). Keep that decode-then-check order for any new path input.
 - `settings.php` ignore lists keep internal files (`config.php`, `functions.php`, the
-  Composer/PHPStan/PHPCS/PHPUnit files, …) out of listings; add new internal files there.
+  Composer/PHPStan/PHPCS/PHPUnit files, the `README`/`LICENSE`/`AGENTS.md`/`CLAUDE.md`
+  metadata, …) out of listings; add new internal files there.
   Hiding is **not** access control — the `.htaccess`/Nginx deny rules and the CLI-only guard
   in `tests/` are what stop the web server serving dev/tooling files. Keep them in place.
 - Frontend is Bootstrap 5.3 + Font Awesome 6 loaded from cdnjs with SRI hashes, no jQuery.
@@ -72,5 +73,5 @@ Every entry point starts with `require 'config.php'; require 'settings.php'; req
 ## Releasing
 
 - Bump `GFE_VERSION` in `settings.php` and add a `## Changelog` entry in `README.md`.
-- `CLAUDE.md` is contributor tooling — it is **not** part of the distributable, so do not
-  add it to the "Upload These Files" list in `README.md`.
+- `CLAUDE.md` and `AGENTS.md` are contributor tooling — they are **not** part of the
+  distributable, so do not add them to the "Upload These Files" list in `README.md`.

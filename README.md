@@ -1,5 +1,3 @@
-![Logo](https://files.lesterchan.net/resources/icon.png)
-
 # GaMerZ File Explorer
 Enables you to browse a folder on the web like Windows Explorer. It has the ability to search for folders and files too.
 
@@ -41,7 +39,7 @@ If you are using Nginx, paste the below configuration in your nginx.conf file.
 # that browsable content files (.json/.md/.xml/...) are unaffected. The CLI-only
 # tests directory is blocked wholesale.
 location ~ /\.(?!well-known\/) { deny all; }
-location ~* ^/(?:composer\.(?:json|lock)|phpstan\.neon\.dist|phpcs\.xml\.dist|phpunit\.xml\.dist|deploy\.sh|CLAUDE\.md)$ { deny all; }
+location ~* ^/(?:composer\.(?:json|lock)|phpstan\.neon\.dist|phpcs\.xml\.dist|phpunit\.xml\.dist|AGENTS\.md|CLAUDE\.md)$ { deny all; }
 location ^~ /tests/ { deny all; }
 
 location / {
@@ -74,9 +72,14 @@ rewrite ^/download/(.+[^/])/?$ /view.php?file=$1&dl=1 last;
 * NEW: Entire listing rows are now clickable, not just the file/folder name
 * NEW: View PDFs, videos, and audio inline (browser-playable formats), the same way images are shown
 * NEW: The active sort column and its direction are highlighted
+* NEW: Added a scalable SVG app icon (`resources/icon.svg`) and refreshed the PNG icon and favicon
 * IMPROVED: Unified the listing typography with aligned figures, and hide the type column on small screens
 * IMPROVED: Tightened spacing and border-radius consistency, and added clear keyboard focus styles
 * DEV: Moved the styles and scripts into `resources/style.css` and `resources/script.js`
+* DEV: Added a `README`, an MIT `LICENSE`, and an `AGENTS.md` that points to `CLAUDE.md`
+* DEV: Added an empty `robots.txt` placeholder (allow-all, avoids 404 log noise)
+* DEV: Tidied the `settings.php` ignore list to hide only files that exist — covering the `README`/`LICENSE`/`AGENTS.md` and other metadata
+* DEV: Serve the favicon from `resources/favicon.ico` (linked in the template) and dropped the redundant root copy
 
 ### Version 3.0.0 (18-07-2026)
 * NEW: Requires PHP 8.1 or newer
