@@ -31,6 +31,23 @@ function gfe_make_content(?string $root = null): string
     ));
     // A file that is not a real image but has an image extension (getimagesize-false branch).
     file_put_contents($root . '/broken.png', "not really a png\n");
+    // A valid JPEG carrying a minimal EXIF block (Model = "GFE Cam") for the image EXIF panel.
+    file_put_contents($root . '/photo.jpg', base64_decode(
+        '/9j/4QAqRXhpZgAASUkqAAgAAAABABABAgAIAAAAGgAAAAAAAABHRkUgQ2FtAP/gABBKRklG'
+        . 'AAEBAQBgAGAAAP/+ADtDUkVBVE9SOiBnZC1qcGVnIHYxLjAgKHVzaW5nIElKRyBKUEVHIHY4'
+        . 'MCksIHF1YWxpdHkgPSA4MAr/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcU'
+        . 'FhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgo'
+        . 'KCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAC'
+        . 'AAIDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgED'
+        . 'AwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcY'
+        . 'GRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJ'
+        . 'ipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo'
+        . '6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgEC'
+        . 'BAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl'
+        . '8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaH'
+        . 'iImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn'
+        . '6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD5UooooA//2Q=='
+    ));
     // Binary-ish file with an unknown extension (force-download branch).
     file_put_contents($root . '/archive.bin', "\x00\x01\x02binary\x03\x04");
     // A PDF (inline iframe embed branch).

@@ -25,6 +25,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
+          extensions: exif
           coverage: pcov
           tools: composer:v2
       - name: Checkout Code

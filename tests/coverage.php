@@ -88,6 +88,8 @@ $scenarios = [
     ['target' => 'search.php', 'query' => 'search=notes', 'expect' => ['notes.txt']],
     ['target' => 'search.php', 'query' => 'search=zzzzz', 'expect' => ['No files match']],
     ['target' => 'search.php', 'query' => 'search=inner&in=Sub Folder', 'expect' => ['inner.txt']],
+    // Match against the folder path, not just the name: 'Folder' only hits via the path.
+    ['target' => 'search.php', 'query' => 'search=Folder&match=path', 'expect' => ['inner.txt', 'Sub Folder']],
     ['target' => 'search.php', 'query' => 'search=notes&by=name&order=asc', 'expect' => ['notes.txt']],
     ['target' => 'search.php', 'query' => 'search=notes&by=size', 'expect' => ['notes.txt']],
     ['target' => 'search.php', 'query' => 'search=notes&by=bogus', 'expect' => ['notes.txt']],
@@ -100,6 +102,8 @@ $scenarios = [
     ['target' => 'view.php', 'query' => 'file=notes.txt', 'expect' => ['line one', 'Viewing Text File']],
     ['target' => 'view.php', 'query' => 'file=code.php', 'expect' => ['&lt;?php']], // source shown escaped
     ['target' => 'view.php', 'query' => 'file=pixel.png', 'expect' => ['Viewing Image', 'img-fluid']],
+    ['target' => 'view.php', 'query' => 'file=photo.jpg', 'expect' => ['Viewing Image', 'Model', 'GFE Cam']], // EXIF panel
+
     ['target' => 'view.php', 'query' => 'file=broken.png', 'expect' => ['File Is Not A Valid Image']],
     ['target' => 'view.php', 'query' => 'file=report.pdf', 'expect' => ['Viewing PDF', 'gfe-embed-pdf']], // inline PDF
     ['target' => 'view.php', 'query' => 'file=report.pdf&dl=1', 'expect' => ['%PDF-1.4 fake']], // download serves bytes

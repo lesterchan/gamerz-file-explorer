@@ -48,9 +48,8 @@ $full_url_href = GFE_ROOT_URL . '/' . implode('/', array_map('rawurlencode', exp
 ### Stream A File To The Browser As A Download
 function stream_download(string $path, string $filename): never
 {
-    $download_filename = preg_replace('/\s+/', '_', $filename) ?? $filename;
     header('Content-Type: application/octet-stream');
-    header('Content-Disposition: attachment; filename="' . basename($download_filename) . '"');
+    header('Content-Disposition: ' . content_disposition($filename));
     header('Content-Transfer-Encoding: binary');
     header('Content-Length: ' . (string) filesize($path));
     header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
@@ -97,7 +96,11 @@ if (in_array($file_ext, $settings['text_ext'], true)) {
         display_error('File Is Not A Valid Image');
     }
     [$image_width, $image_height] = $imagesize;
-    $image_size = format_size((int) filesize($full_path));
+    $image_facts = [
+        'Width' => (int) $image_width . 'px',
+        'Height' => (int) $image_height . 'px',
+        'Size' => format_size((int) filesize($full_path)),
+    ] + image_exif($full_path, $file_ext);
     $image_name_escaped = htmlspecialchars($file_name, ENT_QUOTES, 'UTF-8');
     ?>
     <?php template_header(' - Viewing Image - ' . $file_name, $breadcrumbs); ?>
@@ -110,9 +113,9 @@ if (in_array($file_ext, $settings['text_ext'], true)) {
                          alt="Viewing Image - <?php echo $image_name_escaped; ?>">
                 </div>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Width: <?php echo (int) $image_width; ?>px</li>
-                    <li class="list-group-item">Height: <?php echo (int) $image_height; ?>px</li>
-                    <li class="list-group-item">Size: <?php echo $image_size; ?></li>
+                    <?php foreach ($image_facts as $fact_label => $fact_value) : ?>
+                    <li class="list-group-item"><?php echo htmlspecialchars($fact_label, ENT_QUOTES, 'UTF-8'); ?>: <?php echo htmlspecialchars($fact_value, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <?php endforeach; ?>
                 </ul>
                 <div class="card-footer text-center">
                     <a href="<?php echo url($file, 'download'); ?>" title="Download" class="btn btn-primary">Download</a>

@@ -76,6 +76,38 @@ final class FunctionsTest extends TestCase
         $this->assertNotContains('resources', $dirNames, 'ignored folder');
     }
 
+    public function testContentDispositionEncodesFilename(): void
+    {
+        // Spaces collapse to underscores in the ASCII fallback; the real name is in filename*.
+        $this->assertSame(
+            'attachment; filename="My_File.txt"; filename*=UTF-8\'\'My%20File.txt',
+            content_disposition('My File.txt')
+        );
+        // Quotes, backslashes and control characters cannot break out of the quoted fallback.
+        $header = content_disposition("a\"b\\c\nd.txt");
+        $this->assertStringContainsString('filename="a_b_c_d.txt"', $header);
+        // A non-ASCII name survives via the RFC 5987 copy and is sanitised in the fallback.
+        $unicode = content_disposition('café.pdf');
+        $this->assertStringContainsString("filename*=UTF-8''caf%C3%A9.pdf", $unicode);
+        $this->assertStringContainsString('filename="caf__.pdf"', $unicode);
+        // A leading path is reduced to the basename.
+        $this->assertStringContainsString('filename="b.txt"', content_disposition('a/b.txt'));
+    }
+
+    public function testImageExif(): void
+    {
+        // A non-image extension short-circuits before touching the exif extension.
+        $this->assertSame([], image_exif($this->root() . '/pixel.png', 'png'));
+
+        if (! function_exists('exif_read_data')) {
+            $this->markTestSkipped('The exif extension is not loaded.');
+        }
+        // A file with no EXIF header yields nothing (exif_read_data returns false).
+        $this->assertSame([], image_exif($this->root() . '/notes.txt', 'jpg'));
+        // A JPEG carrying an EXIF Model tag surfaces it under a friendly label.
+        $this->assertSame('GFE Cam', image_exif($this->root() . '/photo.jpg', 'jpg')['Model'] ?? null);
+    }
+
     public function testFileIcon(): void
     {
         $this->assertSame('fa-solid fa-file-lines', file_icon('txt', $this->settings['extensions']));

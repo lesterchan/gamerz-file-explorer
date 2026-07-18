@@ -24,6 +24,19 @@ function format_size(int|float $size): string
     return round($size, 1) . 'b';
 }
 
+### Function: Build A Safe Content-Disposition Header Value For A Download
+function content_disposition(string $filename): string
+{
+    $filename = basename($filename);
+    // ASCII fallback for legacy clients: collapse whitespace, then replace any byte
+    // that isn't printable ASCII or that would break out of the quoted string.
+    $fallback = preg_replace('/\s+/', '_', $filename) ?? $filename;
+    $fallback = preg_replace('/[^\x20-\x7E]/', '_', $fallback) ?? $fallback;
+    $fallback = str_replace(['\\', '"'], '_', $fallback);
+    // RFC 5987 copy preserves the real (possibly non-ASCII) name for modern clients.
+    return 'attachment; filename="' . $fallback . '"; filename*=UTF-8\'\'' . rawurlencode($filename);
+}
+
 ### Function: Recursively Total The Size Of A Directory
 function dir_size(string $dir): int
 {
@@ -174,6 +187,30 @@ function list_directory(string $path, array $settings, string $prefix): array
 function file_icon(string $ext, array $extensions): string
 {
     return $extensions[$ext][1] ?? 'fa-regular fa-file';
+}
+
+### Function: Extract A Short EXIF Summary From An Image (Gated — Needs The exif Extension)
+/**
+ * @return array<string, string>
+ */
+function image_exif(string $path, string $ext): array
+{
+    if (! in_array($ext, ['jpg', 'jpeg', 'tif', 'tiff'], true) || ! function_exists('exif_read_data')) {
+        return [];
+    }
+    $exif = @exif_read_data($path);
+    if (! is_array($exif)) {
+        return [];
+    }
+    $summary = [];
+    foreach (['Make' => 'Camera', 'Model' => 'Model', 'DateTimeOriginal' => 'Taken'] as $key => $label) {
+        $raw = $exif[$key] ?? '';
+        $value = is_scalar($raw) ? trim((string) $raw) : '';
+        if ($value !== '') {
+            $summary[$label] = $value;
+        }
+    }
+    return $summary;
 }
 
 ### Function: Sort A List Of Entries By A Field And Order

@@ -18,6 +18,7 @@ if (! GFE_CAN_SEARCH) {
 ### Read And Sanitise Input
 $search_keyword = trim(strip_tags($_GET['search'] ?? ''));
 $search_in = trim(strip_tags($_GET['in'] ?? ''));
+$search_match = strip_tags($_GET['match'] ?? '') === 'path' ? 'path' : 'name';
 $get_sort_order = trim($_GET['order'] ?? '');
 $get_sort_by = trim($_GET['by'] ?? '');
 
@@ -48,8 +49,8 @@ if ($search_keyword !== '') {
 
     // Collect Every File And Filter By The Search Term
     foreach (list_files(GFE_ROOT_DIR, $settings) as $gmz_file) {
-        $matches_name = stripos($gmz_file['name'], $search_keyword) !== false;
-        if (! $matches_name) {
+        $haystack = $search_match === 'path' ? ($gmz_file['path'] ?? '') : $gmz_file['name'];
+        if (stripos($haystack, $search_keyword) === false) {
             continue;
         }
         if ($search_in === 'all' || str_contains($gmz_file['path'] ?? '', $search_in)) {
@@ -90,6 +91,15 @@ $breadcrumbs = breadcrumbs(['search_keyword' => $search_keyword]);
                                 echo '<option value="' . $gmz_directory_escaped . '"' . $selected . '>' . $gmz_directory_escaped . '</option>';
                             }
                             ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="search-match" class="col-sm-2 col-form-label">Match</label>
+                    <div class="col-sm-10">
+                        <select id="search-match" name="match" class="form-select" size="1">
+                            <option value="name"<?php echo $search_match === 'name' ? ' selected' : ''; ?>>File name</option>
+                            <option value="path"<?php echo $search_match === 'path' ? ' selected' : ''; ?>>Name &amp; folder path</option>
                         </select>
                     </div>
                 </div>
@@ -143,9 +153,13 @@ if ($search_keyword !== '') {
                                 $file_size = format_size($value['size']);
                                 $file_date = date('jS F Y', $value['date']);
                                 $file_extension = htmlspecialchars($value['type'] ?? 'Unknown', ENT_QUOTES, 'UTF-8');
+                                $folder = dirname((string) ($value['path'] ?? ''));
+                                $folder_html = $folder !== '' && $folder !== '.'
+                                    ? '<div class="small text-body-secondary">' . htmlspecialchars($folder, ENT_QUOTES, 'UTF-8') . '</div>'
+                                    : '';
                                 $total_size += $value['size'];
                                 echo '<tr>';
-                                echo '<td><a href="' . url($value['path'] ?? '', 'file') . '" title="File: ' . $file_name . ' (' . $file_size . ')"><i class="fa-fw ' . file_icon($value['ext'] ?? '', $settings['extensions']) . '"></i>&nbsp;' . $file_name . '</a></td>';
+                                echo '<td><a href="' . url($value['path'] ?? '', 'file') . '" title="File: ' . $file_name . ' (' . $file_size . ')"><i class="fa-fw ' . file_icon($value['ext'] ?? '', $settings['extensions']) . '"></i>&nbsp;' . $file_name . '</a>' . $folder_html . '</td>';
                                 echo '<td>' . $file_size . '</td>';
                                 echo '<td>' . $file_extension . '</td>';
                                 echo '<td>' . $file_date . '</td>';
