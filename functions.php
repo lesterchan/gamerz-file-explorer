@@ -37,6 +37,15 @@ function content_disposition(string $filename): string
     return 'attachment; filename="' . $fallback . '"; filename*=UTF-8\'\'' . rawurlencode($filename);
 }
 
+### Function: Reject Path Traversal — No '.'/'..' Segment And No Empty Segment
+function is_safe_path(string $path): bool
+{
+    $segments = explode('/', $path);
+    return ! in_array('.', $segments, true)
+        && ! in_array('..', $segments, true)
+        && ! str_contains($path, '//');
+}
+
 ### Function: Recursively Total The Size Of A Directory
 function dir_size(string $dir): int
 {

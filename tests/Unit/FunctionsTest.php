@@ -76,6 +76,16 @@ final class FunctionsTest extends TestCase
         $this->assertNotContains('resources', $dirNames, 'ignored folder');
     }
 
+    public function testIsSafePath(): void
+    {
+        $this->assertTrue(is_safe_path(''), 'the empty (home) path is allowed');
+        $this->assertTrue(is_safe_path('Sub Folder/inner.txt'));
+        $this->assertFalse(is_safe_path('.'));
+        $this->assertFalse(is_safe_path('..'), 'a bare parent segment is rejected');
+        $this->assertFalse(is_safe_path('a/../b'));
+        $this->assertFalse(is_safe_path('a//b'), 'an empty segment is rejected');
+    }
+
     public function testContentDispositionEncodesFilename(): void
     {
         // Spaces collapse to underscores in the ASCII fallback; the real name is in filename*.
