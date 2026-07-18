@@ -16,7 +16,10 @@
     <!-- Errors fail the build; warnings are informational only. -->
     <config name="ignore_warnings_on_exit" value="1"/>
 
-    <rule ref="PSR12"/>
+    <rule ref="PSR12">
+        <!-- Long single-line HTML templates and href/attribute strings are idiomatic here. -->
+        <exclude name="Generic.Files.LineLength.TooLong"/>
+    </rule>
 
     <!-- The entry scripts intentionally declare helpers and execute page logic. -->
     <rule ref="PSR1.Files.SideEffects.FoundWithSymbols">
