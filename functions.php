@@ -211,7 +211,7 @@ function file_row(array $entry, string $linkPath, array $extensions, string $ext
     $date = date('jS F Y', $entry['date']);
     return '<tr>'
         . '<td><a href="' . url($linkPath, 'file') . '" title="File: ' . $name . ' (' . $size . ')">'
-        . '<i class="fa-fw ' . file_icon($entry['ext'] ?? '', $extensions) . '"></i>&nbsp;' . $name . '</a>' . $extraHtml . '</td>'
+        . '<i class="fa-fw ' . file_icon($entry['ext'] ?? '', $extensions) . '" aria-hidden="true"></i>&nbsp;' . $name . '</a>' . $extraHtml . '</td>'
         . '<td>' . $size . '</td>'
         . '<td>' . $type . '</td>'
         . '<td>' . $date . '</td>'
@@ -370,10 +370,10 @@ function create_sort_image(string $sortBy, string $currentSortBy, string $curren
 {
     if ($currentSortBy === $sortBy) {
         return $currentSortOrder === 'asc'
-            ? '<i class="fa-solid fa-fw fa-caret-up"></i>'
-            : '<i class="fa-solid fa-fw fa-caret-down"></i>';
+            ? '<i class="fa-solid fa-fw fa-caret-up" aria-hidden="true"></i>'
+            : '<i class="fa-solid fa-fw fa-caret-down" aria-hidden="true"></i>';
     }
-    return '<i class="fa-solid fa-fw fa-sort"></i>';
+    return '<i class="fa-solid fa-fw fa-sort" aria-hidden="true"></i>';
 }
 
 ### Function: Build The Breadcrumb Trail
@@ -392,7 +392,7 @@ function breadcrumbs(array $context): string
 {
     $sortBy = $context['sort_by'] ?? '';
     $sortOrder = $context['sort_order'] ?? '';
-    $html = '<li class="breadcrumb-item"><a href="' . url('home', 'dir', $sortBy, $sortOrder) . '"><i class="fa-solid fa-fw fa-house"></i>Home</a></li>';
+    $html = '<li class="breadcrumb-item"><a href="' . url('home', 'dir', $sortBy, $sortOrder) . '"><i class="fa-solid fa-fw fa-house" aria-hidden="true"></i>Home</a></li>';
 
     $directoryNames = $context['directory_names'] ?? [];
     if (! empty($context['file'])) {
@@ -521,7 +521,7 @@ function template_header(string $title, string $breadcrumbs): void
         <div class="container gfe-shell my-4">
             <div class="gfe-topbar">
                 <a class="gfe-brand text-decoration-none" href="<?php echo GFE_URL; ?>">
-                    <span class="gfe-brand-mark"><i class="fa-solid fa-hard-drive"></i></span>
+                    <span class="gfe-brand-mark"><i class="fa-solid fa-hard-drive" aria-hidden="true"></i></span>
                     <span>
                         <span class="gfe-title"><?php echo $siteName; ?></span>
                         <span class="gfe-subtitle d-block">Browse, search &amp; download files</span>
@@ -529,9 +529,9 @@ function template_header(string $title, string $breadcrumbs): void
                 </a>
                 <div class="gfe-topbar-actions">
                     <div class="gfe-theme-switch" role="group" aria-label="Colour theme">
-                        <button type="button" data-gfe-set="light" title="Light theme" aria-label="Light theme"><i class="fa-solid fa-sun"></i></button>
-                        <button type="button" data-gfe-set="auto" title="Match system" aria-label="Match system theme"><i class="fa-solid fa-circle-half-stroke"></i></button>
-                        <button type="button" data-gfe-set="dark" title="Dark theme" aria-label="Dark theme"><i class="fa-solid fa-moon"></i></button>
+                        <button type="button" data-gfe-set="light" title="Light theme" aria-label="Light theme"><i class="fa-solid fa-sun" aria-hidden="true"></i></button>
+                        <button type="button" data-gfe-set="auto" title="Match system" aria-label="Match system theme"><i class="fa-solid fa-circle-half-stroke" aria-hidden="true"></i></button>
+                        <button type="button" data-gfe-set="dark" title="Dark theme" aria-label="Dark theme"><i class="fa-solid fa-moon" aria-hidden="true"></i></button>
                     </div>
                 </div>
             </div>
@@ -540,6 +540,7 @@ function template_header(string $title, string $breadcrumbs): void
                     <?php echo $breadcrumbs; ?>
                 </ol>
             </nav>
+            <main>
     <?php
 }
 
@@ -552,7 +553,7 @@ function template_footer(string $fullUrl = '', string $fullUrlHref = ''): void
     ?>
     <?php if ($fullUrl !== '') : ?>
             <div class="gfe-fullpath">
-                <i class="fa-solid fa-fw fa-link"></i>
+                <i class="fa-solid fa-fw fa-link" aria-hidden="true"></i>
                 <a href="<?php echo htmlspecialchars($fullUrlHref, ENT_QUOTES, 'UTF-8'); ?>"><?php echo htmlspecialchars($fullUrl, ENT_QUOTES, 'UTF-8'); ?></a>
             </div>
     <?php endif; ?>
@@ -570,6 +571,7 @@ function template_footer(string $fullUrl = '', string $fullUrlHref = ''): void
                 </div>
             </form>
     <?php endif; ?>
+            </main>
             <footer class="gfe-footer text-center">
                 <small class="text-body-secondary">
                     Powered By <a href="https://github.com/lesterchan/gamerz-file-explorer">GaMerZ File Explorer Version <?php echo GFE_VERSION; ?></a>. Page Generated In <?php echo $generatedIn; ?>s.

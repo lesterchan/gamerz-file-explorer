@@ -58,7 +58,10 @@ $sort_header = static function (string $column, string $label, string $width) us
     $link = htmlspecialchars(create_sort_url($column, $directories_before_current_path, $current_directory_name, $sort_order), ENT_QUOTES, 'UTF-8');
     $icon = create_sort_image($column, $sort_by, $get_sort_order);
     $active = $column === $sort_by ? ' class="gfe-sort-active"' : '';
-    return '<th' . $active . ' style="width: ' . $width . ';"><a class="text-decoration-none text-reset d-block" href="' . $link . '" title="Sort By ' . $label . '">' . $label . '&nbsp;' . $icon . '</a></th>';
+    $ariaSort = $column === $sort_by
+        ? ' aria-sort="' . ($get_sort_order === 'asc' ? 'ascending' : 'descending') . '"'
+        : '';
+    return '<th' . $active . $ariaSort . ' style="width: ' . $width . ';"><a class="text-decoration-none text-reset d-block" href="' . $link . '" title="Sort By ' . $label . '">' . $label . '&nbsp;' . $icon . '</a></th>';
 };
 
 $breadcrumbs = breadcrumbs([
@@ -89,7 +92,7 @@ $breadcrumbs = breadcrumbs([
                         if ($url_path !== '') {
                             $parent_directory = $directory_names !== [] ? $directories_before_current : 'home';
                             echo '<tr class="gfe-row-parent">';
-                            echo '<td colspan="4"><a href="' . url($parent_directory, 'dir', $get_sort_by, $get_sort_order) . '" title="Parent Directory"><i class="fa-solid fa-fw fa-arrow-turn-up fa-rotate-270"></i>&nbsp;Parent Directory</a></td>';
+                            echo '<td colspan="4"><a href="' . url($parent_directory, 'dir', $get_sort_by, $get_sort_order) . '" title="Parent Directory"><i class="fa-solid fa-fw fa-arrow-turn-up fa-rotate-270" aria-hidden="true"></i>&nbsp;Parent Directory</a></td>';
                             echo '</tr>';
                         }
                         // Directories
@@ -99,7 +102,7 @@ $breadcrumbs = breadcrumbs([
                             $directory_size = format_size($value['size']);
                             $directory_date = date('jS F Y', $value['date']);
                             echo '<tr>';
-                            echo '<td><a href="' . url($prefix . $directory_name, 'dir', $get_sort_by, $get_sort_order) . '" title="Folder: ' . $directory_name_escaped . ' (' . $directory_size . ')"><i class="fa-solid fa-fw fa-folder"></i>&nbsp;' . $directory_name_escaped . '</a></td>';
+                            echo '<td><a href="' . url($prefix . $directory_name, 'dir', $get_sort_by, $get_sort_order) . '" title="Folder: ' . $directory_name_escaped . ' (' . $directory_size . ')"><i class="fa-solid fa-fw fa-folder" aria-hidden="true"></i>&nbsp;' . $directory_name_escaped . '</a></td>';
                             echo '<td>' . $directory_size . '</td>';
                             echo '<td>File Folder</td>';
                             echo '<td>' . $directory_date . '</td>';

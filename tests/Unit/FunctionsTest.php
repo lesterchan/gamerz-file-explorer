@@ -215,6 +215,7 @@ final class FunctionsTest extends TestCase
 
         $this->assertStringContainsString('<title>Test Files - Title</title>', $html);
         $this->assertStringContainsString('bootstrap.min.css', $html);
+        $this->assertStringContainsString('<main>', $html, 'content is wrapped in a main landmark');
         $this->assertStringContainsString('G-TESTID', $html, 'GA tag rendered when ID is set');
     }
 
@@ -226,6 +227,7 @@ final class FunctionsTest extends TestCase
         template_footer('http://gfe.test/Docs/');
         $withPath = (string) ob_get_clean();
         $this->assertStringContainsString('http://gfe.test/Docs/', $withPath);
+        $this->assertStringContainsString('</main>', $withPath, 'the main landmark is closed');
         $this->assertStringContainsString('Search for files', $withPath);
 
         // On the search page, no full URL: no path row, no bottom search form.

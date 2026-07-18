@@ -65,7 +65,7 @@ if ($unitExit !== 0) {
  */
 $scenarios = [
     // --- index.php ---
-    ['target' => 'index.php', 'expect' => ['notes.txt', 'Sub Folder', 'My File.txt'],
+    ['target' => 'index.php', 'expect' => ['notes.txt', 'Sub Folder', 'My File.txt', 'aria-sort=', 'aria-hidden="true"'],
         'absent' => ['config.php']], // ignored file is hidden from the listing
     ['target' => 'index.php', 'query' => 'dir=Sub Folder', 'expect' => ['inner.txt', 'Parent Directory']],
     ['target' => 'index.php', 'query' => 'by=name&order=asc', 'expect' => ['notes.txt']],
