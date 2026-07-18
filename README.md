@@ -67,6 +67,12 @@ rewrite ^/download/(.+[^/])/?$ /view.php?file=$1&dl=1 last;
 
 ## Changelog
 
+### Version 3.1.0 (18-07-2026)
+* NEW: Redesigned the interface as a modern file explorer with a self-contained CSS design system, with light and dark themes tuned for correct contrast
+* NEW: Added a three-way colour theme switch (auto/light/dark) that remembers your choice
+* NEW: Colour-coded file-type icons, a home icon in the breadcrumb, and a clickable current-path permalink aligned with the breadcrumb
+* IMPROVED: Unified the listing typography across the name, size, type, and date columns, with aligned figures
+
 ### Version 3.0.0 (18-07-2026)
 * NEW: Requires PHP 8.1 or newer
 * NEW: Upgraded the frontend to Bootstrap 5.3 and Font Awesome 6, added Subresource Integrity to all CDN assets, and dropped the jQuery dependency
