@@ -153,7 +153,7 @@ if ($search_keyword !== '') {
                                     ? '<div class="small text-body-secondary">' . esc($folder) . '</div>'
                                     : '';
                                 $total_size += $value['size'];
-                                echo file_row($value, $value['path'] ?? '', $settings['extensions'], $folder_html);
+                                echo file_row($value, $value['path'] ?? '', $settings['extensions'], $folder_html, $get_sort_by, $get_sort_order);
                             }
                         } else {
                             echo '<tr class="gfe-row-empty"><td class="text-center" colspan="4">No files match &lsquo;' . esc($search_keyword) . '&rsquo;. Try a different term.</td></tr>';

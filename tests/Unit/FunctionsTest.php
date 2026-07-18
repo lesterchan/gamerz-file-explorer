@@ -234,9 +234,15 @@ final class FunctionsTest extends TestCase
         $this->assertStringContainsString('disabled', $last['next']);
         $this->assertStringNotContainsString('href=', $last['next']);
 
-        // The folder prefix is prepended to the neighbour's viewing link.
+        // The folder prefix is prepended to the neighbour's viewing link (hrefs are HTML-escaped).
         $nested = sibling_nav($files, 'a.txt', 'Docs/');
-        $this->assertStringContainsString('href="' . url('Docs/b.txt', 'file') . '"', $nested['next']);
+        $this->assertStringContainsString('href="' . esc(url('Docs/b.txt', 'file')) . '"', $nested['next']);
+
+        // The chosen sort is threaded into the neighbour links so navigation preserves it.
+        $sorted = sibling_nav($files, 'b.txt', '', 'name', 'asc');
+        $this->assertStringContainsString('href="' . esc(url('a.txt', 'file', 'name', 'asc')) . '"', $sorted['prev']);
+        $this->assertStringContainsString('href="' . esc(url('c.txt', 'file', 'name', 'asc')) . '"', $sorted['next']);
+        $this->assertStringContainsString('&amp;', $sorted['next'], 'the ampersand in the query is HTML-escaped');
 
         // A lone file yields no controls; an unknown file yields none either.
         $this->assertSame(['prev' => '', 'next' => ''], sibling_nav([$files[0]], 'a.txt', ''));
@@ -273,25 +279,38 @@ final class FunctionsTest extends TestCase
         // GFE_NICE_URL is true in the test config.
         $this->assertSame('http://gfe.test/', url('home', 'dir'));
         $this->assertSame('http://gfe.test/browse/Docs/', url('Docs', 'dir'));
+        // A non-default sort rides in the query string, not the path.
         $this->assertSame(
-            'http://gfe.test/browse/Docs/sortby/name/sortorder/asc/',
+            'http://gfe.test/browse/Docs/?by=name&order=asc',
             url('Docs', 'dir', 'name', 'asc')
         );
+        // The site default (date, descending) is omitted so the URL stays clean.
+        $this->assertSame('http://gfe.test/browse/Docs/', url('Docs', 'dir', 'date', 'desc'));
+        $this->assertSame('http://gfe.test/', url('home', 'dir', 'date', 'desc'));
         // url() uses urlencode(), so a space becomes '+' (round-trips via urldecode on read).
         $this->assertSame('http://gfe.test/viewing/a+b.txt/', url('a b.txt', 'file'));
+        // A viewing link can carry the sort so the viewer's Previous/Next follow it.
+        $this->assertSame('http://gfe.test/viewing/a+b.txt/?by=name&order=asc', url('a b.txt', 'file', 'name', 'asc'));
+        $this->assertSame('http://gfe.test/viewing/a+b.txt/', url('a b.txt', 'file', 'date', 'desc'));
         $this->assertSame('http://gfe.test/download/a+b.txt/', url('a b.txt', 'download'));
         $this->assertSame('http://gfe.test', url('x', 'unknown-mode'));
     }
 
     public function testCreateSortUrlNice(): void
     {
+        // Toggling a column from the current order emits the new sort as a query string.
         $this->assertSame(
-            'http://gfe.test/sortby/name/sortorder/asc/',
+            'http://gfe.test/?by=name&order=asc',
             create_sort_url('name', '', '', SORT_DESC)
         );
         $this->assertSame(
-            'http://gfe.test/browse/Docs/sortby/size/sortorder/desc/',
+            'http://gfe.test/browse/Docs/?by=size&order=desc',
             create_sort_url('size', '', 'Docs', SORT_ASC)
+        );
+        // Toggling back to the site default drops the query entirely.
+        $this->assertSame(
+            'http://gfe.test/browse/Docs/',
+            create_sort_url('date', '', 'Docs', SORT_ASC)
         );
     }
 

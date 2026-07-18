@@ -91,7 +91,7 @@ $breadcrumbs = breadcrumbs([
                         if ($url_path !== '') {
                             $parent_directory = $directory_names !== [] ? $directories_before_current : 'home';
                             echo '<tr class="gfe-row-parent">';
-                            echo '<td colspan="4"><a href="' . url($parent_directory, 'dir', $get_sort_by, $get_sort_order) . '" title="Parent Directory"><i class="fa-solid fa-fw fa-arrow-turn-up fa-rotate-270" aria-hidden="true"></i>&nbsp;Parent Directory</a></td>';
+                            echo '<td colspan="4"><a href="' . esc(url($parent_directory, 'dir', $get_sort_by, $get_sort_order)) . '" title="Parent Directory"><i class="fa-solid fa-fw fa-arrow-turn-up fa-rotate-270" aria-hidden="true"></i>&nbsp;Parent Directory</a></td>';
                             echo '</tr>';
                         }
                         // Directories
@@ -101,7 +101,7 @@ $breadcrumbs = breadcrumbs([
                             $directory_size = format_size($value['size']);
                             $directory_date = date('jS F Y', $value['date']);
                             echo '<tr>';
-                            echo '<td><a href="' . url($prefix . $directory_name, 'dir', $get_sort_by, $get_sort_order) . '" title="Folder: ' . $directory_name_escaped . ' (' . $directory_size . ')"><i class="fa-solid fa-fw fa-folder" aria-hidden="true"></i>&nbsp;' . $directory_name_escaped . '</a></td>';
+                            echo '<td><a href="' . esc(url($prefix . $directory_name, 'dir', $get_sort_by, $get_sort_order)) . '" title="Folder: ' . $directory_name_escaped . ' (' . $directory_size . ')"><i class="fa-solid fa-fw fa-folder" aria-hidden="true"></i>&nbsp;' . $directory_name_escaped . '</a></td>';
                             echo '<td>' . $directory_size . '</td>';
                             echo '<td>File Folder</td>';
                             echo '<td>' . $directory_date . '</td>';
@@ -110,7 +110,7 @@ $breadcrumbs = breadcrumbs([
                         // Files
                         if ($gmz_files !== []) {
                             foreach ($gmz_files as $value) {
-                                echo file_row($value, $prefix . $value['name'], $settings['extensions']);
+                                echo file_row($value, $prefix . $value['name'], $settings['extensions'], '', $get_sort_by, $get_sort_order);
                             }
                         } elseif ($gmz_directories === []) {
                             echo '<tr class="gfe-row-empty"><td class="text-center" colspan="4">This folder is empty.</td></tr>';

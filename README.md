@@ -45,8 +45,6 @@ location ^~ /tests/ { deny all; }
 location / {
     try_files $uri $uri/ /index.php;
 }
-rewrite ^/sortby/(.+[^/])/sortorder/(.+[^/])/?$ /index.php?by=$1&order=$2 last;
-rewrite ^/browse/(.+[^/])/sortby/(.+[^/])/sortorder/(.+[^/])/?$ /index.php?dir=$1&by=$2&order=$3 last;
 rewrite ^/browse/(.+[^/])/?$ /index.php?dir=$1 last;
 rewrite ^/viewing/(.+[^/])/?$ /view.php?file=$1 last;
 rewrite ^/download/(.+[^/])/?$ /view.php?file=$1&dl=1 last;
@@ -71,6 +69,7 @@ rewrite ^/download/(.+[^/])/?$ /view.php?file=$1&dl=1 last;
 * NEW: Colour-coded file-type icons, a home icon in the breadcrumb, and a clickable current-path permalink aligned with the breadcrumb
 * NEW: Entire listing rows are now clickable, not just the file/folder name
 * NEW: View PDFs, videos, and audio inline (browser-playable formats), the same way images are shown
+* NEW: Step between files in a folder straight from the viewing page with Previous/Next controls that follow the listing's sort order (Previous left, Next right, and disabled at the first/last file)
 * NEW: The active sort column and its direction are highlighted
 * NEW: Added a scalable SVG app icon (`resources/icon.svg`) and refreshed the PNG icon and favicon
 * NEW: Show a short EXIF summary (camera, model, capture date) when viewing JPEG/TIFF images
@@ -81,6 +80,7 @@ rewrite ^/download/(.+[^/])/?$ /view.php?file=$1&dl=1 last;
 * IMPROVED: Directory walks use one cached stat per entry (`FilesystemIterator`), search filters during the walk instead of building the whole file list first, and the text viewer reads each file once — fewer syscalls and less memory per uncached render
 * IMPROVED: Accessibility — a `<main>` landmark, a keyboard skip-to-content link, `aria-sort` on the active sort column, and `aria-hidden` on decorative icons
 * IMPROVED: Emit a canonical `<link>` (and align `og:url`/`twitter:url`) to the nice-URL permalink
+* IMPROVED: Sort order now travels in the URL query string (`?by=&order=`) instead of the path, and is dropped entirely at the default — so `/browse/<path>/` and `/viewing/<file>` stay clean (the old `/sortby/.../sortorder/.../` paths are retired)
 * IMPROVED: Viewing an image now uses that image as the social share preview (`og:image` + a large Twitter card) instead of the app icon
 * SECURITY: Reject a bare `..` path segment so a listing URL (`?dir=..`) can no longer show the parent of the web root
 * SECURITY: Refuse to list a folder nested inside an ignored folder (e.g. `?dir=vendor/composer`), not just the ignored folder itself

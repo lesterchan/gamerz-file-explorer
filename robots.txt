@@ -2,9 +2,7 @@
 User-agent: *
 
 # Sort permutations — the same listing repeated in every order.
-# Nice URLs: /browse/<path>/sortby/<by>/sortorder/<order>/ and /sortby/.../sortorder/.../
-# Query form: ?by=<by>&order=<order>
-Disallow: /*sortby/
+# Sort order rides in the query string: ?by=<by>&order=<order>
 Disallow: /*by=
 Disallow: /*order=
 

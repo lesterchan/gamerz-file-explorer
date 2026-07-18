@@ -74,21 +74,28 @@ if (isset($_GET['dl']) && (int) $_GET['dl'] === 1) {
     stream_download($full_path, $file_name);
 }
 
-$breadcrumbs = breadcrumbs(['file' => $file, 'file_name' => $file_name]);
+### Sort Order — Mirrors The Listing So Previous/Next Step In The Same Order The User Chose
+$get_sort_order = trim($_GET['order'] ?? '') ?: GFE_DEFAULT_SORT_ORDER;
+$sort_order = sort_direction($get_sort_order);
+$get_sort_by = trim($_GET['by'] ?? '') ?: GFE_DEFAULT_SORT_BY;
+$sort_by = sort_field($get_sort_by);
 
-### Canonical (Nice-URL) Permalink For This File's Viewing Page
+$breadcrumbs = breadcrumbs([
+    'file' => $file,
+    'file_name' => $file_name,
+    'sort_by' => $get_sort_by,
+    'sort_order' => $get_sort_order,
+]);
+
+### Canonical (Nice-URL) Permalink For This File's Viewing Page — Kept Sort-Free For A Single Clean URL
 $canonical = url($file, 'file');
 
-### Sibling Files In This Folder, In Listing Order — Powers The Previous/Next Controls
+### Sibling Files In This Folder, In The Chosen Sort Order — Powers The Previous/Next Controls
 $parent_dir = implode('/', $parts);
 $parent_prefix = $parent_dir !== '' ? $parent_dir . '/' : '';
 $parent_path = $parent_dir !== '' ? GFE_ROOT_DIR . '/' . $parent_dir : GFE_ROOT_DIR;
-$siblings = sort_entries(
-    list_directory($parent_path, $settings, $parent_prefix)['files'],
-    sort_field(GFE_DEFAULT_SORT_BY),
-    sort_direction(GFE_DEFAULT_SORT_ORDER)
-);
-$nav = sibling_nav($siblings, $file_name, $parent_prefix);
+$siblings = sort_entries(list_directory($parent_path, $settings, $parent_prefix)['files'], $sort_by, $sort_order);
+$nav = sibling_nav($siblings, $file_name, $parent_prefix, $get_sort_by, $get_sort_order);
 
 ### Display Text
 if (in_array($file_ext, $settings['text_ext'], true)) {
@@ -108,11 +115,11 @@ if (in_array($file_ext, $settings['text_ext'], true)) {
                     <li class="list-group-item"><?php echo $lines . ' ' . $lines_text; ?></li>
                     <li class="list-group-item">Size: <?php echo $text_size; ?></li>
                 </ul>
-                <div class="card-footer text-center">
-                    <div class="btn-group" role="group" aria-label="File navigation">
-                        <?php echo $nav['prev']; ?>
-                        <a href="<?php echo url($file, 'download'); ?>" title="Download" class="btn btn-primary">Download</a>
-                        <?php echo $nav['next']; ?>
+                <div class="card-footer">
+                    <div class="d-flex align-items-center" role="group" aria-label="File navigation">
+                        <div class="flex-fill text-start"><?php echo $nav['prev']; ?></div>
+                        <div class="flex-fill text-center"><a href="<?php echo esc(url($file, 'download')); ?>" title="Download" class="btn btn-primary">Download</a></div>
+                        <div class="flex-fill text-end"><?php echo $nav['next']; ?></div>
                     </div>
                 </div>
             </div>
@@ -146,11 +153,11 @@ if (in_array($file_ext, $settings['text_ext'], true)) {
                     <li class="list-group-item"><?php echo esc($fact_label); ?>: <?php echo esc($fact_value); ?></li>
                     <?php endforeach; ?>
                 </ul>
-                <div class="card-footer text-center">
-                    <div class="btn-group" role="group" aria-label="File navigation">
-                        <?php echo $nav['prev']; ?>
-                        <a href="<?php echo url($file, 'download'); ?>" title="Download" class="btn btn-primary">Download</a>
-                        <?php echo $nav['next']; ?>
+                <div class="card-footer">
+                    <div class="d-flex align-items-center" role="group" aria-label="File navigation">
+                        <div class="flex-fill text-start"><?php echo $nav['prev']; ?></div>
+                        <div class="flex-fill text-center"><a href="<?php echo esc(url($file, 'download')); ?>" title="Download" class="btn btn-primary">Download</a></div>
+                        <div class="flex-fill text-end"><?php echo $nav['next']; ?></div>
                     </div>
                 </div>
             </div>
@@ -174,11 +181,11 @@ if (in_array($file_ext, $settings['text_ext'], true)) {
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">Size: <?php echo $media_size; ?></li>
                 </ul>
-                <div class="card-footer text-center">
-                    <div class="btn-group" role="group" aria-label="File navigation">
-                        <?php echo $nav['prev']; ?>
-                        <a href="<?php echo url($file, 'download'); ?>" title="Download" class="btn btn-primary">Download</a>
-                        <?php echo $nav['next']; ?>
+                <div class="card-footer">
+                    <div class="d-flex align-items-center" role="group" aria-label="File navigation">
+                        <div class="flex-fill text-start"><?php echo $nav['prev']; ?></div>
+                        <div class="flex-fill text-center"><a href="<?php echo esc(url($file, 'download')); ?>" title="Download" class="btn btn-primary">Download</a></div>
+                        <div class="flex-fill text-end"><?php echo $nav['next']; ?></div>
                     </div>
                 </div>
             </div>

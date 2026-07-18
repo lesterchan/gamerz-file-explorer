@@ -107,6 +107,11 @@ $scenarios = [
         'expect' => ['Disabled']],
     // --- view.php ---
     ['target' => 'view.php', 'query' => 'file=notes.txt', 'expect' => ['line one', 'Viewing Text File']],
+    // Previous/Next follow the chosen sort: by name ascending, code.php sits between clip.mp4 and escape.txt.
+    // The sort travels in the query string, and never appears in the path.
+    ['target' => 'view.php', 'query' => 'file=code.php&by=name&order=asc',
+        'expect' => ['viewing/clip.mp4/?by=name&amp;order=asc', 'viewing/escape.txt/?by=name&amp;order=asc'],
+        'absent' => ['sortby/name']],
     ['target' => 'view.php', 'query' => 'file=code.php', 'expect' => ['&lt;?php']], // source shown escaped
     ['target' => 'view.php', 'query' => 'file=pixel.png', 'expect' => ['Viewing Image', 'img-fluid',
         'content="summary_large_image"', 'og:image" content="http://gfe.test/pixel.png"']], // the image is its own social preview

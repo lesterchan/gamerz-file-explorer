@@ -249,14 +249,14 @@ function file_icon(string $ext, array $extensions): string
  * @param GfeEntry                                    $entry
  * @param array<string, array{0: string, 1: string}> $extensions
  */
-function file_row(array $entry, string $linkPath, array $extensions, string $extraHtml = ''): string
+function file_row(array $entry, string $linkPath, array $extensions, string $extraHtml = '', string $sortBy = '', string $sortOrder = ''): string
 {
     $name = esc($entry['name']);
     $size = format_size($entry['size']);
     $type = esc($entry['type'] ?? 'Unknown');
     $date = date('jS F Y', $entry['date']);
     return '<tr>'
-        . '<td><a href="' . url($linkPath, 'file') . '" title="File: ' . $name . ' (' . $size . ')">'
+        . '<td><a href="' . esc(url($linkPath, 'file', $sortBy, $sortOrder)) . '" title="File: ' . $name . ' (' . $size . ')">'
         . '<i class="fa-fw ' . file_icon($entry['ext'] ?? '', $extensions) . '" aria-hidden="true"></i>&nbsp;' . $name . '</a>' . $extraHtml . '</td>'
         . '<td>' . $size . '</td>'
         . '<td>' . $type . '</td>'
@@ -333,7 +333,7 @@ function media_embed(string $ext, string $srcHref, string $downloadUrl, array $s
  * @param  list<GfeEntry> $files  Sibling files in the same folder, already sorted in listing order.
  * @return array{prev: string, next: string}
  */
-function sibling_nav(array $files, string $fileName, string $prefix): array
+function sibling_nav(array $files, string $fileName, string $prefix, string $sortBy = '', string $sortOrder = ''): array
 {
     $empty = ['prev' => '', 'next' => ''];
     $index = null;
@@ -353,10 +353,10 @@ function sibling_nav(array $files, string $fileName, string $prefix): array
     }
     return [
         'prev' => $prev !== null
-            ? '<a href="' . url($prefix . $prev['name'], 'file') . '" class="btn btn-outline-secondary" title="Previous: ' . esc($prev['name']) . '"><i class="fa-solid fa-fw fa-chevron-left" aria-hidden="true"></i>&nbsp;Previous</a>'
+            ? '<a href="' . esc(url($prefix . $prev['name'], 'file', $sortBy, $sortOrder)) . '" class="btn btn-outline-secondary" title="Previous: ' . esc($prev['name']) . '"><i class="fa-solid fa-fw fa-chevron-left" aria-hidden="true"></i>&nbsp;Previous</a>'
             : '<span class="btn btn-outline-secondary disabled" aria-disabled="true"><i class="fa-solid fa-fw fa-chevron-left" aria-hidden="true"></i>&nbsp;Previous</span>',
         'next' => $next !== null
-            ? '<a href="' . url($prefix . $next['name'], 'file') . '" class="btn btn-outline-secondary" title="Next: ' . esc($next['name']) . '">Next&nbsp;<i class="fa-solid fa-fw fa-chevron-right" aria-hidden="true"></i></a>'
+            ? '<a href="' . esc(url($prefix . $next['name'], 'file', $sortBy, $sortOrder)) . '" class="btn btn-outline-secondary" title="Next: ' . esc($next['name']) . '">Next&nbsp;<i class="fa-solid fa-fw fa-chevron-right" aria-hidden="true"></i></a>'
             : '<span class="btn btn-outline-secondary disabled" aria-disabled="true">Next&nbsp;<i class="fa-solid fa-fw fa-chevron-right" aria-hidden="true"></i></span>',
     ];
 }
@@ -406,10 +406,23 @@ function count_lines(string $text): int
     return substr_count($text, "\n") + (str_ends_with($text, "\n") ? 0 : 1);
 }
 
+### Function: Whether A Sort Selection Is The Site Default (Kept Out Of URLs To Keep Them Clean)
+/**
+ * Sort order is a view preference, not part of a resource's identity, so it rides in
+ * the query string — and only when it differs from the default. An empty column counts
+ * as the default too, so callers can pass through unset values without special-casing.
+ */
+function is_default_sort(string $sortBy, string $sortOrder): bool
+{
+    return $sortBy === '' || ($sortBy === GFE_DEFAULT_SORT_BY && $sortOrder === GFE_DEFAULT_SORT_ORDER);
+}
+
 ### Function: Build A Link For A Directory, File Or Download
 function url(string $path, string $mode, string $sortBy = '', string $sortOrder = ''): string
 {
     $path = str_replace('%2F', '/', urlencode(urldecode($path)));
+    // A non-default sort travels as a query string appended to whichever URL is built below.
+    $sortQuery = is_default_sort($sortBy, $sortOrder) ? '' : http_build_query(['by' => $sortBy, 'order' => $sortOrder]);
     switch ($mode) {
         case 'dir':
             if ($path === 'home') {
@@ -419,14 +432,18 @@ function url(string $path, string $mode, string $sortBy = '', string $sortOrder 
                 $link = GFE_URL . '/' . GFE_ROOT_FILENAME . '?' . http_build_query(['dir' => $path]);
                 $nice = GFE_URL . '/browse/' . $path . '/';
             }
-            if ($sortBy !== '') {
-                $link .= (str_contains($link, '?') ? '&' : '?') . http_build_query(['by' => $sortBy, 'order' => $sortOrder]);
-                $nice .= 'sortby/' . $sortBy . '/sortorder/' . $sortOrder . '/';
+            if ($sortQuery !== '') {
+                $link .= (str_contains($link, '?') ? '&' : '?') . $sortQuery;
+                $nice .= '?' . $sortQuery;
             }
             break;
         case 'file':
             $link = GFE_URL . '/view.php?' . http_build_query(['file' => $path]);
             $nice = GFE_URL . '/viewing/' . $path . '/';
+            if ($sortQuery !== '') {
+                $link .= '&' . $sortQuery;
+                $nice .= '?' . $sortQuery;
+            }
             break;
         case 'download':
             $link = GFE_URL . '/view.php?' . http_build_query(['file' => $path, 'dl' => 1]);
@@ -440,20 +457,15 @@ function url(string $path, string $mode, string $sortBy = '', string $sortOrder 
 }
 
 ### Function: Build The Toggle Link For A Sortable Column Header
+/**
+ * Flips the order for the clicked column, then defers to url() so the sort rides in the
+ * query string (and disappears entirely when the toggle lands back on the site default).
+ */
 function create_sort_url(string $sortBy, string $beforePath, string $currentName, int $currentSortOrder): string
 {
-    $beforePath = str_replace('%2F', '/', urlencode(urldecode($beforePath)));
-    $currentName = str_replace('%2F', '/', urlencode(urldecode($currentName)));
     $order = $currentSortOrder === SORT_DESC ? 'asc' : 'desc';
-    if ($currentName === '') {
-        $link = '?' . http_build_query(['by' => $sortBy, 'order' => $order]);
-        $nice = GFE_URL . '/sortby/' . $sortBy . '/sortorder/' . $order . '/';
-    } else {
-        $dir = $beforePath . $currentName;
-        $link = '?' . http_build_query(['dir' => $dir, 'by' => $sortBy, 'order' => $order]);
-        $nice = GFE_URL . '/browse/' . $dir . '/sortby/' . $sortBy . '/sortorder/' . $order . '/';
-    }
-    return GFE_NICE_URL ? $nice : $link;
+    $path = $currentName === '' ? 'home' : $beforePath . $currentName;
+    return url($path, 'dir', $sortBy, $order);
 }
 
 ### Function: Render The Sort Direction Icon For A Column Header
@@ -483,7 +495,7 @@ function breadcrumbs(array $context): string
 {
     $sortBy = $context['sort_by'] ?? '';
     $sortOrder = $context['sort_order'] ?? '';
-    $html = '<li class="breadcrumb-item"><a href="' . url('home', 'dir', $sortBy, $sortOrder) . '"><i class="fa-solid fa-fw fa-house" aria-hidden="true"></i>Home</a></li>';
+    $html = '<li class="breadcrumb-item"><a href="' . esc(url('home', 'dir', $sortBy, $sortOrder)) . '"><i class="fa-solid fa-fw fa-house" aria-hidden="true"></i>Home</a></li>';
 
     $directoryNames = $context['directory_names'] ?? [];
     if (! empty($context['file'])) {
@@ -496,7 +508,7 @@ function breadcrumbs(array $context): string
             continue;
         }
         $trail .= $name . '/';
-        $html .= '<li class="breadcrumb-item"><a href="' . url(rtrim($trail, '/'), 'dir', $sortBy, $sortOrder) . '">'
+        $html .= '<li class="breadcrumb-item"><a href="' . esc(url(rtrim($trail, '/'), 'dir', $sortBy, $sortOrder)) . '">'
             . esc($name) . '</a></li>';
     }
     if (! empty($context['current_directory_name'])) {
