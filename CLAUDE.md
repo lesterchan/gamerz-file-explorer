@@ -52,6 +52,10 @@ Every entry point starts with `require 'config.php'; require 'settings.php'; req
   the tiny theme-detection snippet in `<head>` that sets `data-bs-theme` before paint to avoid a
   flash — keep it inline. Keep `style.css` comment-free and bump `GFE_VERSION` for visible style
   changes (so the cache-buster updates).
+- `view.php` embeds PDFs inline with `<object>` (with an open/download fallback for browsers that
+  can't render it), and video/audio with `<video>`/`<audio>`. The PDF `<object>` needs the site
+  CSP to allow `object-src 'self'`; `<video>`/`<audio>` rely on `media-src`. Only browser-playable
+  `$video_ext`/`$audio_ext` embed; everything else downloads.
 
 ## Verify
 

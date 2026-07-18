@@ -517,3 +517,9 @@ a:focus-visible,
 .gfe-embed-audio {
     width: 100%;
 }
+.gfe-embed-fallback {
+    margin: 0;
+    padding: 1.5rem;
+    text-align: center;
+    color: var(--gfe-muted);
+}

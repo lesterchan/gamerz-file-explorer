@@ -126,7 +126,9 @@ if (in_array($file_ext, $settings['text_ext'], true)) {
             <div class="card">
                 <div class="card-header"><?php echo $pdf_name_escaped; ?></div>
                 <div class="card-body p-0">
-                    <iframe class="gfe-embed-pdf" src="<?php echo htmlspecialchars($full_url_href, ENT_QUOTES, 'UTF-8'); ?>" title="Viewing PDF - <?php echo $pdf_name_escaped; ?>"></iframe>
+                    <object class="gfe-embed-pdf" data="<?php echo htmlspecialchars($full_url_href, ENT_QUOTES, 'UTF-8'); ?>" type="application/pdf">
+                        <p class="gfe-embed-fallback">This PDF can&rsquo;t be displayed here. <a href="<?php echo htmlspecialchars($full_url_href, ENT_QUOTES, 'UTF-8'); ?>" target="_blank" rel="noopener">Open it in a new tab</a> or <a href="<?php echo url($file, 'download'); ?>">download it</a>.</p>
+                    </object>
                 </div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">Size: <?php echo $pdf_size; ?></li>
