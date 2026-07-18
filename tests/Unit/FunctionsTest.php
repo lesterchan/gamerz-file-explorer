@@ -160,8 +160,11 @@ final class FunctionsTest extends TestCase
         }
         // A file with no EXIF header yields nothing (exif_read_data returns false).
         $this->assertSame([], image_exif($this->root() . '/notes.txt', 'jpg'));
-        // A JPEG carrying an EXIF Model tag surfaces it under a friendly label.
-        $this->assertSame('GFE Cam', image_exif($this->root() . '/photo.jpg', 'jpg')['Model'] ?? null);
+        // Make, Model and DateTimeOriginal each map to a friendly label, in that order.
+        $this->assertSame(
+            ['Camera' => 'GFE', 'Model' => 'GFE Cam', 'Taken' => '2026:07:18 12:34:56'],
+            image_exif($this->root() . '/photo.jpg', 'jpg')
+        );
     }
 
     public function testFileIcon(): void
@@ -187,8 +190,21 @@ final class FunctionsTest extends TestCase
         $bySizeAsc = sort_entries($entries, 'size', SORT_ASC);
         $this->assertSame([10, 20, 30], array_column($bySizeAsc, 'size'));
 
-        // Missing sort field falls back to 0 / '' without error.
-        $this->assertCount(1, sort_entries([['name' => 'x', 'size' => 1, 'date' => 1]], 'type', SORT_ASC));
+        // Sorting by type uses a case-insensitive string compare over multiple entries.
+        $byType = sort_entries([
+            ['name' => 'a', 'type' => 'PNG Image', 'size' => 1, 'date' => 1],
+            ['name' => 'b', 'type' => 'gzip Archive', 'size' => 1, 'date' => 1],
+            ['name' => 'c', 'type' => 'JPEG Image', 'size' => 1, 'date' => 1],
+        ], 'type', SORT_ASC);
+        $this->assertSame(['gzip Archive', 'JPEG Image', 'PNG Image'], array_column($byType, 'type'));
+
+        // A missing sort field falls back to '' for every element, so the comparator runs
+        // over 2+ entries without error and leaves their relative order stable.
+        $missing = sort_entries([
+            ['name' => 'first', 'size' => 1, 'date' => 1],
+            ['name' => 'second', 'size' => 2, 'date' => 2],
+        ], 'type', SORT_ASC);
+        $this->assertSame(['first', 'second'], array_column($missing, 'name'));
     }
 
     public function testSortField(): void

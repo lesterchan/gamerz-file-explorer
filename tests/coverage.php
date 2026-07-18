@@ -72,6 +72,8 @@ $scenarios = [
     ['target' => 'index.php', 'query' => 'by=name&order=asc', 'expect' => ['notes.txt']],
     ['target' => 'index.php', 'query' => 'by=size&order=asc', 'expect' => ['notes.txt']],
     ['target' => 'index.php', 'query' => 'by=bogus', 'expect' => ['notes.txt']],
+    // Sorting by type: files sort by type, directories fall back to name — both still render.
+    ['target' => 'index.php', 'query' => 'by=type&order=asc', 'expect' => ['Sub Folder', 'notes.txt']],
     ['target' => 'index.php', 'query' => 'dir=Empty', 'expect' => ['This folder is empty']],
     // Security: path traversal is rejected, not served.
     ['target' => 'index.php', 'query' => 'dir=../etc', 'expect' => ['Invalid Directory'], 'absent' => ['root:']],

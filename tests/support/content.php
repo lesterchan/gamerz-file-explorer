@@ -18,6 +18,9 @@ function gfe_make_content(?string $root = null): string
     file_put_contents($root . '/.git/HEAD', "ref: refs/heads/master\n");
     // An empty directory (covers the "No files found" listing branch).
     @mkdir($root . '/Empty', 0777, true);
+    // The two symlinks below need OS symlink support (the CI runs on Linux/macOS). If
+    // symlink() silently fails, their scenarios mis-report as "File Does Not Exist"
+    // rather than exercising the broken-symlink and containment branches they target.
     // A dangling symlink — exists but is neither a file nor a directory.
     @symlink($root . '/does-not-exist', $root . '/dangling.link');
     // A symlink whose target resolves outside the root — the realpath containment
@@ -38,22 +41,24 @@ function gfe_make_content(?string $root = null): string
     ));
     // A file that is not a real image but has an image extension (getimagesize-false branch).
     file_put_contents($root . '/broken.png', "not really a png\n");
-    // A valid JPEG carrying a minimal EXIF block (Model = "GFE Cam") for the image EXIF panel.
+    // A valid JPEG carrying an EXIF block (Make, Model = "GFE Cam", DateTimeOriginal)
+    // so the image EXIF panel exercises all three friendly labels.
     file_put_contents($root . '/photo.jpg', base64_decode(
-        '/9j/4QAqRXhpZgAASUkqAAgAAAABABABAgAIAAAAGgAAAAAAAABHRkUgQ2FtAP/gABBKRklG'
-        . 'AAEBAQBgAGAAAP/+ADtDUkVBVE9SOiBnZC1qcGVnIHYxLjAgKHVzaW5nIElKRyBKUEVHIHY4'
-        . 'MCksIHF1YWxpdHkgPSA4MAr/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcU'
-        . 'FhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgo'
-        . 'KCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAC'
-        . 'AAIDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgED'
-        . 'AwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcY'
-        . 'GRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJ'
-        . 'ipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo'
-        . '6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgEC'
-        . 'BAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl'
-        . '8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaH'
-        . 'iImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn'
-        . '6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD5UooooA//2Q=='
+        '/9j/4QBoRXhpZgAASUkqAAgAAAADAA8BAgAEAAAAR0ZFABABAgAIAAAAMgAAAGmHBAABAAAA'
+        . 'OgAAAAAAAABHRkUgQ2FtAAEAA5ACABQAAABMAAAAAAAAADIwMjY6MDc6MTggMTI6MzQ6NTYA'
+        . '/+AAEEpGSUYAAQEBAGAAYAAA//4AO0NSRUFUT1I6IGdkLWpwZWcgdjEuMCAodXNpbmcgSUpH'
+        . 'IEpQRUcgdjgwKSwgcXVhbGl0eSA9IDgwCv/bAEMABgQFBgUEBgYFBgcHBggKEAoKCQkKFA4P'
+        . 'DBAXFBgYFxQWFhodJR8aGyMcFhYgLCAjJicpKikZHy0wLSgwJSgpKP/bAEMBBwcHCggKEwoK'
+        . 'EygaFhooKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgo'
+        . 'KP/AABEIAAIAAgMBIgACEQEDEQH/xAAfAAABBQEBAQEBAQAAAAAAAAAAAQIDBAUGBwgJCgv/'
+        . 'xAC1EAACAQMDAgQDBQUEBAAAAX0BAgMABBEFEiExQQYTUWEHInEUMoGRoQgjQrHBFVLR8CQz'
+        . 'YnKCCQoWFxgZGiUmJygpKjQ1Njc4OTpDREVGR0hJSlNUVVZXWFlaY2RlZmdoaWpzdHV2d3h5'
+        . 'eoOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna'
+        . '4eLj5OXm5+jp6vHy8/T19vf4+fr/xAAfAQADAQEBAQEBAQEBAAAAAAAAAQIDBAUGBwgJCgv/'
+        . 'xAC1EQACAQIEBAMEBwUEBAABAncAAQIDEQQFITEGEkFRB2FxEyIygQgUQpGhscEJIzNS8BVi'
+        . 'ctEKFiQ04SXxFxgZGiYnKCkqNTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4'
+        . 'eXqCg4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY'
+        . '2dri4+Tl5ufo6ery8/T19vf4+fr/2gAMAwEAAhEDEQA/APlSiiigD//Z'
     ));
     // Binary-ish file with an unknown extension (force-download branch).
     file_put_contents($root . '/archive.bin', "\x00\x01\x02binary\x03\x04");
