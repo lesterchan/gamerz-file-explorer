@@ -66,7 +66,8 @@ if ($unitExit !== 0) {
 $scenarios = [
     // --- index.php ---
     ['target' => 'index.php', 'expect' => ['notes.txt', 'Sub Folder', 'My File.txt', 'aria-sort=', 'aria-hidden="true"',
-        'rel="canonical" href="http://gfe.test/"'], 'absent' => ['config.php']], // ignored file is hidden from the listing
+        'href="#gfe-content"', '<main id="gfe-content">', 'rel="canonical" href="http://gfe.test/"'],
+        'absent' => ['config.php']], // ignored file is hidden from the listing
     ['target' => 'index.php', 'query' => 'dir=Sub Folder', 'expect' => ['inner.txt', 'Parent Directory']],
     ['target' => 'index.php', 'query' => 'by=name&order=asc', 'expect' => ['notes.txt']],
     ['target' => 'index.php', 'query' => 'by=size&order=asc', 'expect' => ['notes.txt']],
@@ -101,7 +102,8 @@ $scenarios = [
     // --- view.php ---
     ['target' => 'view.php', 'query' => 'file=notes.txt', 'expect' => ['line one', 'Viewing Text File']],
     ['target' => 'view.php', 'query' => 'file=code.php', 'expect' => ['&lt;?php']], // source shown escaped
-    ['target' => 'view.php', 'query' => 'file=pixel.png', 'expect' => ['Viewing Image', 'img-fluid']],
+    ['target' => 'view.php', 'query' => 'file=pixel.png', 'expect' => ['Viewing Image', 'img-fluid',
+        'content="summary_large_image"', 'og:image" content="http://gfe.test/pixel.png"']], // the image is its own social preview
     ['target' => 'view.php', 'query' => 'file=photo.jpg', 'expect' => ['Viewing Image', 'Model', 'GFE Cam']], // EXIF panel
 
     ['target' => 'view.php', 'query' => 'file=broken.png', 'expect' => ['File Is Not A Valid Image']],

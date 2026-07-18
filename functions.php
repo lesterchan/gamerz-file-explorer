@@ -442,7 +442,7 @@ function display_error(string $msg): never
 }
 
 ### Function: Render The Page Header And Open The Body
-function template_header(string $title, string $breadcrumbs, string $canonical = ''): void
+function template_header(string $title, string $breadcrumbs, string $canonical = '', string $previewImage = ''): void
 {
     $requestUri = esc(GFE_URL . ($_SERVER['REQUEST_URI'] ?? ''));
     // Prefer the canonical (nice-URL) permalink; fall back to the request URI.
@@ -450,6 +450,9 @@ function template_header(string $title, string $breadcrumbs, string $canonical =
     $fullTitle = esc(GFE_SITE_NAME . $title);
     $siteName = esc(GFE_SITE_NAME);
     $description = esc(GFE_SITE_DESCRIPTION);
+    // When viewing an image, preview that image in social cards; otherwise fall back to the app icon.
+    $previewUrl = $previewImage !== '' ? esc($previewImage) : GFE_URL . '/resources/icon.png';
+    $twitterCard = $previewImage !== '' ? 'summary_large_image' : 'summary';
     ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -500,12 +503,12 @@ function template_header(string $title, string $breadcrumbs, string $canonical =
         <meta property="og:title" content="<?php echo $fullTitle; ?>">
         <meta property="og:type" content="website">
         <meta property="og:url" content="<?php echo $canonicalUrl; ?>">
-        <meta property="og:image" content="<?php echo GFE_URL; ?>/resources/icon.png">
+        <meta property="og:image" content="<?php echo $previewUrl; ?>">
         <meta property="og:description" content="<?php echo $description; ?>">
-        <meta name="twitter:card" content="summary">
+        <meta name="twitter:card" content="<?php echo $twitterCard; ?>">
         <meta name="twitter:title" content="<?php echo $fullTitle; ?>">
         <meta name="twitter:url" content="<?php echo $canonicalUrl; ?>">
-        <meta name="twitter:image" content="<?php echo GFE_URL; ?>/resources/icon.png">
+        <meta name="twitter:image" content="<?php echo $previewUrl; ?>">
         <meta name="twitter:description" content="<?php echo $description; ?>">
         <link rel="canonical" href="<?php echo $canonicalUrl; ?>">
         <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
@@ -527,6 +530,7 @@ function template_header(string $title, string $breadcrumbs, string $canonical =
         <link rel="stylesheet" href="<?php echo GFE_URL; ?>/resources/style.css?v=<?php echo GFE_VERSION; ?>">
     </head>
     <body>
+        <a class="visually-hidden-focusable position-absolute top-0 start-0 m-2 btn btn-primary" href="#gfe-content">Skip to content</a>
         <div class="container gfe-shell my-4">
             <div class="gfe-topbar">
                 <a class="gfe-brand text-decoration-none" href="<?php echo GFE_URL; ?>">
@@ -549,7 +553,7 @@ function template_header(string $title, string $breadcrumbs, string $canonical =
                     <?php echo $breadcrumbs; ?>
                 </ol>
             </nav>
-            <main>
+            <main id="gfe-content">
     <?php
 }
 

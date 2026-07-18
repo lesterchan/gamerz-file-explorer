@@ -77,8 +77,9 @@ rewrite ^/download/(.+[^/])/?$ /view.php?file=$1&dl=1 last;
 * IMPROVED: Unified the listing typography with aligned figures, and hide the type column on small screens
 * IMPROVED: Tightened spacing and border-radius consistency, and added clear keyboard focus styles
 * IMPROVED: Search can match the full folder path, not just the file name, and each result shows its containing folder
-* IMPROVED: Accessibility — a `<main>` landmark, `aria-sort` on the active sort column, and `aria-hidden` on decorative icons
+* IMPROVED: Accessibility — a `<main>` landmark, a keyboard skip-to-content link, `aria-sort` on the active sort column, and `aria-hidden` on decorative icons
 * IMPROVED: Emit a canonical `<link>` (and align `og:url`/`twitter:url`) to the nice-URL permalink
+* IMPROVED: Viewing an image now uses that image as the social share preview (`og:image` + a large Twitter card) instead of the app icon
 * SECURITY: Reject a bare `..` path segment so a listing URL (`?dir=..`) can no longer show the parent of the web root
 * SECURITY: Downloads now send an RFC 5987 `Content-Disposition`, so filenames with quotes, control characters, or non-ASCII characters are delivered safely
 * DEV: Moved the styles and scripts into `resources/style.css` and `resources/script.js`

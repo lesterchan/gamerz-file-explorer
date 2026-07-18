@@ -220,9 +220,24 @@ final class FunctionsTest extends TestCase
 
         $this->assertStringContainsString('<title>Test Files - Title</title>', $html);
         $this->assertStringContainsString('bootstrap.min.css', $html);
-        $this->assertStringContainsString('<main>', $html, 'content is wrapped in a main landmark');
+        $this->assertStringContainsString('<main id="gfe-content">', $html, 'content is wrapped in a main landmark');
+        $this->assertStringContainsString('href="#gfe-content"', $html, 'a skip link targets the main landmark');
         $this->assertStringContainsString('rel="canonical"', $html);
+        // Without a preview image the social card falls back to the app icon.
+        $this->assertStringContainsString('content="summary"', $html);
+        $this->assertStringContainsString('resources/icon.png', $html);
         $this->assertStringContainsString('G-TESTID', $html, 'GA tag rendered when ID is set');
+    }
+
+    public function testTemplateHeaderUsesPreviewImageForCards(): void
+    {
+        ob_start();
+        template_header(' - Viewing Image', breadcrumbs([]), 'http://gfe.test/viewing/a.jpg/', 'http://gfe.test/a.jpg');
+        $html = (string) ob_get_clean();
+
+        $this->assertStringContainsString('content="summary_large_image"', $html, 'an image preview uses a large card');
+        $this->assertStringContainsString('property="og:image" content="http://gfe.test/a.jpg"', $html);
+        $this->assertStringContainsString('name="twitter:image" content="http://gfe.test/a.jpg"', $html);
     }
 
     public function testTemplateFooterBranches(): void

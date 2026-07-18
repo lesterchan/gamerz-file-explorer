@@ -102,7 +102,7 @@ if (in_array($file_ext, $settings['text_ext'], true)) {
     ] + image_exif($full_path, $file_ext);
     $image_name_escaped = esc($file_name);
     ?>
-    <?php template_header(' - Viewing Image - ' . $file_name, $breadcrumbs, $canonical); ?>
+    <?php template_header(' - Viewing Image - ' . $file_name, $breadcrumbs, $canonical, $full_url_href); ?>
 
             <div class="card">
                 <div class="card-header"><?php echo $image_name_escaped; ?></div>
