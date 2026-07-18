@@ -221,6 +221,7 @@ final class FunctionsTest extends TestCase
         $this->assertStringContainsString('<title>Test Files - Title</title>', $html);
         $this->assertStringContainsString('bootstrap.min.css', $html);
         $this->assertStringContainsString('<main>', $html, 'content is wrapped in a main landmark');
+        $this->assertStringContainsString('rel="canonical"', $html);
         $this->assertStringContainsString('G-TESTID', $html, 'GA tag rendered when ID is set');
     }
 

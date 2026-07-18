@@ -442,9 +442,11 @@ function display_error(string $msg): never
 }
 
 ### Function: Render The Page Header And Open The Body
-function template_header(string $title, string $breadcrumbs): void
+function template_header(string $title, string $breadcrumbs, string $canonical = ''): void
 {
     $requestUri = esc(GFE_URL . ($_SERVER['REQUEST_URI'] ?? ''));
+    // Prefer the canonical (nice-URL) permalink; fall back to the request URI.
+    $canonicalUrl = $canonical !== '' ? esc($canonical) : $requestUri;
     $fullTitle = esc(GFE_SITE_NAME . $title);
     $siteName = esc(GFE_SITE_NAME);
     $description = esc(GFE_SITE_DESCRIPTION);
@@ -497,14 +499,15 @@ function template_header(string $title, string $breadcrumbs): void
         <meta property="og:site_name" content="<?php echo $siteName; ?>">
         <meta property="og:title" content="<?php echo $fullTitle; ?>">
         <meta property="og:type" content="website">
-        <meta property="og:url" content="<?php echo $requestUri; ?>">
+        <meta property="og:url" content="<?php echo $canonicalUrl; ?>">
         <meta property="og:image" content="<?php echo GFE_URL; ?>/resources/icon.png">
         <meta property="og:description" content="<?php echo $description; ?>">
         <meta name="twitter:card" content="summary">
         <meta name="twitter:title" content="<?php echo $fullTitle; ?>">
-        <meta name="twitter:url" content="<?php echo $requestUri; ?>">
+        <meta name="twitter:url" content="<?php echo $canonicalUrl; ?>">
         <meta name="twitter:image" content="<?php echo GFE_URL; ?>/resources/icon.png">
         <meta name="twitter:description" content="<?php echo $description; ?>">
+        <link rel="canonical" href="<?php echo $canonicalUrl; ?>">
         <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
         <link rel="icon" href="<?php echo GFE_URL; ?>/resources/favicon.ico" sizes="any">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css" integrity="sha512-jnSuA4Ss2PkkikSOLtYs8BlYIeeIK1h99ty4YfvRPAlzr377vr3CXDb7sb7eEEBYjDtcYj+AjBH3FLv5uSJuXg==" crossorigin="anonymous" referrerpolicy="no-referrer">

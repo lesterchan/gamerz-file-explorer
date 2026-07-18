@@ -62,13 +62,16 @@ if (isset($_GET['dl']) && (int) $_GET['dl'] === 1) {
 
 $breadcrumbs = breadcrumbs(['file' => $file, 'file_name' => $file_name]);
 
+### Canonical (Nice-URL) Permalink For This File's Viewing Page
+$canonical = url($file, 'file');
+
 ### Display Text
 if (in_array($file_ext, $settings['text_ext'], true)) {
     $lines = get_line_count($full_path);
     $lines_text = $lines === 1 ? 'Line' : 'Lines';
     $text_size = format_size((int) filesize($full_path));
     ?>
-    <?php template_header(' - Viewing Text File - ' . $file_name, $breadcrumbs); ?>
+    <?php template_header(' - Viewing Text File - ' . $file_name, $breadcrumbs, $canonical); ?>
 
             <div class="card">
                 <div class="card-header"><?php echo esc($file_name); ?></div>
@@ -99,7 +102,7 @@ if (in_array($file_ext, $settings['text_ext'], true)) {
     ] + image_exif($full_path, $file_ext);
     $image_name_escaped = esc($file_name);
     ?>
-    <?php template_header(' - Viewing Image - ' . $file_name, $breadcrumbs); ?>
+    <?php template_header(' - Viewing Image - ' . $file_name, $breadcrumbs, $canonical); ?>
 
             <div class="card">
                 <div class="card-header"><?php echo $image_name_escaped; ?></div>
@@ -129,7 +132,7 @@ if (in_array($file_ext, $settings['text_ext'], true)) {
     $media_size = format_size((int) filesize($full_path));
     $media_name_escaped = esc($file_name);
     ?>
-    <?php template_header(' - Viewing ' . $media['label'] . ' - ' . $file_name, $breadcrumbs); ?>
+    <?php template_header(' - Viewing ' . $media['label'] . ' - ' . $file_name, $breadcrumbs, $canonical); ?>
 
             <div class="card">
                 <div class="card-header"><?php echo $media_name_escaped; ?></div>

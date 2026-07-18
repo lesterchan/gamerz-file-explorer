@@ -71,7 +71,7 @@ $breadcrumbs = breadcrumbs([
     'sort_order' => $get_sort_order,
 ]);
 ?>
-<?php template_header($current_directory_name !== '' ? ' - Viewing Directory - ' . $current_directory_name : '', $breadcrumbs); ?>
+<?php template_header($current_directory_name !== '' ? ' - Viewing Directory - ' . $current_directory_name : '', $breadcrumbs, $full_url); ?>
 
             <!-- List Directories/Files -->
             <div class="table-responsive gfe-surface">
