@@ -76,6 +76,11 @@ final class FunctionsTest extends TestCase
         $this->assertNotContains('resources', $dirNames, 'ignored folder');
     }
 
+    public function testEsc(): void
+    {
+        $this->assertSame('&lt;a&gt; &quot;x&quot; &amp; &#039;y&#039;', esc('<a> "x" & \'y\''));
+    }
+
     public function testIsSafePath(): void
     {
         $this->assertTrue(is_safe_path(''), 'the empty (home) path is allowed');

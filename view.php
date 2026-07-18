@@ -71,9 +71,9 @@ if (in_array($file_ext, $settings['text_ext'], true)) {
     <?php template_header(' - Viewing Text File - ' . $file_name, $breadcrumbs); ?>
 
             <div class="card">
-                <div class="card-header"><?php echo htmlspecialchars($file_name, ENT_QUOTES, 'UTF-8'); ?></div>
+                <div class="card-header"><?php echo esc($file_name); ?></div>
                 <div class="card-body">
-                    <pre class="mb-0"><code><?php echo htmlspecialchars((string) file_get_contents($full_path), ENT_QUOTES, 'UTF-8'); ?></code></pre>
+                    <pre class="mb-0"><code><?php echo esc((string) file_get_contents($full_path)); ?></code></pre>
                 </div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item"><?php echo $lines . ' ' . $lines_text; ?></li>
@@ -97,20 +97,20 @@ if (in_array($file_ext, $settings['text_ext'], true)) {
         'Height' => (int) $image_height . 'px',
         'Size' => format_size((int) filesize($full_path)),
     ] + image_exif($full_path, $file_ext);
-    $image_name_escaped = htmlspecialchars($file_name, ENT_QUOTES, 'UTF-8');
+    $image_name_escaped = esc($file_name);
     ?>
     <?php template_header(' - Viewing Image - ' . $file_name, $breadcrumbs); ?>
 
             <div class="card">
                 <div class="card-header"><?php echo $image_name_escaped; ?></div>
                 <div class="card-body text-center">
-                    <img class="img-fluid" src="<?php echo htmlspecialchars($full_url, ENT_QUOTES, 'UTF-8'); ?>"
+                    <img class="img-fluid" src="<?php echo esc($full_url); ?>"
                          width="<?php echo (int) $image_width; ?>" height="<?php echo (int) $image_height; ?>"
                          alt="Viewing Image - <?php echo $image_name_escaped; ?>">
                 </div>
                 <ul class="list-group list-group-flush">
                     <?php foreach ($image_facts as $fact_label => $fact_value) : ?>
-                    <li class="list-group-item"><?php echo htmlspecialchars($fact_label, ENT_QUOTES, 'UTF-8'); ?>: <?php echo htmlspecialchars($fact_value, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <li class="list-group-item"><?php echo esc($fact_label); ?>: <?php echo esc($fact_value); ?></li>
                     <?php endforeach; ?>
                 </ul>
                 <div class="card-footer text-center">
@@ -127,7 +127,7 @@ if (in_array($file_ext, $settings['text_ext'], true)) {
 ) {
     $media = media_embed($file_ext, $full_url_href, url($file, 'download'), $settings);
     $media_size = format_size((int) filesize($full_path));
-    $media_name_escaped = htmlspecialchars($file_name, ENT_QUOTES, 'UTF-8');
+    $media_name_escaped = esc($file_name);
     ?>
     <?php template_header(' - Viewing ' . $media['label'] . ' - ' . $file_name, $breadcrumbs); ?>
 

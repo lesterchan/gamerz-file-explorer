@@ -31,7 +31,8 @@ Every entry point starts with `require 'config.php'; require 'settings.php'; req
 - `settings.php` `return`s a settings array; entry points do `$settings = require 'settings.php';`
   and pass it into the `functions.php` helpers. There is no shared global state.
 - When outputting any dynamic value (filenames, paths, search terms, request values),
-  escape it with `htmlspecialchars($value, ENT_QUOTES, 'UTF-8')` at the point of output.
+  escape it at the point of output with `esc($value)` — the `functions.php` helper for
+  `htmlspecialchars($value, ENT_QUOTES, 'UTF-8')` (the only place that raw call should appear).
   Pass raw values to `url()` — it URL-encodes internally, so escape the display copy.
 - `urldecode()` the incoming `dir`/`file` request values **before** using them and before
   the traversal check in `index.php`/`view.php` — reject any `.` or `..` path *segment*

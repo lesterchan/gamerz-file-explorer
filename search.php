@@ -76,7 +76,7 @@ $breadcrumbs = breadcrumbs(['search_keyword' => $search_keyword]);
                     <label for="search-term" class="col-sm-2 col-form-label">Search Term</label>
                     <div class="col-sm-10">
                         <input type="text" name="search" class="form-control" id="search-term" placeholder="Files ..."
-                               value="<?php echo htmlspecialchars($search_keyword, ENT_QUOTES, 'UTF-8'); ?>">
+                               value="<?php echo esc($search_keyword); ?>">
                     </div>
                 </div>
                 <div class="row mb-3">
@@ -86,7 +86,7 @@ $breadcrumbs = breadcrumbs(['search_keyword' => $search_keyword]);
                             <option value="all">All Folders</option>
                             <?php
                             foreach ($gmz_directories as $gmz_directory) {
-                                $gmz_directory_escaped = htmlspecialchars($gmz_directory, ENT_QUOTES, 'UTF-8');
+                                $gmz_directory_escaped = esc($gmz_directory);
                                 $selected = $gmz_directory === $search_in ? ' selected' : '';
                                 echo '<option value="' . $gmz_directory_escaped . '"' . $selected . '>' . $gmz_directory_escaped . '</option>';
                             }
@@ -151,13 +151,13 @@ if ($search_keyword !== '') {
                             foreach ($search_results as $value) {
                                 $folder = dirname((string) ($value['path'] ?? ''));
                                 $folder_html = $folder !== '' && $folder !== '.'
-                                    ? '<div class="small text-body-secondary">' . htmlspecialchars($folder, ENT_QUOTES, 'UTF-8') . '</div>'
+                                    ? '<div class="small text-body-secondary">' . esc($folder) . '</div>'
                                     : '';
                                 $total_size += $value['size'];
                                 echo file_row($value, $value['path'] ?? '', $settings['extensions'], $folder_html);
                             }
                         } else {
-                            echo '<tr class="gfe-row-empty"><td class="text-center" colspan="4">No files match &lsquo;' . htmlspecialchars($search_keyword, ENT_QUOTES, 'UTF-8') . '&rsquo;. Try a different term.</td></tr>';
+                            echo '<tr class="gfe-row-empty"><td class="text-center" colspan="4">No files match &lsquo;' . esc($search_keyword) . '&rsquo;. Try a different term.</td></tr>';
                         }
 
                         $total_files = count($search_results);

@@ -9,6 +9,12 @@ declare(strict_types=1);
  * in phpstan.neon.dist so every file can reference them.
  */
 
+### Function: Escape A Value For Safe HTML Output (UTF-8, Quotes Included)
+function esc(string $value): string
+{
+    return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+}
+
 ### Function: Format A Byte Count Into A Human-Readable String
 function format_size(int|float $size): string
 {
@@ -205,9 +211,9 @@ function file_icon(string $ext, array $extensions): string
  */
 function file_row(array $entry, string $linkPath, array $extensions, string $extraHtml = ''): string
 {
-    $name = htmlspecialchars($entry['name'], ENT_QUOTES, 'UTF-8');
+    $name = esc($entry['name']);
     $size = format_size($entry['size']);
-    $type = htmlspecialchars($entry['type'] ?? 'Unknown', ENT_QUOTES, 'UTF-8');
+    $type = esc($entry['type'] ?? 'Unknown');
     $date = date('jS F Y', $entry['date']);
     return '<tr>'
         . '<td><a href="' . url($linkPath, 'file') . '" title="File: ' . $name . ' (' . $size . ')">'
@@ -249,7 +255,7 @@ function image_exif(string $path, string $ext): array
  */
 function media_embed(string $ext, string $srcHref, string $downloadUrl, array $settings): array
 {
-    $src = htmlspecialchars($srcHref, ENT_QUOTES, 'UTF-8');
+    $src = esc($srcHref);
     if ($ext === 'pdf') {
         return [
             'label' => 'PDF',
@@ -406,20 +412,20 @@ function breadcrumbs(array $context): string
         }
         $trail .= $name . '/';
         $html .= '<li class="breadcrumb-item"><a href="' . url(rtrim($trail, '/'), 'dir', $sortBy, $sortOrder) . '">'
-            . htmlspecialchars($name, ENT_QUOTES, 'UTF-8') . '</a></li>';
+            . esc($name) . '</a></li>';
     }
     if (! empty($context['current_directory_name'])) {
         $html .= '<li class="breadcrumb-item active" aria-current="page">'
-            . htmlspecialchars($context['current_directory_name'], ENT_QUOTES, 'UTF-8') . '</li>';
+            . esc($context['current_directory_name']) . '</li>';
     }
     if (! empty($context['file_name'])) {
         $html .= '<li class="breadcrumb-item active" aria-current="page">'
-            . htmlspecialchars($context['file_name'], ENT_QUOTES, 'UTF-8') . '</li>';
+            . esc($context['file_name']) . '</li>';
     }
     if (! empty($context['search_keyword'])) {
         $html .= '<li class="breadcrumb-item"><a href="' . GFE_URL . '/search.php">Search</a></li>';
         $html .= '<li class="breadcrumb-item active" aria-current="page">'
-            . htmlspecialchars($context['search_keyword'], ENT_QUOTES, 'UTF-8') . '</li>';
+            . esc($context['search_keyword']) . '</li>';
     }
     return $html;
 }
@@ -428,7 +434,7 @@ function breadcrumbs(array $context): string
 function display_error(string $msg): never
 {
     template_header(' - Error - ' . $msg, breadcrumbs([]));
-    echo '<div class="alert alert-danger" role="alert"><strong>' . htmlspecialchars($msg, ENT_QUOTES, 'UTF-8')
+    echo '<div class="alert alert-danger" role="alert"><strong>' . esc($msg)
         . '</strong>. You can <a href="' . GFE_URL . '">go back to the main site</a> or '
         . '<a href="' . GFE_URL . '" onclick="history.back(); return false;">go back to the previous page</a>.</div>';
     template_footer();
@@ -438,10 +444,10 @@ function display_error(string $msg): never
 ### Function: Render The Page Header And Open The Body
 function template_header(string $title, string $breadcrumbs): void
 {
-    $requestUri = htmlspecialchars(GFE_URL . ($_SERVER['REQUEST_URI'] ?? ''), ENT_QUOTES, 'UTF-8');
-    $fullTitle = htmlspecialchars(GFE_SITE_NAME . $title, ENT_QUOTES, 'UTF-8');
-    $siteName = htmlspecialchars(GFE_SITE_NAME, ENT_QUOTES, 'UTF-8');
-    $description = htmlspecialchars(GFE_SITE_DESCRIPTION, ENT_QUOTES, 'UTF-8');
+    $requestUri = esc(GFE_URL . ($_SERVER['REQUEST_URI'] ?? ''));
+    $fullTitle = esc(GFE_SITE_NAME . $title);
+    $siteName = esc(GFE_SITE_NAME);
+    $description = esc(GFE_SITE_DESCRIPTION);
     ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -505,7 +511,7 @@ function template_header(string $title, string $breadcrumbs): void
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" integrity="sha512-hasIneQUHlh06VNBe7f6ZcHmeRTLIaQWFd43YriJ0UND19bvYRauxthDg8E4eVNPm9bRUhr5JGeqH7FRFXQu5g==" crossorigin="anonymous" referrerpolicy="no-referrer">
         <?php if (GFE_GA_MEASUREMENT_ID !== '') : ?>
-            <?php $gaId = htmlspecialchars(GFE_GA_MEASUREMENT_ID, ENT_QUOTES, 'UTF-8'); ?>
+            <?php $gaId = esc(GFE_GA_MEASUREMENT_ID); ?>
         <link rel="dns-prefetch" href="https://www.googletagmanager.com">
         <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $gaId; ?>"></script>
         <script>
@@ -554,7 +560,7 @@ function template_footer(string $fullUrl = '', string $fullUrlHref = ''): void
     <?php if ($fullUrl !== '') : ?>
             <div class="gfe-fullpath">
                 <i class="fa-solid fa-fw fa-link" aria-hidden="true"></i>
-                <a href="<?php echo htmlspecialchars($fullUrlHref, ENT_QUOTES, 'UTF-8'); ?>"><?php echo htmlspecialchars($fullUrl, ENT_QUOTES, 'UTF-8'); ?></a>
+                <a href="<?php echo esc($fullUrlHref); ?>"><?php echo esc($fullUrl); ?></a>
             </div>
     <?php endif; ?>
     <?php if (GFE_CAN_SEARCH && ! $onSearch) : ?>

@@ -55,7 +55,7 @@ $gmz_directories = sort_entries($listing['directories'], $sort_by === 'type' ? '
 
 ### Column Header Helper
 $sort_header = static function (string $column, string $label, string $width) use ($directories_before_current_path, $current_directory_name, $sort_order, $sort_by, $get_sort_order): string {
-    $link = htmlspecialchars(create_sort_url($column, $directories_before_current_path, $current_directory_name, $sort_order), ENT_QUOTES, 'UTF-8');
+    $link = esc(create_sort_url($column, $directories_before_current_path, $current_directory_name, $sort_order));
     $icon = create_sort_image($column, $sort_by, $get_sort_order);
     $active = $column === $sort_by ? ' class="gfe-sort-active"' : '';
     $ariaSort = $column === $sort_by
@@ -98,7 +98,7 @@ $breadcrumbs = breadcrumbs([
                         // Directories
                         foreach ($gmz_directories as $value) {
                             $directory_name = $value['name'];
-                            $directory_name_escaped = htmlspecialchars($directory_name, ENT_QUOTES, 'UTF-8');
+                            $directory_name_escaped = esc($directory_name);
                             $directory_size = format_size($value['size']);
                             $directory_date = date('jS F Y', $value['date']);
                             echo '<tr>';
