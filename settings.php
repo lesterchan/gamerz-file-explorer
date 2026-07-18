@@ -16,7 +16,6 @@ $ignore_files = [
     'composer.json',
     'composer.lock',
     'config.php',
-    'favicon.ico',
     'functions.php',
     'index.php',
     'LICENSE.md',
