@@ -11,6 +11,7 @@ $ignore_files = [
     '.gitignore',
     '.htaccess',
     '404.php',
+    'AGENTS.md',
     'CLAUDE.md',
     'composer.json',
     'composer.lock',
