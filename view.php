@@ -119,64 +119,23 @@ if (in_array($file_ext, $settings['text_ext'], true)) {
             </div>
     <?php template_footer($full_url, $full_url_href); ?>
     <?php
-### Display PDF
-} elseif ($file_ext === 'pdf') {
-    $pdf_size = format_size((int) filesize($full_path));
-    $pdf_name_escaped = htmlspecialchars($file_name, ENT_QUOTES, 'UTF-8');
+### Display Inline Media (PDF, Video Or Audio)
+} elseif (
+    $file_ext === 'pdf'
+    || in_array($file_ext, $settings['video_ext'], true)
+    || in_array($file_ext, $settings['audio_ext'], true)
+) {
+    $media = media_embed($file_ext, $full_url_href, url($file, 'download'), $settings);
+    $media_size = format_size((int) filesize($full_path));
+    $media_name_escaped = htmlspecialchars($file_name, ENT_QUOTES, 'UTF-8');
     ?>
-    <?php template_header(' - Viewing PDF - ' . $file_name, $breadcrumbs); ?>
+    <?php template_header(' - Viewing ' . $media['label'] . ' - ' . $file_name, $breadcrumbs); ?>
 
             <div class="card">
-                <div class="card-header"><?php echo $pdf_name_escaped; ?></div>
-                <div class="card-body p-0">
-                    <object class="gfe-embed-pdf" data="<?php echo htmlspecialchars($full_url_href, ENT_QUOTES, 'UTF-8'); ?>" type="application/pdf">
-                        <p class="gfe-embed-fallback">This PDF can&rsquo;t be displayed here. <a href="<?php echo htmlspecialchars($full_url_href, ENT_QUOTES, 'UTF-8'); ?>" target="_blank" rel="noopener">Open it in a new tab</a> or <a href="<?php echo url($file, 'download'); ?>">download it</a>.</p>
-                    </object>
-                </div>
+                <div class="card-header"><?php echo $media_name_escaped; ?></div>
+                <div class="card-body <?php echo $media['class']; ?>"><?php echo $media['html']; ?></div>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Size: <?php echo $pdf_size; ?></li>
-                </ul>
-                <div class="card-footer text-center">
-                    <a href="<?php echo url($file, 'download'); ?>" title="Download" class="btn btn-primary">Download</a>
-                </div>
-            </div>
-    <?php template_footer($full_url, $full_url_href); ?>
-    <?php
-### Display Video
-} elseif (in_array($file_ext, $settings['video_ext'], true)) {
-    $video_size = format_size((int) filesize($full_path));
-    $video_name_escaped = htmlspecialchars($file_name, ENT_QUOTES, 'UTF-8');
-    ?>
-    <?php template_header(' - Viewing Video - ' . $file_name, $breadcrumbs); ?>
-
-            <div class="card">
-                <div class="card-header"><?php echo $video_name_escaped; ?></div>
-                <div class="card-body text-center">
-                    <video class="gfe-embed-video" src="<?php echo htmlspecialchars($full_url_href, ENT_QUOTES, 'UTF-8'); ?>" controls preload="metadata">Your browser cannot play this video.</video>
-                </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Size: <?php echo $video_size; ?></li>
-                </ul>
-                <div class="card-footer text-center">
-                    <a href="<?php echo url($file, 'download'); ?>" title="Download" class="btn btn-primary">Download</a>
-                </div>
-            </div>
-    <?php template_footer($full_url, $full_url_href); ?>
-    <?php
-### Display Audio
-} elseif (in_array($file_ext, $settings['audio_ext'], true)) {
-    $audio_size = format_size((int) filesize($full_path));
-    $audio_name_escaped = htmlspecialchars($file_name, ENT_QUOTES, 'UTF-8');
-    ?>
-    <?php template_header(' - Viewing Audio - ' . $file_name, $breadcrumbs); ?>
-
-            <div class="card">
-                <div class="card-header"><?php echo $audio_name_escaped; ?></div>
-                <div class="card-body text-center">
-                    <audio class="gfe-embed-audio" src="<?php echo htmlspecialchars($full_url_href, ENT_QUOTES, 'UTF-8'); ?>" controls preload="metadata">Your browser cannot play this audio.</audio>
-                </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Size: <?php echo $audio_size; ?></li>
+                    <li class="list-group-item">Size: <?php echo $media_size; ?></li>
                 </ul>
                 <div class="card-footer text-center">
                     <a href="<?php echo url($file, 'download'); ?>" title="Download" class="btn btn-primary">Download</a>

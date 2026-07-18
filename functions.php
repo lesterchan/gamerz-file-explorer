@@ -242,6 +242,40 @@ function image_exif(string $path, string $ext): array
     return $summary;
 }
 
+### Function: Build The Inline Embed Markup For A Playable Media File (PDF/Video/Audio)
+/**
+ * @param  GfeSettings $settings
+ * @return array{label: string, class: string, html: string}
+ */
+function media_embed(string $ext, string $srcHref, string $downloadUrl, array $settings): array
+{
+    $src = htmlspecialchars($srcHref, ENT_QUOTES, 'UTF-8');
+    if ($ext === 'pdf') {
+        return [
+            'label' => 'PDF',
+            'class' => 'p-0',
+            'html' => '<object class="gfe-embed-pdf" data="' . $src . '" type="application/pdf">'
+                . '<p class="gfe-embed-fallback">This PDF can&rsquo;t be displayed here. '
+                . '<a href="' . $src . '" target="_blank" rel="noopener">Open it in a new tab</a> or '
+                . '<a href="' . $downloadUrl . '">download it</a>.</p></object>',
+        ];
+    }
+    if (in_array($ext, $settings['video_ext'], true)) {
+        return [
+            'label' => 'Video',
+            'class' => 'text-center',
+            'html' => '<video class="gfe-embed-video" src="' . $src . '" controls preload="metadata">'
+                . 'Your browser cannot play this video.</video>',
+        ];
+    }
+    return [
+        'label' => 'Audio',
+        'class' => 'text-center',
+        'html' => '<audio class="gfe-embed-audio" src="' . $src . '" controls preload="metadata">'
+            . 'Your browser cannot play this audio.</audio>',
+    ];
+}
+
 ### Function: Sort A List Of Entries By A Field And Order
 /**
  * @param  list<GfeEntry> $entries
