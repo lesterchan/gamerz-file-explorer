@@ -51,7 +51,8 @@ final class FunctionsTest extends TestCase
         $naive = static function (string $dir) use (&$naive): int {
             $total = 0;
             foreach (scandir($dir) ?: [] as $item) {
-                if ($item === '.' || $item === '..') {
+                // Mirror dir_size's structural skips so the only difference is the ignore list.
+                if ($item === '.' || $item === '..' || $item === '.git' || $item === '.svn') {
                     continue;
                 }
                 $path = $dir . '/' . $item;
@@ -83,7 +84,14 @@ final class FunctionsTest extends TestCase
         $this->assertNotContains('config.php', $names, 'ignored filename');
         $this->assertNotContains('archive.bin', $names, 'unmapped extension');
         $this->assertNotContains('icon.png', $names, 'inside ignored folder');
+        $this->assertNotContains('HEAD', $names, 'inside a skipped VCS folder');
         $this->assertSame([], list_files($this->root() . '/nope', $this->settings));
+
+        // The optional filter is applied during the walk.
+        $onlyTxt = list_files($this->root(), $this->settings, static fn (array $f): bool => ($f['ext'] ?? '') === 'txt');
+        $txtNames = array_column($onlyTxt, 'name');
+        $this->assertContains('notes.txt', $txtNames);
+        $this->assertNotContains('pixel.png', $txtNames, 'the filter excludes non-matching files');
     }
 
     public function testListDirectories(): void
@@ -91,6 +99,7 @@ final class FunctionsTest extends TestCase
         $dirs = list_directories($this->root(), $this->settings);
         $this->assertContains('Sub Folder', $dirs);
         $this->assertNotContains('resources', $dirs, 'ignored folder');
+        $this->assertNotContains('.git', $dirs, 'skipped VCS folder');
         $this->assertSame([], list_directories($this->root() . '/nope', $this->settings));
     }
 
@@ -198,10 +207,12 @@ final class FunctionsTest extends TestCase
         $this->assertSame(SORT_DESC, sort_direction(''), 'anything but asc is descending');
     }
 
-    public function testGetLineCount(): void
+    public function testCountLines(): void
     {
-        $this->assertSame(3, get_line_count($this->root() . '/notes.txt'));
-        $this->assertSame(0, get_line_count($this->root() . '/missing.txt'));
+        $this->assertSame(0, count_lines(''), 'empty text has no lines');
+        $this->assertSame(3, count_lines("a\nb\nc\n"), 'a trailing newline is not an extra line');
+        $this->assertSame(3, count_lines("a\nb\nc"), 'a final line without a newline still counts');
+        $this->assertSame(1, count_lines('single line'));
     }
 
     public function testUrlNiceMode(): void

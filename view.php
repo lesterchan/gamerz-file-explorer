@@ -67,16 +67,17 @@ $canonical = url($file, 'file');
 
 ### Display Text
 if (in_array($file_ext, $settings['text_ext'], true)) {
-    $lines = get_line_count($full_path);
+    $text_content = (string) file_get_contents($full_path);
+    $lines = count_lines($text_content);
     $lines_text = $lines === 1 ? 'Line' : 'Lines';
-    $text_size = format_size((int) filesize($full_path));
+    $text_size = format_size(strlen($text_content));
     ?>
     <?php template_header(' - Viewing Text File - ' . $file_name, $breadcrumbs, $canonical); ?>
 
             <div class="card">
                 <div class="card-header"><?php echo esc($file_name); ?></div>
                 <div class="card-body">
-                    <pre class="mb-0"><code><?php echo esc((string) file_get_contents($full_path)); ?></code></pre>
+                    <pre class="mb-0"><code><?php echo esc($text_content); ?></code></pre>
                 </div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item"><?php echo $lines . ' ' . $lines_text; ?></li>

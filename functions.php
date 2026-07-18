@@ -52,6 +52,20 @@ function is_safe_path(string $path): bool
         && ! str_contains($path, '//');
 }
 
+### Function: Open A Directory For Iteration, Or Null If It Cannot Be Read
+/**
+ * One SplFileInfo per entry caches its stat, so isDir()/isFile()/getSize()/getMTime()
+ * on the same entry share a single syscall instead of one per call.
+ */
+function dir_iterator(string $path): ?FilesystemIterator
+{
+    try {
+        return new FilesystemIterator($path);
+    } catch (\Throwable) {
+        return null;
+    }
+}
+
 ### Function: Recursively Total The Size Of A Directory, Excluding Ignored Content
 /**
  * Mirrors the listing's ignore rules so the reported size matches what is shown:
@@ -61,24 +75,25 @@ function is_safe_path(string $path): bool
  */
 function dir_size(string $dir, array $settings): int
 {
-    $handle = @opendir($dir);
-    if ($handle === false) {
+    $iterator = dir_iterator($dir);
+    if ($iterator === null) {
         return 0;
     }
     $total = 0;
-    while (($filename = readdir($handle)) !== false) {
-        if (in_array($filename, ['.', '..', '.git', '.svn'], true)) {
+    foreach ($iterator as $info) {
+        $filename = $info->getFilename();
+        if ($filename === '.git' || $filename === '.svn') {
             continue;
         }
-        $path = $dir . '/' . $filename;
-        $relative = substr($path, strlen(GFE_ROOT_DIR) + 1);
-        if (is_dir($path)) {
+        $full = $info->getPathname();
+        $relative = substr($full, strlen(GFE_ROOT_DIR) + 1);
+        if ($info->isDir()) {
             if (! in_array($relative, $settings['ignore_folders'], true)) {
-                $total += dir_size($path, $settings);
+                $total += dir_size($full, $settings);
             }
             continue;
         }
-        if (! is_file($path)) {
+        if (! $info->isFile()) {
             continue;
         }
         $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
@@ -88,39 +103,43 @@ function dir_size(string $dir, array $settings): int
         ) {
             continue;
         }
-        $total += (int) filesize($path);
+        $total += $info->getSize();
     }
-    closedir($handle);
     return $total;
 }
 
 ### Function: Recursively Collect Every File Under A Path (Used By Search)
 /**
- * @param  GfeSettings $settings
+ * An optional filter is applied during the walk, so search never materialises the
+ * whole tree just to discard most of it.
+ *
+ * @param  GfeSettings                     $settings
+ * @param  (callable(GfeEntry): bool)|null $filter   Only files passing the filter are kept.
  * @return list<GfeEntry>
  */
-function list_files(string $path, array $settings): array
+function list_files(string $path, array $settings, ?callable $filter = null): array
 {
-    $handle = @opendir($path);
-    if ($handle === false) {
+    $iterator = dir_iterator($path);
+    if ($iterator === null) {
         return [];
     }
     $files = [];
-    while (($filename = readdir($handle)) !== false) {
-        if (in_array($filename, ['.', '..', '.git', '.svn'], true)) {
+    foreach ($iterator as $info) {
+        $filename = $info->getFilename();
+        if ($filename === '.git' || $filename === '.svn') {
             continue;
         }
-        $full = $path . '/' . $filename;
+        $full = $info->getPathname();
         $relative = substr($full, strlen(GFE_ROOT_DIR) + 1);
-        $folder = substr($relative, 0, -(strlen($filename) + 1));
-        if (is_dir($full)) {
-            $files = array_merge($files, list_files($full, $settings));
+        if ($info->isDir()) {
+            $files = array_merge($files, list_files($full, $settings, $filter));
             continue;
         }
-        if (! is_file($full)) {
+        if (! $info->isFile()) {
             continue;
         }
         $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        $folder = substr($relative, 0, -(strlen($filename) + 1));
         if (
             in_array($ext, $settings['ignore_ext'], true)
             || in_array($relative, $settings['ignore_files'], true)
@@ -129,16 +148,18 @@ function list_files(string $path, array $settings): array
         ) {
             continue;
         }
-        $files[] = [
+        $entry = [
             'name' => $filename,
             'ext' => $ext,
             'path' => $relative,
             'type' => $settings['extensions'][$ext][0],
-            'size' => (int) filesize($full),
-            'date' => (int) filemtime($full),
+            'size' => $info->getSize(),
+            'date' => $info->getMTime(),
         ];
+        if ($filter === null || $filter($entry)) {
+            $files[] = $entry;
+        }
     }
-    closedir($handle);
     return $files;
 }
 
@@ -149,26 +170,26 @@ function list_files(string $path, array $settings): array
  */
 function list_directories(string $path, array $settings): array
 {
-    $handle = @opendir($path);
-    if ($handle === false) {
+    $iterator = dir_iterator($path);
+    if ($iterator === null) {
         return [];
     }
     $directories = [];
-    while (($filename = readdir($handle)) !== false) {
-        if (in_array($filename, ['.', '..', '.git', '.svn'], true)) {
+    foreach ($iterator as $info) {
+        $filename = $info->getFilename();
+        if ($filename === '.git' || $filename === '.svn') {
             continue;
         }
-        $full = $path . '/' . $filename;
-        if (! is_dir($full)) {
+        if (! $info->isDir()) {
             continue;
         }
+        $full = $info->getPathname();
         $relative = substr($full, strlen(GFE_ROOT_DIR) + 1);
         if (! in_array($relative, $settings['ignore_folders'], true)) {
             $directories[] = $relative;
         }
         $directories = array_merge($directories, list_directories($full, $settings));
     }
-    closedir($handle);
     return $directories;
 }
 
@@ -179,38 +200,37 @@ function list_directories(string $path, array $settings): array
  */
 function list_directory(string $path, array $settings, string $prefix): array
 {
-    $handle = @opendir($path);
-    if ($handle === false) {
+    $iterator = dir_iterator($path);
+    if ($iterator === null) {
         display_error('Invalid Directory');
     }
     $files = [];
     $directories = [];
-    while (($filename = readdir($handle)) !== false) {
-        if (in_array($filename, ['.', '..', '.git', '.svn'], true)) {
+    foreach ($iterator as $info) {
+        $filename = $info->getFilename();
+        if ($filename === '.git' || $filename === '.svn') {
             continue;
         }
-        $full = $path . '/' . $filename;
-        if (is_file($full) && ! in_array($prefix . $filename, $settings['ignore_files'], true)) {
+        if ($info->isFile() && ! in_array($prefix . $filename, $settings['ignore_files'], true)) {
             $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
             if (! in_array($ext, $settings['ignore_ext'], true)) {
                 $files[] = [
                     'name' => $filename,
                     'ext' => $ext,
                     'type' => $settings['extensions'][$ext][0] ?? 'Unknown',
-                    'size' => (int) filesize($full),
-                    'date' => (int) filemtime($full),
+                    'size' => $info->getSize(),
+                    'date' => $info->getMTime(),
                 ];
             }
         }
-        if (is_dir($full) && ! in_array($prefix . $filename, $settings['ignore_folders'], true)) {
+        if ($info->isDir() && ! in_array($prefix . $filename, $settings['ignore_folders'], true)) {
             $directories[] = [
                 'name' => $filename,
-                'size' => dir_size($full, $settings),
-                'date' => (int) filemtime($full),
+                'size' => dir_size($info->getPathname(), $settings),
+                'date' => $info->getMTime(),
             ];
         }
     }
-    closedir($handle);
     return ['files' => $files, 'directories' => $directories];
 }
 
@@ -336,20 +356,14 @@ function sort_entries(array $entries, string $sortBy, int $sortOrder): array
     return $entries;
 }
 
-### Function: Count The Number Of Lines In A Text File
-function get_line_count(string $file): int
+### Function: Count The Number Of Lines In A Block Of Text
+function count_lines(string $text): int
 {
-    $handle = @fopen($file, 'rb');
-    if ($handle === false) {
+    if ($text === '') {
         return 0;
     }
-    $lines = 0;
-    while (! feof($handle)) {
-        fgets($handle);
-        $lines++;
-    }
-    fclose($handle);
-    return max($lines - 1, 0);
+    // Count line breaks; a final line without a trailing newline still counts.
+    return substr_count($text, "\n") + (str_ends_with($text, "\n") ? 0 : 1);
 }
 
 ### Function: Build A Link For A Directory, File Or Download

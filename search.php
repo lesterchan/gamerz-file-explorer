@@ -44,16 +44,18 @@ if ($search_keyword !== '') {
         $search_in = 'all';
     }
 
-    // Collect Every File And Filter By The Search Term
-    foreach (list_files(GFE_ROOT_DIR, $settings) as $gmz_file) {
-        $haystack = $search_match === 'path' ? ($gmz_file['path'] ?? '') : $gmz_file['name'];
-        if (stripos($haystack, $search_keyword) === false) {
-            continue;
+    // Collect Only The Matching Files — Filtering Happens During The Walk
+    $search_results = list_files(
+        GFE_ROOT_DIR,
+        $settings,
+        static function (array $gmz_file) use ($search_keyword, $search_match, $search_in): bool {
+            $haystack = $search_match === 'path' ? ($gmz_file['path'] ?? '') : $gmz_file['name'];
+            if (stripos($haystack, $search_keyword) === false) {
+                return false;
+            }
+            return $search_in === 'all' || str_starts_with($gmz_file['path'] ?? '', $search_in . '/');
         }
-        if ($search_in === 'all' || str_starts_with($gmz_file['path'] ?? '', $search_in . '/')) {
-            $search_results[] = $gmz_file;
-        }
-    }
+    );
 
     // Sort The Results
     $search_results = sort_entries($search_results, $sort_by, $sort_order);

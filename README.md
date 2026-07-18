@@ -78,6 +78,7 @@ rewrite ^/download/(.+[^/])/?$ /view.php?file=$1&dl=1 last;
 * IMPROVED: Tightened spacing and border-radius consistency, and added clear keyboard focus styles
 * IMPROVED: Search can match the full folder path, not just the file name, and each result shows its containing folder
 * IMPROVED: Folder sizes now exclude ignored files and folders (matching the listing) and are computed in a single directory walk instead of two
+* IMPROVED: Directory walks use one cached stat per entry (`FilesystemIterator`), search filters during the walk instead of building the whole file list first, and the text viewer reads each file once — fewer syscalls and less memory per uncached render
 * IMPROVED: Accessibility — a `<main>` landmark, a keyboard skip-to-content link, `aria-sort` on the active sort column, and `aria-hidden` on decorative icons
 * IMPROVED: Emit a canonical `<link>` (and align `og:url`/`twitter:url`) to the nice-URL permalink
 * IMPROVED: Viewing an image now uses that image as the social share preview (`og:image` + a large Twitter card) instead of the app icon

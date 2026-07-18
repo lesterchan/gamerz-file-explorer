@@ -12,6 +12,10 @@ function gfe_make_content(?string $root = null): string
     gfe_rrmdir($root);
     @mkdir($root . '/Sub Folder', 0777, true);
     @mkdir($root . '/resources', 0777, true);
+    // A VCS directory — the deployment is served from a git checkout, so it must be
+    // skipped by the walkers (not listed, searched, or counted toward folder sizes).
+    @mkdir($root . '/.git', 0777, true);
+    file_put_contents($root . '/.git/HEAD', "ref: refs/heads/master\n");
     // An empty directory (covers the "No files found" listing branch).
     @mkdir($root . '/Empty', 0777, true);
     // A dangling symlink — exists but is neither a file nor a directory.
