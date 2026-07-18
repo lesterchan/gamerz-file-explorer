@@ -44,6 +44,13 @@ if (! is_file($full_path)) {
     display_error('File Does Not Exist');
 }
 
+### Confirm The Resolved Path Stays Inside The Root (Defeats Escaping Symlinks)
+$root_real = realpath(GFE_ROOT_DIR);
+$full_path_real = realpath($full_path);
+if ($root_real === false || $full_path_real === false || ! str_starts_with($full_path_real, $root_real . '/')) {
+    display_error('Invalid Directory');
+}
+
 ### Full URL (readable display) And Its URL-Encoded, Directly-Clickable Href
 $full_url = GFE_ROOT_URL . '/' . $file;
 $full_url_href = GFE_ROOT_URL . '/' . implode('/', array_map('rawurlencode', explode('/', $file)));

@@ -20,6 +20,9 @@ function gfe_make_content(?string $root = null): string
     @mkdir($root . '/Empty', 0777, true);
     // A dangling symlink — exists but is neither a file nor a directory.
     @symlink($root . '/does-not-exist', $root . '/dangling.link');
+    // A symlink whose target resolves outside the root — the realpath containment
+    // check must reject it even though is_file() follows it to a real file.
+    @symlink(dirname(__DIR__, 2) . '/composer.json', $root . '/escape.txt');
     // Name is not on the ignore list, but the extension is ($ignore_ext = htaccess).
     file_put_contents($root . '/backup.htaccess', "deny\n");
 

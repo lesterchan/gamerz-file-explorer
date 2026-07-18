@@ -86,6 +86,7 @@ rewrite ^/download/(.+[^/])/?$ /view.php?file=$1&dl=1 last;
 * SECURITY: Refuse to list a folder nested inside an ignored folder (e.g. `?dir=vendor/composer`), not just the ignored folder itself
 * SECURITY: `view.php` now refuses to view or download a file nested inside an ignored folder (e.g. `?file=vendor/autoload.php`), matching the listing filter so hidden folders can't be read through the viewer
 * SECURITY: Reject a null byte in the requested `dir`/`file` path so it can no longer reach a filesystem call
+* SECURITY: `view.php` confirms the resolved file path stays inside the root (`realpath` containment), so a symlink pointing outside the served folder can't be viewed or downloaded
 * FIX: The search "Search In" folder filter now matches on a folder boundary instead of any substring (so `Docs` no longer matches `MyDocs`)
 * SECURITY: Downloads now send an RFC 5987 `Content-Disposition`, so filenames with quotes, control characters, or non-ASCII characters are delivered safely
 * DEV: Moved the styles and scripts into `resources/style.css` and `resources/script.js`
