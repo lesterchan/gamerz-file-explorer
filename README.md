@@ -77,6 +77,8 @@ rewrite ^/download/(.+[^/])/?$ /view.php?file=$1&dl=1 last;
 * IMPROVED: Unified the listing typography with aligned figures, and hide the type column on small screens
 * IMPROVED: Tightened spacing and border-radius consistency, and added clear keyboard focus styles
 * IMPROVED: Search can match the full folder path, not just the file name, and each result shows its containing folder
+* IMPROVED: Accessibility — a `<main>` landmark, `aria-sort` on the active sort column, and `aria-hidden` on decorative icons
+* IMPROVED: Emit a canonical `<link>` (and align `og:url`/`twitter:url`) to the nice-URL permalink
 * SECURITY: Reject a bare `..` path segment so a listing URL (`?dir=..`) can no longer show the parent of the web root
 * SECURITY: Downloads now send an RFC 5987 `Content-Disposition`, so filenames with quotes, control characters, or non-ASCII characters are delivered safely
 * DEV: Moved the styles and scripts into `resources/style.css` and `resources/script.js`
@@ -85,6 +87,8 @@ rewrite ^/download/(.+[^/])/?$ /view.php?file=$1&dl=1 last;
 * DEV: Tidied the `settings.php` ignore list to hide only files that exist — covering the `README`/`LICENSE`/`AGENTS.md` and other metadata
 * DEV: Serve the favicon from `resources/favicon.ico` (linked in the template) and dropped the redundant root copy
 * DEV: Pin the `exif` extension in CI to cover the EXIF summary; the runtime stays dependency-free and degrades gracefully without it
+* DEV: Deduplicated shared markup and checks into helpers (`esc()`, `is_safe_path()`, `file_row()`, `media_embed()`)
+* DEV: Disabled the line-length lint sniff for the idiomatic long HTML/attribute lines
 
 ### Version 3.0.0 (18-07-2026)
 * NEW: Requires PHP 8.1 or newer
