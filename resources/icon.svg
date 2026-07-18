@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
+  <title id="title">GaMerZ File Explorer icon</title>
+  <desc id="desc">A modern folder icon with web file-list rows and a search lens.</desc>
+  <defs>
+    <linearGradient id="bg" x1="164" y1="80" x2="860" y2="944" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#eaf7ff"/>
+      <stop offset=".46" stop-color="#74c3f2"/>
+      <stop offset="1" stop-color="#2563b8"/>
+    </linearGradient>
+    <linearGradient id="folderBack" x1="197" y1="241" x2="810" y2="674" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffd978"/>
+      <stop offset=".42" stop-color="#f7b43d"/>
+      <stop offset="1" stop-color="#e88520"/>
+    </linearGradient>
+    <linearGradient id="folderFront" x1="164" y1="390" x2="849" y2="812" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff0a7"/>
+      <stop offset=".48" stop-color="#ffc24f"/>
+      <stop offset="1" stop-color="#ef8b22"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="287" y1="336" x2="726" y2="705" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#d9ecff"/>
+    </linearGradient>
+    <linearGradient id="lens" x1="605" y1="580" x2="818" y2="807" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#44d2ff"/>
+      <stop offset="1" stop-color="#1f62d0"/>
+    </linearGradient>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="22" stdDeviation="28" flood-color="#12345a" flood-opacity=".26"/>
+    </filter>
+    <filter id="panelShadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="10" stdDeviation="13" flood-color="#17446e" flood-opacity=".2"/>
+    </filter>
+  </defs>
+
+  <rect width="1024" height="1024" rx="216" fill="url(#bg)"/>
+
+  <g filter="url(#softShadow)">
+    <path d="M184 304c0-50 40-90 90-90h153c30 0 58 15 74 41l32 49h240c50 0 90 40 90 90v275c0 50-40 90-90 90H274c-50 0-90-40-90-90V304Z" fill="url(#folderBack)"/>
+    <path d="M184 404c0-49 40-89 89-89h500c49 0 89 40 89 89v273c0 49-40 89-89 89H273c-49 0-89-40-89-89V404Z" fill="url(#folderFront)"/>
+    <path d="M227 396c11-24 35-39 62-39h457c36 0 66 30 66 66v15H220c1-15 3-29 7-42Z" fill="#fff4bb" opacity=".55"/>
+  </g>
+
+  <g filter="url(#panelShadow)">
+    <rect x="295" y="347" width="432" height="296" rx="46" fill="url(#panel)"/>
+    <rect x="335" y="395" width="80" height="18" rx="9" fill="#2f7de1"/>
+    <rect x="443" y="395" width="205" height="18" rx="9" fill="#6b88a6" opacity=".7"/>
+    <rect x="335" y="465" width="80" height="18" rx="9" fill="#2f7de1"/>
+    <rect x="443" y="465" width="220" height="18" rx="9" fill="#6b88a6" opacity=".7"/>
+    <rect x="335" y="535" width="80" height="18" rx="9" fill="#2f7de1"/>
+    <rect x="443" y="535" width="185" height="18" rx="9" fill="#6b88a6" opacity=".7"/>
+    <path d="M335 434h329M335 504h329" stroke="#9cc7ee" stroke-width="4" stroke-linecap="round" opacity=".65"/>
+  </g>
+
+  <g>
+    <circle cx="659" cy="637" r="83" fill="#0b3871" opacity=".18"/>
+    <circle cx="646" cy="620" r="81" fill="url(#lens)"/>
+    <circle cx="646" cy="620" r="48" fill="#dff7ff" opacity=".86"/>
+    <path d="M702 678l94 94" stroke="#154b92" stroke-width="52" stroke-linecap="round"/>
+    <path d="M702 678l94 94" stroke="#31b8f5" stroke-width="30" stroke-linecap="round"/>
+    <path d="M609 589c18-20 47-27 72-17" fill="none" stroke="#fff" stroke-width="18" stroke-linecap="round" opacity=".72"/>
+  </g>
+
+  <path d="M250 768h514c43 0 79-30 88-70-70 43-184 69-330 69-130 0-237-22-314-59 13 35 46 60 42 60Z" fill="#9a4f12" opacity=".18"/>
+</svg>
