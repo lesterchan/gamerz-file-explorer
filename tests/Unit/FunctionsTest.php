@@ -129,6 +129,7 @@ final class FunctionsTest extends TestCase
         $this->assertFalse(is_safe_path('..'), 'a bare parent segment is rejected');
         $this->assertFalse(is_safe_path('a/../b'));
         $this->assertFalse(is_safe_path('a//b'), 'an empty segment is rejected');
+        $this->assertFalse(is_safe_path("a\0b"), 'a null byte is rejected');
     }
 
     public function testContentDispositionEncodesFilename(): void

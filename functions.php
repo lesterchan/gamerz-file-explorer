@@ -43,13 +43,14 @@ function content_disposition(string $filename): string
     return 'attachment; filename="' . $fallback . '"; filename*=UTF-8\'\'' . rawurlencode($filename);
 }
 
-### Function: Reject Path Traversal — No '.'/'..' Segment And No Empty Segment
+### Function: Reject Path Traversal — No '.'/'..' Segment, Empty Segment Or Null Byte
 function is_safe_path(string $path): bool
 {
     $segments = explode('/', $path);
     return ! in_array('.', $segments, true)
         && ! in_array('..', $segments, true)
-        && ! str_contains($path, '//');
+        && ! str_contains($path, '//')
+        && ! str_contains($path, "\0");
 }
 
 ### Function: Open A Directory For Iteration, Or Null If It Cannot Be Read

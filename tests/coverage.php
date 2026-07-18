@@ -127,6 +127,8 @@ $scenarios = [
     ['target' => 'view.php', 'query' => 'file=functions.php', 'expect' => ['Invalid Directory']],
     ['target' => 'view.php', 'query' => 'file=.htaccess', 'expect' => ['Invalid Directory']], // ignored filename
     ['target' => 'view.php', 'query' => 'file=backup.htaccess', 'expect' => ['Invalid Extension']], // ignored extension
+    // File nested inside an ignored folder is not viewable/downloadable through the viewer.
+    ['target' => 'view.php', 'query' => 'file=resources/icon.png', 'expect' => ['Invalid Directory'], 'absent' => ['img-fluid']],
     ['target' => 'view.php', 'query' => 'file=dangling.link', 'expect' => ['File Does Not Exist']], // broken symlink
     ['target' => 'view.php', 'query' => 'file=nope.txt', 'expect' => ['File Does Not Exist']],
     ['target' => 'view.php', 'expect' => ['Invalid Directory']], // empty file parameter

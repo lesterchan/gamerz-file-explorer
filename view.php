@@ -31,6 +31,13 @@ if (in_array($file_ext, $settings['ignore_ext'], true)) {
     display_error('Invalid Extension');
 }
 
+### Check Whether File Is Nested Inside An Ignored Folder
+foreach ($settings['ignore_folders'] as $ignored_folder) {
+    if (str_starts_with($file, $ignored_folder . '/')) {
+        display_error('Invalid Directory');
+    }
+}
+
 ### Check Whether File Exists
 $full_path = GFE_ROOT_DIR . '/' . $file;
 if (! is_file($full_path)) {
