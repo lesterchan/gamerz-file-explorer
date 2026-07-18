@@ -1,3 +1,4 @@
+cgi-bin
 /vendor/
 /build/
 /.phpunit.cache/
