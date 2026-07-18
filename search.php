@@ -32,15 +32,12 @@ $sort_order_text = 'Descending';
 if ($search_keyword !== '') {
     // Determine Sort Order
     $get_sort_order = $get_sort_order ?: GFE_DEFAULT_SORT_ORDER;
-    $sort_order = $get_sort_order === 'asc' ? SORT_ASC : SORT_DESC;
+    $sort_order = sort_direction($get_sort_order);
     $sort_order_text = $get_sort_order === 'asc' ? 'Ascending' : 'Descending';
 
     // Determine Sort By
     $get_sort_by = $get_sort_by ?: GFE_DEFAULT_SORT_BY;
-    $sort_by = match ($get_sort_by) {
-        'name', 'size', 'type', 'date' => $get_sort_by,
-        default => 'date',
-    };
+    $sort_by = sort_field($get_sort_by);
 
     // Determine Search In
     if ($search_in === '') {
@@ -53,7 +50,7 @@ if ($search_keyword !== '') {
         if (stripos($haystack, $search_keyword) === false) {
             continue;
         }
-        if ($search_in === 'all' || str_contains($gmz_file['path'] ?? '', $search_in)) {
+        if ($search_in === 'all' || str_starts_with($gmz_file['path'] ?? '', $search_in . '/')) {
             $search_results[] = $gmz_file;
         }
     }

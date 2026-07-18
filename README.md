@@ -81,6 +81,8 @@ rewrite ^/download/(.+[^/])/?$ /view.php?file=$1&dl=1 last;
 * IMPROVED: Emit a canonical `<link>` (and align `og:url`/`twitter:url`) to the nice-URL permalink
 * IMPROVED: Viewing an image now uses that image as the social share preview (`og:image` + a large Twitter card) instead of the app icon
 * SECURITY: Reject a bare `..` path segment so a listing URL (`?dir=..`) can no longer show the parent of the web root
+* SECURITY: Refuse to list a folder nested inside an ignored folder (e.g. `?dir=vendor/composer`), not just the ignored folder itself
+* FIX: The search "Search In" folder filter now matches on a folder boundary instead of any substring (so `Docs` no longer matches `MyDocs`)
 * SECURITY: Downloads now send an RFC 5987 `Content-Disposition`, so filenames with quotes, control characters, or non-ASCII characters are delivered safely
 * DEV: Moved the styles and scripts into `resources/style.css` and `resources/script.js`
 * DEV: Added a `README`, an MIT `LICENSE`, and an `AGENTS.md` that points to `CLAUDE.md`
@@ -88,7 +90,7 @@ rewrite ^/download/(.+[^/])/?$ /view.php?file=$1&dl=1 last;
 * DEV: Tidied the `settings.php` ignore list to hide only files that exist — covering the `README`/`LICENSE`/`AGENTS.md` and other metadata
 * DEV: Serve the favicon from `resources/favicon.ico` (linked in the template) and dropped the redundant root copy
 * DEV: Pin the `exif` extension in CI to cover the EXIF summary; the runtime stays dependency-free and degrades gracefully without it
-* DEV: Deduplicated shared markup and checks into helpers (`esc()`, `is_safe_path()`, `file_row()`, `media_embed()`)
+* DEV: Deduplicated shared markup and checks into helpers (`esc()`, `is_safe_path()`, `file_row()`, `media_embed()`, `sort_field()`, `sort_direction()`)
 * DEV: Disabled the line-length lint sniff for the idiomatic long HTML/attribute lines
 
 ### Version 3.0.0 (18-07-2026)

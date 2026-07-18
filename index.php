@@ -16,21 +16,20 @@ if (! is_safe_path($url_path)) {
     display_error('Invalid Directory');
 }
 
-### Check Whether Directory Is In The Ignore Folders
-if (in_array($url_path, $settings['ignore_folders'], true)) {
-    display_error('Invalid Directory');
+### Check Whether Directory Is In — Or Nested Under — An Ignored Folder
+foreach ($settings['ignore_folders'] as $ignored_folder) {
+    if ($url_path === $ignored_folder || str_starts_with($url_path, $ignored_folder . '/')) {
+        display_error('Invalid Directory');
+    }
 }
 
 ### Determine Sort Order
 $get_sort_order = trim($_GET['order'] ?? '') ?: GFE_DEFAULT_SORT_ORDER;
-$sort_order = $get_sort_order === 'asc' ? SORT_ASC : SORT_DESC;
+$sort_order = sort_direction($get_sort_order);
 
 ### Determine Sort By
 $get_sort_by = trim($_GET['by'] ?? '') ?: GFE_DEFAULT_SORT_BY;
-$sort_by = match ($get_sort_by) {
-    'name', 'size', 'type', 'date' => $get_sort_by,
-    default => 'date',
-};
+$sort_by = sort_field($get_sort_by);
 
 ### Break The Path Into The Current Directory And Everything Before It
 $directory_names = $url_path === '' ? [] : explode('/', $url_path);

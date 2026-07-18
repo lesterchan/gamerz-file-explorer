@@ -150,6 +150,23 @@ final class FunctionsTest extends TestCase
         $this->assertCount(1, sort_entries([['name' => 'x', 'size' => 1, 'date' => 1]], 'type', SORT_ASC));
     }
 
+    public function testSortField(): void
+    {
+        $this->assertSame('name', sort_field('name'));
+        $this->assertSame('size', sort_field('size'));
+        $this->assertSame('type', sort_field('type'));
+        $this->assertSame('date', sort_field('date'));
+        $this->assertSame('date', sort_field('bogus'), 'an unknown column falls back to date');
+        $this->assertSame('date', sort_field(''));
+    }
+
+    public function testSortDirection(): void
+    {
+        $this->assertSame(SORT_ASC, sort_direction('asc'));
+        $this->assertSame(SORT_DESC, sort_direction('desc'));
+        $this->assertSame(SORT_DESC, sort_direction(''), 'anything but asc is descending');
+    }
+
     public function testGetLineCount(): void
     {
         $this->assertSame(3, get_line_count($this->root() . '/notes.txt'));

@@ -282,6 +282,18 @@ function media_embed(string $ext, string $srcHref, string $downloadUrl, array $s
     ];
 }
 
+### Function: Validate A Requested Sort Column, Falling Back To Date
+function sort_field(string $sortBy): string
+{
+    return in_array($sortBy, ['name', 'size', 'type', 'date'], true) ? $sortBy : 'date';
+}
+
+### Function: Resolve A Sort-Order Keyword To A PHP Sort Constant
+function sort_direction(string $sortOrder): int
+{
+    return $sortOrder === 'asc' ? SORT_ASC : SORT_DESC;
+}
+
 ### Function: Sort A List Of Entries By A Field And Order
 /**
  * @param  list<GfeEntry> $entries

@@ -81,6 +81,8 @@ $scenarios = [
     ['target' => 'index.php', 'query' => 'dir=.', 'expect' => ['Invalid Directory']],
     ['target' => 'index.php', 'query' => 'dir=Sub Folder/..', 'expect' => ['Invalid Directory']],
     ['target' => 'index.php', 'query' => 'dir=resources', 'expect' => ['Invalid Directory']], // ignored folder
+    // A folder nested under an ignored folder must not be listable either.
+    ['target' => 'index.php', 'query' => 'dir=resources/nested', 'expect' => ['Invalid Directory']],
     ['target' => 'index.php', 'query' => 'dir=nope', 'expect' => ['Invalid Directory']], // unreadable directory
     ['target' => 'index.php', 'env' => ['GFE_TEST_NICE' => 'false'], 'expect' => ['index.php?dir=']],
     ['target' => 'index.php', 'env' => ['GFE_TEST_GA' => ''], 'absent' => ['G-TESTID']], // analytics off
@@ -89,6 +91,8 @@ $scenarios = [
     ['target' => 'search.php', 'query' => 'search=notes', 'expect' => ['notes.txt']],
     ['target' => 'search.php', 'query' => 'search=zzzzz', 'expect' => ['No files match']],
     ['target' => 'search.php', 'query' => 'search=inner&in=Sub Folder', 'expect' => ['inner.txt']],
+    // The 'in' filter matches on a folder boundary: 'Sub' must not match the 'Sub Folder/' path.
+    ['target' => 'search.php', 'query' => 'search=inner&in=Sub', 'expect' => ['No files match'], 'absent' => ['inner.txt']],
     // Match against the folder path, not just the name: 'Folder' only hits via the path.
     ['target' => 'search.php', 'query' => 'search=Folder&match=path', 'expect' => ['inner.txt', 'Sub Folder']],
     ['target' => 'search.php', 'query' => 'search=notes&by=name&order=asc', 'expect' => ['notes.txt']],
