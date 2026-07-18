@@ -73,13 +73,18 @@ rewrite ^/download/(.+[^/])/?$ /view.php?file=$1&dl=1 last;
 * NEW: View PDFs, videos, and audio inline (browser-playable formats), the same way images are shown
 * NEW: The active sort column and its direction are highlighted
 * NEW: Added a scalable SVG app icon (`resources/icon.svg`) and refreshed the PNG icon and favicon
+* NEW: Show a short EXIF summary (camera, model, capture date) when viewing JPEG/TIFF images
 * IMPROVED: Unified the listing typography with aligned figures, and hide the type column on small screens
 * IMPROVED: Tightened spacing and border-radius consistency, and added clear keyboard focus styles
+* IMPROVED: Search can match the full folder path, not just the file name, and each result shows its containing folder
+* SECURITY: Reject a bare `..` path segment so a listing URL (`?dir=..`) can no longer show the parent of the web root
+* SECURITY: Downloads now send an RFC 5987 `Content-Disposition`, so filenames with quotes, control characters, or non-ASCII characters are delivered safely
 * DEV: Moved the styles and scripts into `resources/style.css` and `resources/script.js`
 * DEV: Added a `README`, an MIT `LICENSE`, and an `AGENTS.md` that points to `CLAUDE.md`
 * DEV: Added an empty `robots.txt` placeholder (allow-all, avoids 404 log noise)
 * DEV: Tidied the `settings.php` ignore list to hide only files that exist — covering the `README`/`LICENSE`/`AGENTS.md` and other metadata
 * DEV: Serve the favicon from `resources/favicon.ico` (linked in the template) and dropped the redundant root copy
+* DEV: Pin the `exif` extension in CI to cover the EXIF summary; the runtime stays dependency-free and degrades gracefully without it
 
 ### Version 3.0.0 (18-07-2026)
 * NEW: Requires PHP 8.1 or newer
