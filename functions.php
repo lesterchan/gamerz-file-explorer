@@ -353,10 +353,10 @@ function sibling_nav(array $files, string $fileName, string $prefix, string $sor
     }
     return [
         'prev' => $prev !== null
-            ? '<a href="' . esc(url($prefix . $prev['name'], 'file', $sortBy, $sortOrder)) . '" class="btn btn-outline-secondary" title="Previous: ' . esc($prev['name']) . '"><i class="fa-solid fa-fw fa-chevron-left" aria-hidden="true"></i>&nbsp;Previous</a>'
+            ? '<a href="' . esc(url($prefix . $prev['name'], 'file', $sortBy, $sortOrder)) . '" class="btn btn-outline-primary" title="Previous: ' . esc($prev['name']) . '"><i class="fa-solid fa-fw fa-chevron-left" aria-hidden="true"></i>&nbsp;Previous</a>'
             : '<span class="btn btn-outline-secondary disabled" aria-disabled="true"><i class="fa-solid fa-fw fa-chevron-left" aria-hidden="true"></i>&nbsp;Previous</span>',
         'next' => $next !== null
-            ? '<a href="' . esc(url($prefix . $next['name'], 'file', $sortBy, $sortOrder)) . '" class="btn btn-outline-secondary" title="Next: ' . esc($next['name']) . '">Next&nbsp;<i class="fa-solid fa-fw fa-chevron-right" aria-hidden="true"></i></a>'
+            ? '<a href="' . esc(url($prefix . $next['name'], 'file', $sortBy, $sortOrder)) . '" class="btn btn-outline-primary" title="Next: ' . esc($next['name']) . '">Next&nbsp;<i class="fa-solid fa-fw fa-chevron-right" aria-hidden="true"></i></a>'
             : '<span class="btn btn-outline-secondary disabled" aria-disabled="true">Next&nbsp;<i class="fa-solid fa-fw fa-chevron-right" aria-hidden="true"></i></span>',
     ];
 }

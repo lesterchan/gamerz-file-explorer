@@ -395,6 +395,18 @@ body {
     font-weight: 600;
     border-radius: 9px;
 }
+.btn-outline-primary {
+    --bs-btn-color: var(--gfe-accent);
+    --bs-btn-border-color: var(--gfe-accent);
+    --bs-btn-hover-bg: var(--gfe-accent);
+    --bs-btn-hover-border-color: var(--gfe-accent);
+    --bs-btn-hover-color: var(--gfe-accent-contrast);
+    --bs-btn-active-bg: var(--gfe-accent-hover);
+    --bs-btn-active-border-color: var(--gfe-accent-hover);
+    --bs-btn-active-color: var(--gfe-accent-contrast);
+    font-weight: 600;
+    border-radius: 9px;
+}
 .form-control,
 .form-select {
     background: var(--gfe-surface);
