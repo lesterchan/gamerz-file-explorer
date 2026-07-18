@@ -33,7 +33,10 @@ Every entry point starts with `require 'config.php'; require 'settings.php'; req
 - When outputting any dynamic value (filenames, paths, search terms, request values),
   escape it at the point of output with `esc($value)` — the `functions.php` helper for
   `htmlspecialchars($value, ENT_QUOTES, 'UTF-8')` (the only place that raw call should appear).
-  Pass raw values to `url()` — it URL-encodes internally, so escape the display copy.
+  Pass raw values to `url()` — it URL-encodes the path internally, so `esc()` the display
+  copy rather than the raw value. `url()` can also return a `?by=&order=` query string (a
+  non-default sort), so also `esc()` its result wherever it lands in markup (an `href`), not
+  just the display copy.
 - `urldecode()` the incoming `dir`/`file` request values **before** using them and before
   the traversal check in `index.php`/`view.php` — reject any `.` or `..` path *segment*
   (`explode('/')` then `in_array`) plus a literal `//`, so a bare `..` with no trailing slash
