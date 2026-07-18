@@ -149,21 +149,12 @@ if ($search_keyword !== '') {
                         <?php
                         if ($search_results !== []) {
                             foreach ($search_results as $value) {
-                                $file_name = htmlspecialchars($value['name'], ENT_QUOTES, 'UTF-8');
-                                $file_size = format_size($value['size']);
-                                $file_date = date('jS F Y', $value['date']);
-                                $file_extension = htmlspecialchars($value['type'] ?? 'Unknown', ENT_QUOTES, 'UTF-8');
                                 $folder = dirname((string) ($value['path'] ?? ''));
                                 $folder_html = $folder !== '' && $folder !== '.'
                                     ? '<div class="small text-body-secondary">' . htmlspecialchars($folder, ENT_QUOTES, 'UTF-8') . '</div>'
                                     : '';
                                 $total_size += $value['size'];
-                                echo '<tr>';
-                                echo '<td><a href="' . url($value['path'] ?? '', 'file') . '" title="File: ' . $file_name . ' (' . $file_size . ')"><i class="fa-fw ' . file_icon($value['ext'] ?? '', $settings['extensions']) . '"></i>&nbsp;' . $file_name . '</a>' . $folder_html . '</td>';
-                                echo '<td>' . $file_size . '</td>';
-                                echo '<td>' . $file_extension . '</td>';
-                                echo '<td>' . $file_date . '</td>';
-                                echo '</tr>';
+                                echo file_row($value, $value['path'] ?? '', $settings['extensions'], $folder_html);
                             }
                         } else {
                             echo '<tr class="gfe-row-empty"><td class="text-center" colspan="4">No files match &lsquo;' . htmlspecialchars($search_keyword, ENT_QUOTES, 'UTF-8') . '&rsquo;. Try a different term.</td></tr>';

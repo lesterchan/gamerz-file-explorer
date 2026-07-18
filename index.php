@@ -108,17 +108,7 @@ $breadcrumbs = breadcrumbs([
                         // Files
                         if ($gmz_files !== []) {
                             foreach ($gmz_files as $value) {
-                                $file_name = $value['name'];
-                                $file_name_escaped = htmlspecialchars($file_name, ENT_QUOTES, 'UTF-8');
-                                $file_size = format_size($value['size']);
-                                $file_date = date('jS F Y', $value['date']);
-                                $file_extension = htmlspecialchars($value['type'] ?? 'Unknown', ENT_QUOTES, 'UTF-8');
-                                echo '<tr>';
-                                echo '<td><a href="' . url($prefix . $file_name, 'file') . '" title="File: ' . $file_name_escaped . ' (' . $file_size . ')"><i class="fa-fw ' . file_icon($value['ext'] ?? '', $settings['extensions']) . '"></i>&nbsp;' . $file_name_escaped . '</a></td>';
-                                echo '<td>' . $file_size . '</td>';
-                                echo '<td>' . $file_extension . '</td>';
-                                echo '<td>' . $file_date . '</td>';
-                                echo '</tr>';
+                                echo file_row($value, $prefix . $value['name'], $settings['extensions']);
                             }
                         } elseif ($gmz_directories === []) {
                             echo '<tr class="gfe-row-empty"><td class="text-center" colspan="4">This folder is empty.</td></tr>';

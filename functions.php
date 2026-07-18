@@ -198,6 +198,26 @@ function file_icon(string $ext, array $extensions): string
     return $extensions[$ext][1] ?? 'fa-regular fa-file';
 }
 
+### Function: Render A File Table Row (Shared By The Listing And Search Results)
+/**
+ * @param GfeEntry                                    $entry
+ * @param array<string, array{0: string, 1: string}> $extensions
+ */
+function file_row(array $entry, string $linkPath, array $extensions, string $extraHtml = ''): string
+{
+    $name = htmlspecialchars($entry['name'], ENT_QUOTES, 'UTF-8');
+    $size = format_size($entry['size']);
+    $type = htmlspecialchars($entry['type'] ?? 'Unknown', ENT_QUOTES, 'UTF-8');
+    $date = date('jS F Y', $entry['date']);
+    return '<tr>'
+        . '<td><a href="' . url($linkPath, 'file') . '" title="File: ' . $name . ' (' . $size . ')">'
+        . '<i class="fa-fw ' . file_icon($entry['ext'] ?? '', $extensions) . '"></i>&nbsp;' . $name . '</a>' . $extraHtml . '</td>'
+        . '<td>' . $size . '</td>'
+        . '<td>' . $type . '</td>'
+        . '<td>' . $date . '</td>'
+        . '</tr>';
+}
+
 ### Function: Extract A Short EXIF Summary From An Image (Gated — Needs The exif Extension)
 /**
  * @return array<string, string>
