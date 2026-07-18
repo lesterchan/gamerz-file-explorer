@@ -669,6 +669,9 @@ function template_header(string $title, string $breadcrumbs): void
             .gfe-table tbody tr:hover {
                 background: var(--gfe-soft);
             }
+            .gfe-table tbody tr:has(a) {
+                cursor: pointer;
+            }
 
             .gfe-table tbody td:first-child a {
                 display: inline-flex;
@@ -976,6 +979,23 @@ function template_footer(string $fullUrl = '', string $fullUrlHref = ''): void
                     });
                 });
                 window.gfeSyncTheme();
+
+                document.querySelectorAll('.gfe-table tbody tr').forEach(function (row) {
+                    var link = row.querySelector('a');
+                    if (! link) {
+                        return;
+                    }
+                    row.addEventListener('click', function (e) {
+                        if (e.target.closest('a') || String(window.getSelection())) {
+                            return;
+                        }
+                        if (e.metaKey || e.ctrlKey) {
+                            window.open(link.href, '_blank');
+                        } else {
+                            window.location.href = link.href;
+                        }
+                    });
+                });
             })();
         </script>
     </body>

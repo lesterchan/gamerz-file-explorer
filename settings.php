@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 ### GaMerZ File Explorer Version (Please Do Not Edit This)
-define('GFE_VERSION', '3.1.1');
+define('GFE_VERSION', '3.1.0');
 
 ### What Files Not To Show In The List
 $ignore_files = [
