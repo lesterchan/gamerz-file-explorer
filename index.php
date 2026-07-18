@@ -57,7 +57,8 @@ $gmz_directories = sort_entries($listing['directories'], $sort_by === 'type' ? '
 $sort_header = static function (string $column, string $label, string $width) use ($directories_before_current_path, $current_directory_name, $sort_order, $sort_by, $get_sort_order): string {
     $link = htmlspecialchars(create_sort_url($column, $directories_before_current_path, $current_directory_name, $sort_order), ENT_QUOTES, 'UTF-8');
     $icon = create_sort_image($column, $sort_by, $get_sort_order);
-    return '<th style="width: ' . $width . ';"><a class="text-decoration-none text-reset d-block" href="' . $link . '" title="Sort By ' . $label . '">' . $label . '&nbsp;' . $icon . '</a></th>';
+    $active = $column === $sort_by ? ' class="gfe-sort-active"' : '';
+    return '<th' . $active . ' style="width: ' . $width . ';"><a class="text-decoration-none text-reset d-block" href="' . $link . '" title="Sort By ' . $label . '">' . $label . '&nbsp;' . $icon . '</a></th>';
 };
 
 $breadcrumbs = breadcrumbs([

@@ -138,8 +138,8 @@ final class FunctionsTest extends TestCase
 
     public function testCreateSortImage(): void
     {
-        $this->assertStringContainsString('fa-sort-up', create_sort_image('name', 'name', 'asc'));
-        $this->assertStringContainsString('fa-sort-down', create_sort_image('name', 'name', 'desc'));
+        $this->assertStringContainsString('fa-caret-up', create_sort_image('name', 'name', 'asc'));
+        $this->assertStringContainsString('fa-caret-down', create_sort_image('name', 'name', 'desc'));
         $this->assertStringContainsString('fa-sort"', create_sort_image('name', 'size', 'asc'));
     }
 

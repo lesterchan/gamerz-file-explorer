@@ -43,12 +43,15 @@ Every entry point starts with `require 'config.php'; require 'settings.php'; req
   in `tests/` are what stop the web server serving dev/tooling files. Keep them in place.
 - Frontend is Bootstrap 5.3 + Font Awesome 6 loaded from cdnjs with SRI hashes, no jQuery.
   If you bump a CDN version, update its `integrity` hash too.
-- All custom styling lives in one inline `<style>` block in `template_header()` — there is
-  no separate stylesheet. It defines light/dark design tokens keyed off `data-bs-theme`, a
-  three-way theme switch (`data-gfe-theme`, auto/light/dark, persisted to `localStorage`, wired
-  up by inline JS in the header/footer), and file-type icon colours mapped from Font Awesome
-  classes (`.fa-file-pdf`, `.fa-folder`, …) to category CSS variables. Keep that block
-  comment-free, and bump `GFE_VERSION` for visible style changes.
+- Custom styling and behaviour live in `resources/style.css` and `resources/script.js`, linked
+  from `functions.php` with a `?v=GFE_VERSION` cache-buster (`resources/` is served statically
+  and is in `$ignore_folders`). The stylesheet defines light/dark design tokens keyed off
+  `data-bs-theme` and maps Font Awesome classes (`.fa-file-pdf`, `.fa-folder`, …) to category
+  CSS variables; the script wires the three-way theme switch (`data-gfe-theme`, auto/light/dark,
+  persisted to `localStorage`), the clickable rows, and highlight.js. The one inline script is
+  the tiny theme-detection snippet in `<head>` that sets `data-bs-theme` before paint to avoid a
+  flash — keep it inline. Keep `style.css` comment-free and bump `GFE_VERSION` for visible style
+  changes (so the cache-buster updates).
 
 ## Verify
 
