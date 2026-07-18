@@ -763,13 +763,13 @@ function template_header(string $title, string $breadcrumbs): void
                 border-bottom: 1px solid var(--gfe-border);
                 font-weight: 600;
                 color: var(--gfe-text);
-                padding: .8rem 1.1rem;
+                padding: .8rem 1rem;
             }
             .card-body pre {
                 background: var(--gfe-surface-2);
                 border: 1px solid var(--gfe-border);
                 border-radius: 10px;
-                padding: 1rem 1.1rem;
+                padding: 1rem;
                 overflow: auto;
             }
             .card-body pre code {
@@ -786,6 +786,7 @@ function template_header(string $title, string $breadcrumbs): void
             .card-footer {
                 background: var(--gfe-surface-2);
                 border-top: 1px solid var(--gfe-border);
+                padding: .8rem 1rem;
             }
 
             .btn-primary {
@@ -832,7 +833,7 @@ function template_header(string $title, string $breadcrumbs): void
                 color: var(--gfe-muted) !important;
             }
             .alert-danger {
-                border-radius: 12px;
+                border-radius: 14px;
             }
             .gfe-fullpath {
                 display: flex;

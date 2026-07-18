@@ -67,6 +67,9 @@ rewrite ^/download/(.+[^/])/?$ /view.php?file=$1&dl=1 last;
 
 ## Changelog
 
+### Version 3.1.1 (18-07-2026)
+* IMPROVED: Tightened spacing and border-radius consistency across cards, panels, the code viewer, and error messages, and made the card header and footer symmetric
+
 ### Version 3.1.0 (18-07-2026)
 * NEW: Redesigned the interface as a modern file explorer with a self-contained CSS design system, with light and dark themes tuned for correct contrast
 * NEW: Added a three-way colour theme switch (auto/light/dark) that remembers your choice
