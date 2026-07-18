@@ -42,8 +42,8 @@ $current_directory_path = $current_directory_name !== '' ? $current_directory_na
 $directories_before_current_path = $directories_before_current !== '' ? $directories_before_current . '/' : '';
 $prefix = $directories_before_current_path . $current_directory_path;
 
-### Full URL
-$full_url = GFE_ROOT_URL . '/' . $prefix;
+### Canonical (Clickable) Permalink For This Listing
+$full_url = url($url_path === '' ? 'home' : $url_path, 'dir');
 
 ### Full Filesystem Path Of The Directory To List
 $full_directory_path = $url_path === '' ? GFE_ROOT_DIR : GFE_ROOT_DIR . '/' . $url_path;
@@ -70,9 +70,9 @@ $breadcrumbs = breadcrumbs([
 <?php template_header($current_directory_name !== '' ? ' - Viewing Directory - ' . $current_directory_name : '', $breadcrumbs); ?>
 
             <!-- List Directories/Files -->
-            <div class="table-responsive">
-                <table class="table table-sm table-hover align-middle">
-                    <thead class="table-light">
+            <div class="table-responsive gfe-surface">
+                <table class="table gfe-table align-middle">
+                    <thead>
                         <tr>
                             <?php
                             echo $sort_header('name', 'Name', '50%');
@@ -87,8 +87,8 @@ $breadcrumbs = breadcrumbs([
                         // If It Is Down One Level, Provide "Parent Directory"
                         if ($url_path !== '') {
                             $parent_directory = $directory_names !== [] ? $directories_before_current : 'home';
-                            echo '<tr class="table-warning">';
-                            echo '<td colspan="4"><a href="' . url($parent_directory, 'dir', $get_sort_by, $get_sort_order) . '" title="Parent Directory"><i class="fa-solid fa-chevron-left"></i>&nbsp;Parent Directory</a></td>';
+                            echo '<tr class="gfe-row-parent">';
+                            echo '<td colspan="4"><a href="' . url($parent_directory, 'dir', $get_sort_by, $get_sort_order) . '" title="Parent Directory"><i class="fa-solid fa-fw fa-arrow-turn-up fa-rotate-270"></i>&nbsp;Parent Directory</a></td>';
                             echo '</tr>';
                         }
                         // Directories
@@ -120,7 +120,7 @@ $breadcrumbs = breadcrumbs([
                                 echo '</tr>';
                             }
                         } elseif ($gmz_directories === []) {
-                            echo '<tr class="table-info"><td class="text-center" colspan="4">No files found.</td></tr>';
+                            echo '<tr class="gfe-row-empty"><td class="text-center" colspan="4">This folder is empty.</td></tr>';
                         }
                         // Folder And File Stats
                         $total_folders = count($gmz_directories);
@@ -141,4 +141,4 @@ $breadcrumbs = breadcrumbs([
                     </tfoot>
                 </table>
             </div>
-<?php template_footer($full_url); ?>
+<?php template_footer($full_url, $full_url); ?>

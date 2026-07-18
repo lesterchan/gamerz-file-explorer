@@ -37,8 +37,9 @@ if (! is_file($full_path)) {
     display_error('File Does Not Exist');
 }
 
-### Full URL
+### Full URL (readable display) And Its URL-Encoded, Directly-Clickable Href
 $full_url = GFE_ROOT_URL . '/' . $file;
+$full_url_href = GFE_ROOT_URL . '/' . implode('/', array_map('rawurlencode', explode('/', $file)));
 
 ### Stream A File To The Browser As A Download
 function stream_download(string $path, string $filename): never
@@ -83,7 +84,7 @@ if (in_array($file_ext, $settings['text_ext'], true)) {
                     <a href="<?php echo url($file, 'download'); ?>" title="Download" class="btn btn-primary">Download</a>
                 </div>
             </div>
-    <?php template_footer($full_url); ?>
+    <?php template_footer($full_url, $full_url_href); ?>
     <?php
 ### Display Image
 } elseif (in_array($file_ext, $settings['image_ext'], true)) {
@@ -113,7 +114,7 @@ if (in_array($file_ext, $settings['text_ext'], true)) {
                     <a href="<?php echo url($file, 'download'); ?>" title="Download" class="btn btn-primary">Download</a>
                 </div>
             </div>
-    <?php template_footer($full_url); ?>
+    <?php template_footer($full_url, $full_url_href); ?>
     <?php
 ### Otherwise Force A Download
 } else {

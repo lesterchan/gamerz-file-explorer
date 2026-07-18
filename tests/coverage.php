@@ -71,7 +71,7 @@ $scenarios = [
     ['target' => 'index.php', 'query' => 'by=name&order=asc', 'expect' => ['notes.txt']],
     ['target' => 'index.php', 'query' => 'by=size&order=asc', 'expect' => ['notes.txt']],
     ['target' => 'index.php', 'query' => 'by=bogus', 'expect' => ['notes.txt']],
-    ['target' => 'index.php', 'query' => 'dir=Empty', 'expect' => ['No files found']],
+    ['target' => 'index.php', 'query' => 'dir=Empty', 'expect' => ['This folder is empty']],
     // Security: path traversal is rejected, not served.
     ['target' => 'index.php', 'query' => 'dir=../etc', 'expect' => ['Invalid Directory'], 'absent' => ['root:']],
     ['target' => 'index.php', 'query' => 'dir=%2e%2e/secret', 'expect' => ['Invalid Directory']],
@@ -82,7 +82,7 @@ $scenarios = [
     // --- search.php ---
     ['target' => 'search.php', 'expect' => ['All Folders', 'Sub Folder']],
     ['target' => 'search.php', 'query' => 'search=notes', 'expect' => ['notes.txt']],
-    ['target' => 'search.php', 'query' => 'search=zzzzz', 'expect' => ['No files found']],
+    ['target' => 'search.php', 'query' => 'search=zzzzz', 'expect' => ['No files match']],
     ['target' => 'search.php', 'query' => 'search=inner&in=Sub Folder', 'expect' => ['inner.txt']],
     ['target' => 'search.php', 'query' => 'search=notes&by=name&order=asc', 'expect' => ['notes.txt']],
     ['target' => 'search.php', 'query' => 'search=notes&by=size', 'expect' => ['notes.txt']],

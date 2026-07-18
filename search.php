@@ -70,7 +70,7 @@ $breadcrumbs = breadcrumbs(['search_keyword' => $search_keyword]);
 <?php template_header($search_keyword !== '' ? ' - Search - ' . $search_keyword : ' - Search', $breadcrumbs); ?>
 
             <!-- Search Files -->
-            <form class="mb-4" method="get" action="<?php echo GFE_URL; ?>/search.php">
+            <form class="gfe-panel mb-4" method="get" action="<?php echo GFE_URL; ?>/search.php">
                 <div class="row mb-3">
                     <label for="search-term" class="col-sm-2 col-form-label">Search Term</label>
                     <div class="col-sm-10">
@@ -125,9 +125,9 @@ if ($search_keyword !== '') {
     $total_size = 0;
     ?>
             <!-- List Search Results Files -->
-            <div class="table-responsive">
-                <table class="table table-sm table-hover align-middle">
-                    <thead class="table-light">
+            <div class="table-responsive gfe-surface">
+                <table class="table gfe-table align-middle">
+                    <thead>
                         <tr>
                             <th style="width: 50%;">Name</th>
                             <th style="width: 10%;">Size</th>
@@ -152,7 +152,7 @@ if ($search_keyword !== '') {
                                 echo '</tr>';
                             }
                         } else {
-                            echo '<tr class="table-info"><td class="text-center" colspan="4">No files found with the search term \'' . htmlspecialchars($search_keyword, ENT_QUOTES, 'UTF-8') . '\'.</td></tr>';
+                            echo '<tr class="gfe-row-empty"><td class="text-center" colspan="4">No files match &lsquo;' . htmlspecialchars($search_keyword, ENT_QUOTES, 'UTF-8') . '&rsquo;. Try a different term.</td></tr>';
                         }
 
                         $total_files = count($search_results);
