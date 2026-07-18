@@ -74,6 +74,7 @@ rewrite ^/download/(.+[^/])/?$ /view.php?file=$1&dl=1 last;
 * NEW: Respects the visitor's light/dark colour scheme preference
 * IMPROVED: Rewrote the code with `declare(strict_types=1)`, full type declarations, and removed all shared global state in favour of passed parameters
 * IMPROVED: Sortable column headers are now real links instead of inline JavaScript
+* FIX: Correctly resolve files and folders whose names contain spaces or other characters that Nice URLs encode
 * SECURITY: Added .htaccess/Nginx rules and a CLI-only guard so tooling and metadata files (composer.json, *.dist, CLAUDE.md, tests) cannot be served
 * DEV: Added PHPStan (level 6), PHP_CodeSniffer (PSR-12), and a PHPUnit suite with 100% coverage, run in GitHub Actions on PHP 8.1–8.4
 
