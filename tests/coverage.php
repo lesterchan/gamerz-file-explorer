@@ -75,6 +75,10 @@ $scenarios = [
     // Security: path traversal is rejected, not served.
     ['target' => 'index.php', 'query' => 'dir=../etc', 'expect' => ['Invalid Directory'], 'absent' => ['root:']],
     ['target' => 'index.php', 'query' => 'dir=%2e%2e/secret', 'expect' => ['Invalid Directory']],
+    // A bare '..' segment (no trailing slash) must not list the parent of the web root.
+    ['target' => 'index.php', 'query' => 'dir=..', 'expect' => ['Invalid Directory']],
+    ['target' => 'index.php', 'query' => 'dir=.', 'expect' => ['Invalid Directory']],
+    ['target' => 'index.php', 'query' => 'dir=Sub Folder/..', 'expect' => ['Invalid Directory']],
     ['target' => 'index.php', 'query' => 'dir=resources', 'expect' => ['Invalid Directory']], // ignored folder
     ['target' => 'index.php', 'query' => 'dir=nope', 'expect' => ['Invalid Directory']], // unreadable directory
     ['target' => 'index.php', 'env' => ['GFE_TEST_NICE' => 'false'], 'expect' => ['index.php?dir=']],
@@ -107,6 +111,8 @@ $scenarios = [
         'expect' => ['spaced filename', 'Viewing Text File'], 'absent' => ['File Does Not Exist']],
     // Security: traversal and source/config files cannot be read.
     ['target' => 'view.php', 'query' => 'file=../etc/passwd', 'expect' => ['Invalid Directory'], 'absent' => ['root:']],
+    ['target' => 'view.php', 'query' => 'file=..', 'expect' => ['Invalid Directory']], // bare '..' segment
+    ['target' => 'view.php', 'query' => 'file=Sub Folder/..', 'expect' => ['Invalid Directory']],
     ['target' => 'view.php', 'query' => 'file=config.php', 'expect' => ['Invalid Directory'], 'absent' => ['GFE_ROOT_DIR']],
     ['target' => 'view.php', 'query' => 'file=functions.php', 'expect' => ['Invalid Directory']],
     ['target' => 'view.php', 'query' => 'file=.htaccess', 'expect' => ['Invalid Directory']], // ignored filename

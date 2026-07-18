@@ -12,7 +12,12 @@ require 'functions.php';
 
 ### Get And Check Current Directory Path
 $url_path = urldecode(trim($_GET['dir'] ?? ''));
-if (str_contains($url_path, '../') || str_contains($url_path, './') || str_contains($url_path, '//')) {
+$url_path_segments = explode('/', $url_path);
+if (
+    in_array('.', $url_path_segments, true)
+    || in_array('..', $url_path_segments, true)
+    || str_contains($url_path, '//')
+) {
     display_error('Invalid Directory');
 }
 

@@ -34,7 +34,9 @@ Every entry point starts with `require 'config.php'; require 'settings.php'; req
   escape it with `htmlspecialchars($value, ENT_QUOTES, 'UTF-8')` at the point of output.
   Pass raw values to `url()` — it URL-encodes internally, so escape the display copy.
 - `urldecode()` the incoming `dir`/`file` request values **before** using them and before
-  the `../`, `./`, `//` traversal check in `index.php`/`view.php`. Nice-URLs encode a space
+  the traversal check in `index.php`/`view.php` — reject any `.` or `..` path *segment*
+  (`explode('/')` then `in_array`) plus a literal `//`, so a bare `..` with no trailing slash
+  can't list the parent of the web root. Nice-URLs encode a space
   as `+`, which the web server passes as `%2B`; skipping the decode breaks paths with spaces
   (the 3.0.0 regression). Keep that decode-then-check order for any new path input.
 - `settings.php` ignore lists keep internal files (`config.php`, `functions.php`, the

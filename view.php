@@ -12,10 +12,14 @@ require 'functions.php';
 
 ### Get And Check File Path
 $file = urldecode(trim($_GET['file'] ?? ''));
-if (str_contains($file, '../') || str_contains($file, './') || str_contains($file, '//')) {
+$parts = explode('/', $file);
+if (
+    in_array('.', $parts, true)
+    || in_array('..', $parts, true)
+    || str_contains($file, '//')
+) {
     display_error('Invalid Directory');
 }
-$parts = explode('/', $file);
 $file_name = (string) array_pop($parts);
 
 ### Get File Extension
