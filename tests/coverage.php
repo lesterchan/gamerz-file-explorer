@@ -66,7 +66,7 @@ if ($unitExit !== 0) {
 $scenarios = [
     // --- index.php ---
     ['target' => 'index.php', 'expect' => ['notes.txt', 'Sub Folder', 'My File.txt'],
-        'absent' => ['phpinfo.php']], // ignored file is hidden from the listing
+        'absent' => ['config.php']], // ignored file is hidden from the listing
     ['target' => 'index.php', 'query' => 'dir=Sub Folder', 'expect' => ['inner.txt', 'Parent Directory']],
     ['target' => 'index.php', 'query' => 'by=name&order=asc', 'expect' => ['notes.txt']],
     ['target' => 'index.php', 'query' => 'by=size&order=asc', 'expect' => ['notes.txt']],
@@ -109,7 +109,6 @@ $scenarios = [
     ['target' => 'view.php', 'query' => 'file=../etc/passwd', 'expect' => ['Invalid Directory'], 'absent' => ['root:']],
     ['target' => 'view.php', 'query' => 'file=config.php', 'expect' => ['Invalid Directory'], 'absent' => ['GFE_ROOT_DIR']],
     ['target' => 'view.php', 'query' => 'file=functions.php', 'expect' => ['Invalid Directory']],
-    ['target' => 'view.php', 'query' => 'file=phpinfo.php', 'expect' => ['Invalid Directory']], // ignored filename
     ['target' => 'view.php', 'query' => 'file=.htaccess', 'expect' => ['Invalid Directory']], // ignored filename
     ['target' => 'view.php', 'query' => 'file=backup.htaccess', 'expect' => ['Invalid Extension']], // ignored extension
     ['target' => 'view.php', 'query' => 'file=dangling.link', 'expect' => ['File Does Not Exist']], // broken symlink

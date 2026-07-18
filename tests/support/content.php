@@ -41,7 +41,7 @@ function gfe_make_content(?string $root = null): string
     // A file whose extension is ignored ($ignore_ext = htaccess).
     file_put_contents($root . '/.htaccess', "deny\n");
     // A file whose name is on the ignore list.
-    file_put_contents($root . '/phpinfo.php', "<?php phpinfo();\n");
+    file_put_contents($root . '/config.php', "<?php // deployment config\n");
     // Nested file inside a normal sub-folder.
     file_put_contents($root . '/Sub Folder/inner.txt', "inner\n");
     // File inside an ignored folder ($ignore_folders contains resources).

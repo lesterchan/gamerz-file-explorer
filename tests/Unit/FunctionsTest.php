@@ -49,7 +49,7 @@ final class FunctionsTest extends TestCase
         $this->assertContains('My File.txt', $names);
         $this->assertContains('inner.txt', $names, 'recurses into sub-folders');
         $this->assertNotContains('.htaccess', $names, 'ignored extension');
-        $this->assertNotContains('phpinfo.php', $names, 'ignored filename');
+        $this->assertNotContains('config.php', $names, 'ignored filename');
         $this->assertNotContains('archive.bin', $names, 'unmapped extension');
         $this->assertNotContains('icon.png', $names, 'inside ignored folder');
         $this->assertSame([], list_files($this->root() . '/nope', $this->settings));
@@ -70,7 +70,7 @@ final class FunctionsTest extends TestCase
         $dirNames = array_column($listing['directories'], 'name');
 
         $this->assertContains('notes.txt', $fileNames);
-        $this->assertNotContains('phpinfo.php', $fileNames, 'ignored filename');
+        $this->assertNotContains('config.php', $fileNames, 'ignored filename');
         $this->assertNotContains('.htaccess', $fileNames, 'ignored extension');
         $this->assertContains('Sub Folder', $dirNames);
         $this->assertNotContains('resources', $dirNames, 'ignored folder');
