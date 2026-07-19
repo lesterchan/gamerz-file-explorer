@@ -9,13 +9,11 @@ declare(strict_types=1);
  * in phpstan.neon.dist so every file can reference them.
  */
 
-### Function: Escape A Value For Safe HTML Output (UTF-8, Quotes Included)
 function esc(string $value): string
 {
     return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 }
 
-### Function: Format A Byte Count Into A Human-Readable String
 function format_size(int|float $size): string
 {
     if ($size / 1073741824 > 1) {
@@ -30,7 +28,6 @@ function format_size(int|float $size): string
     return round($size, 1) . 'b';
 }
 
-### Function: Build A Safe Content-Disposition Header Value For A Download
 function content_disposition(string $filename): string
 {
     $filename = basename($filename);
@@ -43,7 +40,6 @@ function content_disposition(string $filename): string
     return 'attachment; filename="' . $fallback . '"; filename*=UTF-8\'\'' . rawurlencode($filename);
 }
 
-### Function: Reject Path Traversal — No '.'/'..' Segment, Empty Segment Or Null Byte
 function is_safe_path(string $path): bool
 {
     $segments = explode('/', $path);
@@ -53,7 +49,6 @@ function is_safe_path(string $path): bool
         && ! str_contains($path, "\0");
 }
 
-### Function: Open A Directory For Iteration, Or Null If It Cannot Be Read
 /**
  * One SplFileInfo per entry caches its stat, so isDir()/isFile()/getSize()/getMTime()
  * on the same entry share a single syscall instead of one per call.
@@ -67,7 +62,6 @@ function dir_iterator(string $path): ?FilesystemIterator
     }
 }
 
-### Function: Recursively Total The Size Of A Directory, Excluding Ignored Content
 /**
  * Mirrors the listing's ignore rules so the reported size matches what is shown:
  * ignored files/extensions are skipped and ignored folders are not descended into.
@@ -109,7 +103,6 @@ function dir_size(string $dir, array $settings): int
     return $total;
 }
 
-### Function: Recursively Collect Every File Under A Path (Used By Search)
 /**
  * An optional filter is applied during the walk, so search never materialises the
  * whole tree just to discard most of it.
@@ -164,7 +157,6 @@ function list_files(string $path, array $settings, ?callable $filter = null): ar
     return $files;
 }
 
-### Function: Recursively Collect Every Sub-Directory Path (Used By Search Filter)
 /**
  * @param  GfeSettings $settings
  * @return list<string>
@@ -194,7 +186,6 @@ function list_directories(string $path, array $settings): array
     return $directories;
 }
 
-### Function: List The Files And Directories In A Single Directory Level
 /**
  * @param  GfeSettings $settings
  * @return array{files: list<GfeEntry>, directories: list<GfeEntry>}
@@ -235,7 +226,6 @@ function list_directory(string $path, array $settings, string $prefix): array
     return ['files' => $files, 'directories' => $directories];
 }
 
-### Function: Determine The Font Awesome Icon Class For A File Extension
 /**
  * @param array<string, array{0: string, 1: string}> $extensions
  */
@@ -244,7 +234,6 @@ function file_icon(string $ext, array $extensions): string
     return $extensions[$ext][1] ?? 'fa-regular fa-file';
 }
 
-### Function: Render A File Table Row (Shared By The Listing And Search Results)
 /**
  * @param GfeEntry                                    $entry
  * @param array<string, array{0: string, 1: string}> $extensions
@@ -264,7 +253,6 @@ function file_row(array $entry, string $linkPath, array $extensions, string $ext
         . '</tr>';
 }
 
-### Function: Extract A Short EXIF Summary From An Image (Gated — Needs The exif Extension)
 /**
  * @return array<string, string>
  */
@@ -288,7 +276,6 @@ function image_exif(string $path, string $ext): array
     return $summary;
 }
 
-### Function: Build The Inline Embed Markup For A Playable Media File (PDF/Video/Audio)
 /**
  * @param  GfeSettings $settings
  * @return array{label: string, class: string, html: string}
@@ -322,7 +309,6 @@ function media_embed(string $ext, string $srcHref, string $downloadUrl, array $s
     ];
 }
 
-### Function: Build The Previous/Next Buttons For Stepping Through Sibling Files
 /**
  * Locates the current file among its already-sorted folder siblings and returns the
  * markup for the Previous/Next controls. A neighbour that exists links to its viewing
@@ -361,19 +347,16 @@ function sibling_nav(array $files, string $fileName, string $prefix, string $sor
     ];
 }
 
-### Function: Validate A Requested Sort Column, Falling Back To Date
 function sort_field(string $sortBy): string
 {
     return in_array($sortBy, ['name', 'size', 'type', 'date'], true) ? $sortBy : 'date';
 }
 
-### Function: Resolve A Sort-Order Keyword To A PHP Sort Constant
 function sort_direction(string $sortOrder): int
 {
     return $sortOrder === 'asc' ? SORT_ASC : SORT_DESC;
 }
 
-### Function: Sort A List Of Entries By A Field And Order
 /**
  * @param  list<GfeEntry> $entries
  * @return list<GfeEntry>
@@ -396,7 +379,6 @@ function sort_entries(array $entries, string $sortBy, int $sortOrder): array
     return $entries;
 }
 
-### Function: Count The Number Of Lines In A Block Of Text
 function count_lines(string $text): int
 {
     if ($text === '') {
@@ -406,7 +388,6 @@ function count_lines(string $text): int
     return substr_count($text, "\n") + (str_ends_with($text, "\n") ? 0 : 1);
 }
 
-### Function: Whether A Sort Selection Is The Site Default (Kept Out Of URLs To Keep Them Clean)
 /**
  * Sort order is a view preference, not part of a resource's identity, so it rides in
  * the query string — and only when it differs from the default. An empty column counts
@@ -417,7 +398,6 @@ function is_default_sort(string $sortBy, string $sortOrder): bool
     return $sortBy === '' || ($sortBy === GFE_DEFAULT_SORT_BY && $sortOrder === GFE_DEFAULT_SORT_ORDER);
 }
 
-### Function: Build A Link For A Directory, File Or Download
 function url(string $path, string $mode, string $sortBy = '', string $sortOrder = ''): string
 {
     $path = str_replace('%2F', '/', urlencode(urldecode($path)));
@@ -456,7 +436,6 @@ function url(string $path, string $mode, string $sortBy = '', string $sortOrder 
     return GFE_NICE_URL ? $nice : $link;
 }
 
-### Function: Build The Toggle Link For A Sortable Column Header
 /**
  * Flips the order for the clicked column, then defers to url() so the sort rides in the
  * query string (and disappears entirely when the toggle lands back on the site default).
@@ -468,7 +447,6 @@ function create_sort_url(string $sortBy, string $beforePath, string $currentName
     return url($path, 'dir', $sortBy, $order);
 }
 
-### Function: Render The Sort Direction Icon For A Column Header
 function create_sort_image(string $sortBy, string $currentSortBy, string $currentSortOrder): string
 {
     if ($currentSortBy === $sortBy) {
@@ -479,7 +457,6 @@ function create_sort_image(string $sortBy, string $currentSortBy, string $curren
     return '<i class="fa-solid fa-fw fa-sort" aria-hidden="true"></i>';
 }
 
-### Function: Build The Breadcrumb Trail
 /**
  * @param array{
  *     directory_names?: list<string>,
@@ -527,7 +504,6 @@ function breadcrumbs(array $context): string
     return $html;
 }
 
-### Function: Display An Error Message And Stop
 function display_error(string $msg): never
 {
     template_header(' - Error - ' . $msg, breadcrumbs([]));
@@ -538,7 +514,6 @@ function display_error(string $msg): never
     exit();
 }
 
-### Function: Render The Page Header And Open The Body
 function template_header(string $title, string $breadcrumbs, string $canonical = '', string $previewImage = ''): void
 {
     $requestUri = esc(GFE_URL . ($_SERVER['REQUEST_URI'] ?? ''));
@@ -654,7 +629,6 @@ function template_header(string $title, string $breadcrumbs, string $canonical =
     <?php
 }
 
-### Function: Close The Body And Render The Page Footer
 function template_footer(string $fullUrl = '', string $fullUrlHref = ''): void
 {
     $start = defined('GFE_START') ? (float) GFE_START : microtime(true);

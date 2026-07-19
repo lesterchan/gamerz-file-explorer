@@ -171,9 +171,7 @@ $extensions = [
     'zip' => ['ZIP Archive', 'fa-solid fa-file-zipper'],
 ];
 
-### Merge Any Deployment-Specific Ignores Defined In config.php. This Keeps settings.php
-### Identical Across Deployments — Per-Site Additions Live In config.php, Never Here. The
-### Merge Only Appends, So A Deployment Can Never Un-Hide The Baseline (App/Meta/Tooling).
+### Append per-site ignores from config.php so this file stays identical across deployments.
 $ignore_files = array_values(array_unique(array_merge($ignore_files, defined('GFE_IGNORE_FILES') ? GFE_IGNORE_FILES : [])));
 $ignore_ext = array_values(array_unique(array_merge($ignore_ext, defined('GFE_IGNORE_EXT') ? GFE_IGNORE_EXT : [])));
 $ignore_folders = array_values(array_unique(array_merge($ignore_folders, defined('GFE_IGNORE_FOLDERS') ? GFE_IGNORE_FOLDERS : [])));

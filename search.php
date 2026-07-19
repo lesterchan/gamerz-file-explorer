@@ -2,20 +2,16 @@
 
 declare(strict_types=1);
 
-### Start Timer
 define('GFE_START', microtime(true));
 
-### Require Config, Setting And Function Files
 require 'config.php';
 $settings = require 'settings.php';
 require 'functions.php';
 
-### Check Whether Search Is Enabled
 if (! GFE_CAN_SEARCH) {
     display_error('The Administrator Has Disabled The Searching Of Files');
 }
 
-### Read And Sanitise Input
 $search_keyword = trim(strip_tags($_GET['search'] ?? ''));
 $search_in = trim(strip_tags($_GET['in'] ?? ''));
 $search_match = strip_tags($_GET['match'] ?? '') === 'path' ? 'path' : 'name';
@@ -28,23 +24,19 @@ $sort_by = 'date';
 $sort_order = SORT_DESC;
 $sort_order_text = 'Descending';
 
-### Process Search
 if ($search_keyword !== '') {
-    // Determine Sort Order
     $get_sort_order = $get_sort_order ?: GFE_DEFAULT_SORT_ORDER;
     $sort_order = sort_direction($get_sort_order);
     $sort_order_text = $get_sort_order === 'asc' ? 'Ascending' : 'Descending';
 
-    // Determine Sort By
     $get_sort_by = $get_sort_by ?: GFE_DEFAULT_SORT_BY;
     $sort_by = sort_field($get_sort_by);
 
-    // Determine Search In
     if ($search_in === '') {
         $search_in = 'all';
     }
 
-    // Collect Only The Matching Files — Filtering Happens During The Walk
+    // Filtering happens during the walk so the whole tree is never materialised.
     $search_results = list_files(
         GFE_ROOT_DIR,
         $settings,
@@ -57,10 +49,8 @@ if ($search_keyword !== '') {
         }
     );
 
-    // Sort The Results
     $search_results = sort_entries($search_results, $sort_by, $sort_order);
 } else {
-    // List All Directories For The "Search In" Dropdown
     $gmz_directories = list_directories(GFE_ROOT_DIR, $settings);
     sort($gmz_directories);
 }
@@ -69,7 +59,6 @@ $breadcrumbs = breadcrumbs(['search_keyword' => $search_keyword]);
 ?>
 <?php template_header($search_keyword !== '' ? ' - Search - ' . $search_keyword : ' - Search', $breadcrumbs); ?>
 
-            <!-- Search Files -->
             <form class="gfe-panel mb-4" method="get" action="<?php echo GFE_URL; ?>/search.php">
                 <div class="row mb-3">
                     <label for="search-term" class="col-sm-2 col-form-label">Search Term</label>
@@ -129,11 +118,9 @@ $breadcrumbs = breadcrumbs(['search_keyword' => $search_keyword]);
                 </div>
             </form>
 <?php
-### If Not Searching, Don't Display Results Page
 if ($search_keyword !== '') {
     $total_size = 0;
     ?>
-            <!-- List Search Results Files -->
             <div class="table-responsive gfe-surface">
                 <table class="table gfe-table align-middle">
                     <thead>

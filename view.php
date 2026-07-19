@@ -2,15 +2,12 @@
 
 declare(strict_types=1);
 
-### Start Timer
 define('GFE_START', microtime(true));
 
-### Require Config, Setting And Function Files
 require 'config.php';
 $settings = require 'settings.php';
 require 'functions.php';
 
-### Get And Check File Path
 $file = urldecode(trim($_GET['file'] ?? ''));
 if (! is_safe_path($file)) {
     display_error('Invalid Directory');
@@ -18,44 +15,37 @@ if (! is_safe_path($file)) {
 $parts = explode('/', $file);
 $file_name = (string) array_pop($parts);
 
-### Get File Extension
 $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
 
-### Check Whether File Is In The Ignore Files
 if ($file === '' || in_array($file, $settings['ignore_files'], true)) {
     display_error('Invalid Directory');
 }
 
-### Check Whether Extension Is In The Ignore Extensions
 if (in_array($file_ext, $settings['ignore_ext'], true)) {
     display_error('Invalid Extension');
 }
 
-### Check Whether File Is Nested Inside An Ignored Folder
 foreach ($settings['ignore_folders'] as $ignored_folder) {
     if (str_starts_with($file, $ignored_folder . '/')) {
         display_error('Invalid Directory');
     }
 }
 
-### Check Whether File Exists
 $full_path = GFE_ROOT_DIR . '/' . $file;
 if (! is_file($full_path)) {
     display_error('File Does Not Exist');
 }
 
-### Confirm The Resolved Path Stays Inside The Root (Defeats Escaping Symlinks)
+// Confirm the resolved path stays inside the root, defeating symlinks that escape it.
 $root_real = realpath(GFE_ROOT_DIR);
 $full_path_real = realpath($full_path);
 if ($root_real === false || $full_path_real === false || ! str_starts_with($full_path_real, $root_real . '/')) {
     display_error('Invalid Directory');
 }
 
-### Full URL (readable display) And Its URL-Encoded, Directly-Clickable Href
 $full_url = GFE_ROOT_URL . '/' . $file;
 $full_url_href = GFE_ROOT_URL . '/' . implode('/', array_map('rawurlencode', explode('/', $file)));
 
-### Stream A File To The Browser As A Download
 function stream_download(string $path, string $filename): never
 {
     header('Content-Type: application/octet-stream');
@@ -69,12 +59,11 @@ function stream_download(string $path, string $filename): never
     exit();
 }
 
-### If User Wants To Download
 if (isset($_GET['dl']) && (int) $_GET['dl'] === 1) {
     stream_download($full_path, $file_name);
 }
 
-### Sort Order — Mirrors The Listing So Previous/Next Step In The Same Order The User Chose
+// Sort order mirrors the listing so Previous/Next step in the order the user chose.
 $get_sort_order = trim($_GET['order'] ?? '') ?: GFE_DEFAULT_SORT_ORDER;
 $sort_order = sort_direction($get_sort_order);
 $get_sort_by = trim($_GET['by'] ?? '') ?: GFE_DEFAULT_SORT_BY;
@@ -87,17 +76,15 @@ $breadcrumbs = breadcrumbs([
     'sort_order' => $get_sort_order,
 ]);
 
-### Canonical (Nice-URL) Permalink For This File's Viewing Page — Kept Sort-Free For A Single Clean URL
+// Kept sort-free so a file has a single clean permalink.
 $canonical = url($file, 'file');
 
-### Sibling Files In This Folder, In The Chosen Sort Order — Powers The Previous/Next Controls
 $parent_dir = implode('/', $parts);
 $parent_prefix = $parent_dir !== '' ? $parent_dir . '/' : '';
 $parent_path = $parent_dir !== '' ? GFE_ROOT_DIR . '/' . $parent_dir : GFE_ROOT_DIR;
 $siblings = sort_entries(list_directory($parent_path, $settings, $parent_prefix)['files'], $sort_by, $sort_order);
 $nav = sibling_nav($siblings, $file_name, $parent_prefix, $get_sort_by, $get_sort_order);
 
-### Display Text
 if (in_array($file_ext, $settings['text_ext'], true)) {
     $text_content = (string) file_get_contents($full_path);
     $lines = count_lines($text_content);
@@ -125,7 +112,6 @@ if (in_array($file_ext, $settings['text_ext'], true)) {
             </div>
     <?php template_footer($full_url, $full_url_href); ?>
     <?php
-### Display Image
 } elseif (in_array($file_ext, $settings['image_ext'], true)) {
     $imagesize = @getimagesize($full_path);
     if ($imagesize === false) {
@@ -163,7 +149,6 @@ if (in_array($file_ext, $settings['text_ext'], true)) {
             </div>
     <?php template_footer($full_url, $full_url_href); ?>
     <?php
-### Display Inline Media (PDF, Video Or Audio)
 } elseif (
     $file_ext === 'pdf'
     || in_array($file_ext, $settings['video_ext'], true)
@@ -191,7 +176,6 @@ if (in_array($file_ext, $settings['text_ext'], true)) {
             </div>
     <?php template_footer($full_url, $full_url_href); ?>
     <?php
-### Otherwise Force A Download
 } else {
     stream_download($full_path, $file_name);
 }
