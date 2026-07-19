@@ -75,15 +75,15 @@ hljs.highlightAll();
         });
     });
 
-    var filter = document.getElementById('gfe-filter-input');
-    if (filter) {
-        var wrap = filter.closest('.gfe-filter');
-        if (wrap) {
-            wrap.hidden = false;
-        }
-        var filterRows = Array.prototype.slice.call(document.querySelectorAll('.gfe-table tbody tr'));
-        filter.addEventListener('input', function () {
-            var q = filter.value.trim().toLowerCase();
+    // On a folder listing the top-bar search doubles as an instant filter: typing narrows
+    // the current folder's rows in place, while submitting (Enter / the button) still runs a
+    // full search across every folder.
+    var listing = document.getElementById('gfe-listing');
+    var search = document.getElementById('gfe-search-input');
+    if (listing && search) {
+        var filterRows = Array.prototype.slice.call(listing.querySelectorAll('tbody tr'));
+        var applyFilter = function () {
+            var q = search.value.trim().toLowerCase();
             filterRows.forEach(function (row) {
                 if (row.classList.contains('gfe-row-parent') || row.classList.contains('gfe-row-empty')) {
                     return;
@@ -92,7 +92,15 @@ hljs.highlightAll();
                 var name = (link ? link.textContent : row.textContent).toLowerCase();
                 row.hidden = q !== '' && name.indexOf(q) === -1;
             });
-        });
+        };
+        search.placeholder = 'Filter this folder …';
+        if (search.form) {
+            var searchButton = search.form.querySelector('button[type="submit"]');
+            if (searchButton) {
+                searchButton.title = 'Search all folders';
+            }
+        }
+        search.addEventListener('input', applyFilter);
     }
 
     document.addEventListener('keydown', function (e) {

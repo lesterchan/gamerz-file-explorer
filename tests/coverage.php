@@ -67,7 +67,7 @@ $scenarios = [
     // --- index.php ---
     ['target' => 'index.php', 'expect' => ['notes.txt', 'Sub Folder', 'My File.txt', 'aria-sort=', 'aria-hidden="true"',
         'href="#gfe-content"', '<main id="gfe-content">', 'rel="canonical" href="http://gfe.test/"',
-        'gfe-filter-input', 'data-gfe-copy'],
+        'id="gfe-listing"', 'data-gfe-copy'],
         'absent' => ['config.php']], // ignored file is hidden from the listing
     ['target' => 'index.php', 'query' => 'dir=Sub Folder', 'expect' => ['inner.txt', 'Parent Directory']],
     ['target' => 'index.php', 'query' => 'by=name&order=asc', 'expect' => ['notes.txt']],

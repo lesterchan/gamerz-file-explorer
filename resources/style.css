@@ -228,6 +228,9 @@ body {
     box-shadow: var(--gfe-shadow);
     overflow: hidden;
 }
+.gfe-surface.table-responsive {
+    overflow-x: auto;
+}
 .gfe-panel {
     background: var(--gfe-surface);
     border: 1px solid var(--gfe-border);
