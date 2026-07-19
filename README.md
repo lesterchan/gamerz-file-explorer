@@ -42,7 +42,7 @@ If you are using Nginx, paste the below configuration in your nginx.conf file.
 # that browsable content files (.json/.md/.xml/...) are unaffected. The CLI-only
 # tests directory is blocked wholesale.
 location ~ /\.(?!well-known\/) { deny all; }
-location ~* ^/(?:composer\.(?:json|lock)|phpstan\.neon\.dist|phpcs\.xml\.dist|phpunit\.xml\.dist|AGENTS\.md|CLAUDE\.md)$ { deny all; }
+location ~* ^/(?:composer\.(?:json|lock)|phpstan\.neon\.dist|phpcs\.xml\.dist|phpunit\.xml\.dist|AGENTS\.md|CLAUDE\.md|Dockerfile)$ { deny all; }
 location ^~ /tests/ { deny all; }
 
 location / {
@@ -64,9 +64,27 @@ rewrite ^/download/(.+[^/])/?$ /view.php?file=$1&dl=1 last;
 * File: settings.php
 * File: view.php
 
+## Run with Docker
+
+The included `Dockerfile` builds a self-contained nginx + PHP-FPM stack (with the nice-URL
+rewrites, static denies, and the CSP the inline PDF/media embeds rely on) — handy for trying
+the app locally without configuring a web server yourself:
+
+```bash
+docker build -t gfe .
+docker run --rm -p 8080:80 -v "$PWD":/var/www/html gfe
+```
+
+Then browse [http://localhost:8080](http://localhost:8080) — the shipped `config.php` already
+points `GFE_ROOT_DIR`/`GFE_DIR` at the container root (`/var/www/html`) and the URLs at
+`http://localhost:8080`, so no configuration is needed to try it. The bind-mount serves your
+working tree live, so you can edit and refresh without rebuilding. For a real deployment, edit
+those `config.php` values to your own path and URL.
+
 ## Changelog
 
 ### Version 3.2.0 (19-07-2026)
+* DEV: Added a `Dockerfile` that builds a self-contained nginx + PHP-FPM stack for running the app locally (`docker run -p 8080:80 -v "$PWD":/var/www/html gfe`); hidden from the listing and denied at the web-server level
 * NEW: Per-deployment ignore lists — define `GFE_IGNORE_FILES`, `GFE_IGNORE_EXT` and/or `GFE_IGNORE_FOLDERS` in `config.php` to hide extra files/extensions/folders. They are merged into (never replace) the `settings.php` baseline, so `settings.php` can stay identical across deployments
 * IMPROVED: A file that can't be previewed (archives, binaries, and other non-viewable types) now opens a viewing page with a "can't be previewed" message and a Download button, instead of triggering an immediate download — so viewing is consistent across every file type and downloading is always a deliberate action
 * IMPROVED: The viewing page's Previous/Next controls now show as disabled placeholders when a file is alone in its folder, matching the first/last-file behaviour so the footer looks the same regardless of folder size
