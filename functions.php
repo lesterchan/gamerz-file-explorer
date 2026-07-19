@@ -300,9 +300,6 @@ function viewer_footer(array $nav, string $downloadUrl): string
 }
 
 /**
- * @return array<string, string>
- */
-/**
  * Read a JPEG/TIFF's EXIF block and format it into display chips. Non-EXIF
  * formats and files without a header return no chips.
  *
