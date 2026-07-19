@@ -169,11 +169,113 @@ final class FunctionsTest extends TestCase
         }
         // A file with no EXIF header yields nothing (exif_read_data returns false).
         $this->assertSame([], image_exif($this->root() . '/notes.txt', 'jpg'));
-        // Make, Model and DateTimeOriginal each map to a friendly label, in that order.
+        // The fixture carries Make ("GFE"), Model ("GFE Cam") and DateTimeOriginal, so the
+        // wrapper hands back a de-duplicated camera chip and a formatted capture-date chip.
         $this->assertSame(
-            ['Camera' => 'GFE', 'Model' => 'GFE Cam', 'Taken' => '2026:07:18 12:34:56'],
+            [
+                ['icon' => 'fa-camera', 'text' => 'GFE Cam', 'href' => null],
+                ['icon' => 'fa-calendar', 'text' => '18 Jul 2026, 12:34', 'href' => null],
+            ],
             image_exif($this->root() . '/photo.jpg', 'jpg')
         );
+    }
+
+    public function testExifChipsFormatsEverySetting(): void
+    {
+        $chips = exif_chips([
+            'Make' => 'Canon',
+            'Model' => 'Canon EOS 5D',        // make de-duplicated: "Canon EOS 5D", not "Canon Canon EOS 5D"
+            'LensModel' => 'EF 50mm f/1.8',
+            'FNumber' => '28/10',              // rational -> ƒ/2.8
+            'ExposureTime' => '1/200',         // sub-second -> 1/200s
+            'ISOSpeedRatings' => [100, 200],   // array -> first value
+            'FocalLength' => '500/10',         // rational -> 50mm
+            'DateTimeOriginal' => '2019:03:14 12:01:33',
+            'GPSLatitudeRef' => 'N',
+            'GPSLatitude' => ['1/1', '21/1', '4212/100'],
+            'GPSLongitudeRef' => 'E',
+            'GPSLongitude' => ['103/1', '49/1', '1140/100'],
+        ]);
+
+        $this->assertSame([
+            ['icon' => 'fa-camera', 'text' => 'Canon EOS 5D', 'href' => null],
+            ['icon' => null, 'text' => 'EF 50mm f/1.8', 'href' => null],
+            ['icon' => null, 'text' => "\u{0192}/2.8", 'href' => null],
+            ['icon' => null, 'text' => '1/200s', 'href' => null],
+            ['icon' => null, 'text' => 'ISO 100', 'href' => null],
+            ['icon' => null, 'text' => '50mm', 'href' => null],
+            ['icon' => 'fa-calendar', 'text' => '14 Mar 2019, 12:01', 'href' => null],
+            [
+                'icon' => 'fa-location-dot',
+                'text' => '1.36170, 103.81983',
+                'href' => 'https://www.google.com/maps/search/?api=1&query=1.361700,103.819833',
+            ],
+        ], $chips);
+    }
+
+    public function testExifChipsHandlesLongExposureAndSouthWestGps(): void
+    {
+        $chips = exif_chips([
+            'Make' => 'GFE',
+            'ExposureTime' => '2',             // >= 1s -> "2s"
+            'DateTimeOriginal' => 'not a date', // unparseable -> kept verbatim
+            'GPSLatitudeRef' => 'S',
+            'GPSLatitude' => ['33/1', '52/1', '0/1'],
+            'GPSLongitudeRef' => 'W',
+            'GPSLongitude' => ['70/1', '40/1', '0/1'],
+        ]);
+
+        $this->assertSame([
+            ['icon' => 'fa-camera', 'text' => 'GFE', 'href' => null],       // make only, no model
+            ['icon' => null, 'text' => '2s', 'href' => null],
+            ['icon' => 'fa-calendar', 'text' => 'not a date', 'href' => null],
+            [
+                'icon' => 'fa-location-dot',
+                'text' => '-33.86667, -70.66667',                            // S/W hemispheres negate
+                'href' => 'https://www.google.com/maps/search/?api=1&query=-33.866667,-70.666667',
+            ],
+        ], $chips);
+    }
+
+    public function testExifChipsRejectsMalformedValues(): void
+    {
+        // Empty/garbage tags contribute nothing, and a zero denominator, non-numeric
+        // rational, incomplete GPS and missing hemisphere ref are all discarded.
+        $this->assertSame([], exif_chips([
+            'Make' => '',
+            'Model' => ['array-not-scalar'],
+            'FNumber' => '5/0',                 // zero denominator
+            'ExposureTime' => 'abc',            // non-numeric
+            'ISOSpeedRatings' => 0,             // zero ISO dropped
+            'FocalLength' => '',
+            'GPSLatitude' => ['1/1'],              // fewer than three parts
+            'GPSLongitude' => ['1/1', '2/1', 'x/1'], // three parts, but one is non-numeric
+            'GPSLatitudeRef' => 'N',
+            'GPSLongitudeRef' => 'E',
+        ]));
+
+        // A plain-number aperture/focal length (already a float) also formats.
+        $this->assertSame(
+            [['icon' => null, 'text' => "\u{0192}/4", 'href' => null]],
+            exif_chips(['FNumber' => 4.0])
+        );
+    }
+
+    public function testMetaStrip(): void
+    {
+        $this->assertSame('', meta_strip([]));
+
+        $html = meta_strip([
+            ['icon' => 'fa-hard-drive', 'text' => '1MB', 'href' => null],
+            ['icon' => 'fa-location-dot', 'text' => '1.5, 103.8', 'href' => 'https://maps.example/?q=1.5,103.8'],
+            ['icon' => null, 'text' => 'ISO 100', 'href' => null],
+        ]);
+
+        $this->assertStringContainsString('<div class="gfe-meta">', $html);
+        $this->assertStringContainsString('<span class="gfe-chip"><i class="fa-solid fa-fw fa-hard-drive"', $html);
+        $this->assertStringContainsString('<a class="gfe-chip" href="https://maps.example/?q=1.5,103.8" target="_blank" rel="noopener">', $html);
+        // A chip with no icon renders just its text, no <i> tag.
+        $this->assertStringContainsString('<span class="gfe-chip">ISO 100</span>', $html);
     }
 
     public function testFileIcon(): void

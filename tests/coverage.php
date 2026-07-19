@@ -122,8 +122,10 @@ $scenarios = [
         'absent' => ['sortby/name']],
     ['target' => 'view.php', 'query' => 'file=code.php', 'expect' => ['&lt;?php']], // source shown escaped
     ['target' => 'view.php', 'query' => 'file=pixel.png', 'expect' => ['Viewing Image', 'img-fluid',
+        'gfe-meta', 'fa-ruler-combined', // no-EXIF image still shows dimensions + size chips
         'content="summary_large_image"', 'og:image" content="http://gfe.test/pixel.png"']], // the image is its own social preview
-    ['target' => 'view.php', 'query' => 'file=photo.jpg', 'expect' => ['Viewing Image', 'Model', 'GFE Cam']], // EXIF panel
+    ['target' => 'view.php', 'query' => 'file=photo.jpg',
+        'expect' => ['Viewing Image', 'gfe-chip', 'fa-camera', 'GFE Cam', '18 Jul 2026']], // EXIF chips (camera + capture date)
 
     ['target' => 'view.php', 'query' => 'file=broken.png', 'expect' => ['File Is Not A Valid Image']],
     ['target' => 'view.php', 'query' => 'file=report.pdf', 'expect' => ['Viewing PDF', 'gfe-embed-pdf']], // inline PDF

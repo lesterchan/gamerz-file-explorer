@@ -90,6 +90,10 @@ if (in_array($file_ext, $settings['text_ext'], true)) {
     $lines = count_lines($text_content);
     $lines_text = $lines === 1 ? 'Line' : 'Lines';
     $text_size = format_size(strlen($text_content));
+    $text_meta = meta_strip([
+        ['icon' => 'fa-list-ol', 'text' => $lines . ' ' . $lines_text, 'href' => null],
+        ['icon' => 'fa-hard-drive', 'text' => $text_size, 'href' => null],
+    ]);
     // Drop a single trailing newline so the numbered gutter lines up with the rendered code.
     $code_display = str_ends_with($text_content, "\n") ? substr($text_content, 0, -1) : $text_content;
     $gutter = $lines > 0 ? implode("\n", range(1, $lines)) : '';
@@ -107,10 +111,7 @@ if (in_array($file_ext, $settings['text_ext'], true)) {
                         <pre class="gfe-code-body mb-0"><code><?php echo esc($code_display); ?></code></pre>
                     </div>
                 </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item"><?php echo $lines . ' ' . $lines_text; ?></li>
-                    <li class="list-group-item">Size: <?php echo $text_size; ?></li>
-                </ul>
+                <?php echo $text_meta; ?>
                 <?php echo viewer_footer($nav, url($file, 'download')); ?>
             </div>
     <?php template_footer($full_url, $full_url_href); ?>
@@ -121,11 +122,13 @@ if (in_array($file_ext, $settings['text_ext'], true)) {
         display_error('File Is Not A Valid Image');
     }
     [$image_width, $image_height] = $imagesize;
-    $image_facts = [
-        'Width' => (int) $image_width . 'px',
-        'Height' => (int) $image_height . 'px',
-        'Size' => format_size((int) filesize($full_path)),
-    ] + image_exif($full_path, $file_ext);
+    $image_meta = meta_strip(array_merge(
+        [
+            ['icon' => 'fa-ruler-combined', 'text' => (int) $image_width . ' × ' . (int) $image_height, 'href' => null],
+            ['icon' => 'fa-hard-drive', 'text' => format_size((int) filesize($full_path)), 'href' => null],
+        ],
+        image_exif($full_path, $file_ext)
+    ));
     $image_name_escaped = esc($file_name);
     ?>
     <?php template_header(' - Viewing Image - ' . $file_name, $breadcrumbs, $canonical, $full_url_href); ?>
@@ -137,11 +140,7 @@ if (in_array($file_ext, $settings['text_ext'], true)) {
                          width="<?php echo (int) $image_width; ?>" height="<?php echo (int) $image_height; ?>"
                          alt="Viewing Image - <?php echo $image_name_escaped; ?>">
                 </div>
-                <ul class="list-group list-group-flush">
-                    <?php foreach ($image_facts as $fact_label => $fact_value) : ?>
-                    <li class="list-group-item"><?php echo esc($fact_label); ?>: <?php echo esc($fact_value); ?></li>
-                    <?php endforeach; ?>
-                </ul>
+                <?php echo $image_meta; ?>
                 <?php echo viewer_footer($nav, url($file, 'download')); ?>
             </div>
     <?php template_footer($full_url, $full_url_href); ?>
@@ -160,9 +159,7 @@ if (in_array($file_ext, $settings['text_ext'], true)) {
             <div class="card">
                 <div class="card-header"><?php echo $media_name_escaped; ?></div>
                 <div class="card-body <?php echo $media['class']; ?>"><?php echo $media['html']; ?></div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Size: <?php echo $media_size; ?></li>
-                </ul>
+                <?php echo meta_strip([['icon' => 'fa-hard-drive', 'text' => $media_size, 'href' => null]]); ?>
                 <?php echo viewer_footer($nav, url($file, 'download')); ?>
             </div>
     <?php template_footer($full_url, $full_url_href); ?>
@@ -176,9 +173,7 @@ if (in_array($file_ext, $settings['text_ext'], true)) {
             <div class="card">
                 <div class="card-header"><?php echo $file_name_escaped; ?></div>
                 <div class="card-body p-0"><p class="gfe-embed-fallback">This file can&rsquo;t be previewed in the browser. Use the Download button below.</p></div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Size: <?php echo $file_size; ?></li>
-                </ul>
+                <?php echo meta_strip([['icon' => 'fa-hard-drive', 'text' => $file_size, 'href' => null]]); ?>
                 <?php echo viewer_footer($nav, url($file, 'download')); ?>
             </div>
     <?php template_footer($full_url, $full_url_href); ?>

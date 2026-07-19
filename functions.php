@@ -5,8 +5,8 @@ declare(strict_types=1);
 /**
  * GaMerZ File Explorer — shared functions.
  *
- * The GfeSettings and GfeEntry array-shape type aliases are declared globally
- * in phpstan.neon.dist so every file can reference them.
+ * The GfeSettings, GfeEntry and GfeChip array-shape type aliases are declared
+ * globally in phpstan.neon.dist so every file can reference them.
  */
 
 function esc(string $value): string
@@ -302,6 +302,12 @@ function viewer_footer(array $nav, string $downloadUrl): string
 /**
  * @return array<string, string>
  */
+/**
+ * Read a JPEG/TIFF's EXIF block and format it into display chips. Non-EXIF
+ * formats and files without a header return no chips.
+ *
+ * @return list<GfeChip>
+ */
 function image_exif(string $path, string $ext): array
 {
     if (! in_array($ext, ['jpg', 'jpeg', 'tif', 'tiff'], true) || ! function_exists('exif_read_data')) {
@@ -311,15 +317,212 @@ function image_exif(string $path, string $ext): array
     if (! is_array($exif)) {
         return [];
     }
-    $summary = [];
-    foreach (['Make' => 'Camera', 'Model' => 'Model', 'DateTimeOriginal' => 'Taken'] as $key => $label) {
-        $raw = $exif[$key] ?? '';
-        $value = is_scalar($raw) ? trim((string) $raw) : '';
-        if ($value !== '') {
-            $summary[$label] = $value;
-        }
+    return exif_chips($exif);
+}
+
+/**
+ * Format a raw exif_read_data() array into metadata chips: camera body, lens,
+ * exposure settings (aperture, shutter, ISO, focal length), capture date and a
+ * GPS chip that links out to a map. Pure, so every branch is unit-testable
+ * without a JPEG that happens to carry each tag.
+ *
+ * @param  array<string, mixed> $exif
+ * @return list<GfeChip>
+ */
+function exif_chips(array $exif): array
+{
+    $chips = [];
+
+    $make = exif_text($exif['Make'] ?? null);
+    $model = exif_text($exif['Model'] ?? null);
+    // Avoid "Canon Canon EOS 5D": drop the make when the model already leads with it.
+    $camera = $make !== '' && ! str_starts_with(strtolower($model), strtolower($make))
+        ? trim($make . ' ' . $model)
+        : $model;
+    if ($camera !== '') {
+        $chips[] = ['icon' => 'fa-camera', 'text' => $camera, 'href' => null];
     }
-    return $summary;
+
+    $lens = exif_text($exif['UndefinedTag:0xA434'] ?? $exif['LensModel'] ?? null);
+    if ($lens !== '' && strcasecmp($lens, $camera) !== 0) {
+        $chips[] = ['icon' => null, 'text' => $lens, 'href' => null];
+    }
+
+    $aperture = exif_rational($exif['FNumber'] ?? null);
+    if ($aperture !== null && $aperture > 0) {
+        $chips[] = ['icon' => null, 'text' => "\u{0192}/" . exif_trim_num($aperture), 'href' => null];
+    }
+
+    $shutter = exif_shutter($exif['ExposureTime'] ?? null);
+    if ($shutter !== '') {
+        $chips[] = ['icon' => null, 'text' => $shutter, 'href' => null];
+    }
+
+    $iso = $exif['ISOSpeedRatings'] ?? null;
+    if (is_array($iso)) {
+        $iso = $iso[0] ?? null;
+    }
+    if (is_numeric($iso) && (int) $iso > 0) {
+        $chips[] = ['icon' => null, 'text' => 'ISO ' . (int) $iso, 'href' => null];
+    }
+
+    $focal = exif_rational($exif['FocalLength'] ?? null);
+    if ($focal !== null && $focal > 0) {
+        $chips[] = ['icon' => null, 'text' => exif_trim_num($focal) . 'mm', 'href' => null];
+    }
+
+    $taken = exif_date($exif['DateTimeOriginal'] ?? null);
+    if ($taken !== '') {
+        $chips[] = ['icon' => 'fa-calendar', 'text' => $taken, 'href' => null];
+    }
+
+    $gps = exif_gps($exif);
+    if ($gps !== null) {
+        [$lat, $lng] = $gps;
+        $query = number_format($lat, 6, '.', '') . ',' . number_format($lng, 6, '.', '');
+        $chips[] = [
+            'icon' => 'fa-location-dot',
+            'text' => number_format($lat, 5) . ', ' . number_format($lng, 5),
+            'href' => 'https://www.google.com/maps/search/?api=1&query=' . $query,
+        ];
+    }
+
+    return $chips;
+}
+
+/**
+ * @param  mixed $value
+ */
+function exif_text($value): string
+{
+    return is_scalar($value) ? trim((string) $value) : '';
+}
+
+/**
+ * Parse an EXIF rational ("56/10") or a plain number to a float; null when the
+ * value is missing, non-numeric or has a zero denominator.
+ *
+ * @param  mixed $value
+ */
+function exif_rational($value): ?float
+{
+    if (is_int($value) || is_float($value)) {
+        return (float) $value;
+    }
+    if (! is_string($value) || $value === '') {
+        return null;
+    }
+    if (str_contains($value, '/')) {
+        [$num, $den] = array_pad(explode('/', $value, 2), 2, '1');
+        if (! is_numeric($num) || ! is_numeric($den) || (float) $den === 0.0) {
+            return null;
+        }
+        return (float) $num / (float) $den;
+    }
+    return is_numeric($value) ? (float) $value : null;
+}
+
+/**
+ * Trim a float to a tidy string: 2.8 stays "2.8", 50.0 becomes "50".
+ */
+function exif_trim_num(float $value): string
+{
+    return rtrim(rtrim(number_format($value, 1, '.', ''), '0'), '.');
+}
+
+/**
+ * Shutter speed as a human string: sub-second as "1/200s", otherwise "2s".
+ *
+ * @param  mixed $value
+ */
+function exif_shutter($value): string
+{
+    $seconds = exif_rational($value);
+    if ($seconds === null || $seconds <= 0) {
+        return '';
+    }
+    return $seconds >= 1.0
+        ? exif_trim_num($seconds) . 's'
+        : '1/' . (string) (int) round(1 / $seconds) . 's';
+}
+
+/**
+ * "2026:07:18 12:34:56" -> "18 Jul 2026, 12:34"; the raw string is kept when it
+ * does not parse as an EXIF timestamp.
+ *
+ * @param  mixed $value
+ */
+function exif_date($value): string
+{
+    $raw = exif_text($value);
+    if ($raw === '') {
+        return '';
+    }
+    $date = \DateTimeImmutable::createFromFormat('Y:m:d H:i:s', $raw);
+    return $date !== false ? $date->format('j M Y, H:i') : $raw;
+}
+
+/**
+ * Convert the EXIF GPS tags to a decimal [latitude, longitude] pair; null when
+ * any component is absent or malformed.
+ *
+ * @param  array<string, mixed> $exif
+ * @return array{0: float, 1: float}|null
+ */
+function exif_gps(array $exif): ?array
+{
+    if (! isset($exif['GPSLatitude'], $exif['GPSLongitude'], $exif['GPSLatitudeRef'], $exif['GPSLongitudeRef'])) {
+        return null;
+    }
+    $lat = exif_gps_coord($exif['GPSLatitude'], $exif['GPSLatitudeRef']);
+    $lng = exif_gps_coord($exif['GPSLongitude'], $exif['GPSLongitudeRef']);
+    return $lat !== null && $lng !== null ? [$lat, $lng] : null;
+}
+
+/**
+ * One GPS axis: three rationals (degrees, minutes, seconds) plus a hemisphere
+ * ref ("N"/"S"/"E"/"W") folded into a signed decimal degree.
+ *
+ * @param  mixed $parts
+ * @param  mixed $ref
+ */
+function exif_gps_coord($parts, $ref): ?float
+{
+    if (! is_array($parts) || count($parts) < 3) {
+        return null;
+    }
+    $deg = exif_rational($parts[0] ?? null);
+    $min = exif_rational($parts[1] ?? null);
+    $sec = exif_rational($parts[2] ?? null);
+    if ($deg === null || $min === null || $sec === null) {
+        return null;
+    }
+    $decimal = $deg + $min / 60 + $sec / 3600;
+    return in_array(strtoupper(exif_text($ref)), ['S', 'W'], true) ? -$decimal : $decimal;
+}
+
+/**
+ * Render a horizontal strip of metadata chips beneath a viewer card. A chip
+ * carrying an href links out in a new tab (GPS -> map); the rest are static.
+ *
+ * @param  list<GfeChip> $chips
+ */
+function meta_strip(array $chips): string
+{
+    if ($chips === []) {
+        return '';
+    }
+    $html = '';
+    foreach ($chips as $chip) {
+        $icon = $chip['icon'] !== null
+            ? '<i class="fa-solid fa-fw ' . esc($chip['icon']) . '" aria-hidden="true"></i>'
+            : '';
+        $text = esc($chip['text']);
+        $html .= $chip['href'] !== null
+            ? '<a class="gfe-chip" href="' . esc($chip['href']) . '" target="_blank" rel="noopener">' . $icon . $text . '</a>'
+            : '<span class="gfe-chip">' . $icon . $text . '</span>';
+    }
+    return '<div class="gfe-meta">' . $html . '</div>';
 }
 
 /**
