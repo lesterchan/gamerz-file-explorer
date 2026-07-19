@@ -99,6 +99,8 @@ $scenarios = [
     ['target' => 'search.php', 'query' => 'search=inner&in=Sub Folder', 'expect' => ['inner.txt']],
     // The 'in' filter matches on a folder boundary: 'Sub' must not match the 'Sub Folder/' path.
     ['target' => 'search.php', 'query' => 'search=inner&in=Sub', 'expect' => ['No files match'], 'absent' => ['inner.txt']],
+    // Search must prune ignored-folder subtrees, not just their direct children.
+    ['target' => 'search.php', 'query' => 'search=leaktest', 'expect' => ['No files match'], 'absent' => ['leaktest.txt']],
     // Match against the folder path, not just the name: 'Folder' only hits via the path.
     ['target' => 'search.php', 'query' => 'search=Folder&match=path', 'expect' => ['inner.txt', 'Sub <mark>Folder</mark>']],
     ['target' => 'search.php', 'query' => 'search=notes&by=name&order=asc', 'expect' => ['notes.txt']],

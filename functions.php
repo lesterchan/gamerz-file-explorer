@@ -126,6 +126,13 @@ function list_files(string $path, array $settings, ?callable $filter = null): ar
         $full = $info->getPathname();
         $relative = substr($full, strlen(GFE_ROOT_DIR) + 1);
         if ($info->isDir()) {
+            // Prune ignored folders (and anything nested under them) so search never
+            // descends into vendor/tests/etc. and leaks their files.
+            foreach ($settings['ignore_folders'] as $ignored_folder) {
+                if ($relative === $ignored_folder || str_starts_with($relative, $ignored_folder . '/')) {
+                    continue 2;
+                }
+            }
             $files = array_merge($files, list_files($full, $settings, $filter));
             continue;
         }

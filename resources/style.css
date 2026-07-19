@@ -476,6 +476,9 @@ a:focus-visible,
 .gfe-fullpath .gfe-copy {
     flex: none;
 }
+.gfe-fullpath .gfe-copy i {
+    color: inherit;
+}
 .gfe-copy,
 .gfe-copy-code {
     padding: .15rem .45rem;
@@ -554,10 +557,19 @@ a:focus-visible,
     display: flex;
     align-items: stretch;
 }
-.gfe-code-gutter {
-    flex: 0 0 auto;
+.card-body .gfe-code .gfe-code-gutter,
+.card-body .gfe-code .gfe-code-body {
     margin: 0;
-    padding: 1em 0.75em;
+    padding: 1rem;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+}
+.card-body .gfe-code .gfe-code-gutter {
+    flex: 0 0 auto;
+    padding-right: 0.85rem;
+    padding-left: 0.85rem;
+    font-size: .85rem;
     text-align: right;
     color: var(--gfe-muted);
     background: var(--gfe-surface-2);
@@ -565,8 +577,8 @@ a:focus-visible,
     user-select: none;
     -webkit-user-select: none;
 }
-.gfe-code-body {
+.card-body .gfe-code .gfe-code-body {
     flex: 1 1 auto;
     min-width: 0;
-    margin: 0;
+    overflow: auto;
 }

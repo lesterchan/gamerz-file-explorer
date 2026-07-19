@@ -69,6 +69,7 @@ final class FunctionsTest extends TestCase
             + (int) filesize($root . '/.htaccess')                  // ignored extension
             + (int) filesize($root . '/backup.htaccess')            // ignored extension
             + (int) filesize($root . '/resources/icon.png')         // inside an ignored folder
+            + (int) filesize($root . '/resources/deep/leaktest.txt') // nested inside an ignored folder
             + (int) filesize($root . '/secret-note.txt')            // config.php-ignored filename
             + (int) filesize($root . '/draft.bak')                  // config.php-ignored extension
             + (int) filesize($root . '/private/hidden.txt');        // inside a config.php-ignored folder
@@ -87,6 +88,7 @@ final class FunctionsTest extends TestCase
         $this->assertNotContains('config.php', $names, 'ignored filename');
         $this->assertNotContains('archive.bin', $names, 'unmapped extension');
         $this->assertNotContains('icon.png', $names, 'inside ignored folder');
+        $this->assertNotContains('leaktest.txt', $names, 'nested inside ignored folder');
         $this->assertNotContains('HEAD', $names, 'inside a skipped VCS folder');
         $this->assertNotContains('secret-note.txt', $names, 'config.php-ignored filename');
         $this->assertNotContains('draft.bak', $names, 'config.php-ignored extension');

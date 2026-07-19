@@ -77,6 +77,10 @@ function gfe_make_content(?string $root = null): string
     file_put_contents($root . '/Sub Folder/inner.txt', "inner\n");
     // File inside an ignored folder ($ignore_folders contains resources).
     file_put_contents($root . '/resources/icon.png', "icon\n");
+    // File nested a level deeper inside an ignored folder — search must prune the whole
+    // subtree, not just direct children, so this must never surface in results.
+    @mkdir($root . '/resources/deep', 0777, true);
+    file_put_contents($root . '/resources/deep/leaktest.txt', "must not leak\n");
 
     // Deployment-specific ignores contributed by config.php (GFE_IGNORE_* constants),
     // merged into the settings.php baseline: an ignored filename, an ignored extension,
