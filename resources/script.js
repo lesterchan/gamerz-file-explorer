@@ -93,7 +93,7 @@ hljs.highlightAll();
                 row.hidden = q !== '' && name.indexOf(q) === -1;
             });
         };
-        search.placeholder = 'Filter this folder …';
+        search.placeholder = 'Filter here, enter to search …';
         if (search.form) {
             var searchButton = search.form.querySelector('button[type="submit"]');
             if (searchButton) {

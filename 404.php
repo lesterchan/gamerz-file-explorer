@@ -8,4 +8,4 @@ require 'config.php';
 $settings = require 'settings.php';
 require 'functions.php';
 
-display_error('404 - File Not Found');
+display_error('404 - File not found');

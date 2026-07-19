@@ -10,12 +10,12 @@ require 'functions.php';
 
 $url_path = urldecode(trim($_GET['dir'] ?? ''));
 if (! is_safe_path($url_path)) {
-    display_error('Invalid Directory');
+    display_error('Invalid directory');
 }
 
 foreach ($settings['ignore_folders'] as $ignored_folder) {
     if ($url_path === $ignored_folder || str_starts_with($url_path, $ignored_folder . '/')) {
-        display_error('Invalid Directory');
+        display_error('Invalid directory');
     }
 }
 
@@ -48,7 +48,7 @@ $sort_header = static function (string $column, string $label, string $width) us
     $ariaSort = $column === $sort_by
         ? ' aria-sort="' . ($get_sort_order === 'asc' ? 'ascending' : 'descending') . '"'
         : '';
-    return '<th' . $active . $ariaSort . ' style="width: ' . $width . ';"><a class="text-decoration-none text-reset d-block" href="' . $link . '" title="Sort By ' . $label . '">' . $label . '&nbsp;' . $icon . '</a></th>';
+    return '<th' . $active . $ariaSort . ' style="width: ' . $width . ';"><a class="text-decoration-none text-reset d-block" href="' . $link . '" title="Sort by ' . $label . '">' . $label . '&nbsp;' . $icon . '</a></th>';
 };
 
 $breadcrumbs = breadcrumbs([
@@ -58,7 +58,7 @@ $breadcrumbs = breadcrumbs([
     'sort_order' => $get_sort_order,
 ]);
 ?>
-<?php template_header($current_directory_name !== '' ? ' - Viewing Directory - ' . $current_directory_name : '', $breadcrumbs, $full_url); ?>
+<?php template_header($current_directory_name !== '' ? ' - Viewing directory - ' . $current_directory_name : '', $breadcrumbs, $full_url); ?>
 
             <div class="table-responsive gfe-surface">
                 <table class="table gfe-table align-middle" id="gfe-listing">
@@ -77,7 +77,7 @@ $breadcrumbs = breadcrumbs([
                         if ($url_path !== '') {
                             $parent_directory = $directory_names !== [] ? $directories_before_current : 'home';
                             echo '<tr class="gfe-row-parent">';
-                            echo '<td colspan="4"><a href="' . esc(url($parent_directory, 'dir', $get_sort_by, $get_sort_order)) . '" title="Parent Directory"><i class="fa-solid fa-fw fa-arrow-turn-up fa-rotate-270" aria-hidden="true"></i>&nbsp;Parent Directory</a></td>';
+                            echo '<td colspan="4"><a href="' . esc(url($parent_directory, 'dir', $get_sort_by, $get_sort_order)) . '" title="Parent directory"><i class="fa-solid fa-fw fa-arrow-turn-up fa-rotate-270" aria-hidden="true"></i>&nbsp;Parent directory</a></td>';
                             echo '</tr>';
                         }
                         foreach ($gmz_directories as $value) {

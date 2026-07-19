@@ -31,7 +31,7 @@ final class FunctionsTest extends TestCase
         $this->assertSame('2GB', format_size(2 * 1073741824));
         $this->assertSame('3MB', format_size(3 * 1048576));
         $this->assertSame('4KB', format_size(4 * 1024));
-        $this->assertSame('512b', format_size(512));
+        $this->assertSame('512B', format_size(512));
     }
 
     public function testDirSize(): void
@@ -499,7 +499,7 @@ final class FunctionsTest extends TestCase
     public function testTemplateHeaderUsesPreviewImageForCards(): void
     {
         ob_start();
-        template_header(' - Viewing Image', breadcrumbs([]), 'http://gfe.test/viewing/a.jpg/', 'http://gfe.test/a.jpg');
+        template_header(' - Viewing image', breadcrumbs([]), 'http://gfe.test/viewing/a.jpg/', 'http://gfe.test/a.jpg');
         $html = (string) ob_get_clean();
 
         $this->assertStringContainsString('content="summary_large_image"', $html, 'an image preview uses a large card');

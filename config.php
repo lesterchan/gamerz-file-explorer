@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 ### The Absolute Path Of The Folder That You Want To Show Its Contents (Without Trailing Slash)
-### Defaults to the Docker container root so `docker run` works unedited; change it for a real deployment.
+// Defaults to the Docker container root so `docker run` works unedited; change it for a real deployment.
 define('GFE_ROOT_DIR', '/var/www/html');
 
 ### The URL To That Folder (Without Trailing Slash)

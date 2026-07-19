@@ -9,7 +9,7 @@ $settings = require 'settings.php';
 require 'functions.php';
 
 if (! GFE_CAN_SEARCH) {
-    display_error('The Administrator Has Disabled The Searching Of Files');
+    display_error('The administrator has disabled the searching of files');
 }
 
 $search_keyword = trim(strip_tags($_GET['search'] ?? ''));
@@ -61,17 +61,17 @@ $breadcrumbs = breadcrumbs(['search_keyword' => $search_keyword]);
 
             <form class="gfe-panel mb-4" method="get" action="<?php echo GFE_URL; ?>/search.php">
                 <div class="row mb-3">
-                    <label for="search-term" class="col-sm-2 col-form-label">Search Term</label>
+                    <label for="search-term" class="col-sm-2 col-form-label">Search term</label>
                     <div class="col-sm-10">
-                        <input type="text" name="search" class="form-control" id="search-term" placeholder="Files ..."
+                        <input type="text" name="search" class="form-control" id="search-term" placeholder="Files &hellip;"
                                value="<?php echo esc($search_keyword); ?>">
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <label for="search-in" class="col-sm-2 col-form-label">Search In</label>
+                    <label for="search-in" class="col-sm-2 col-form-label">Search in</label>
                     <div class="col-sm-10">
                         <select id="search-in" name="in" class="form-select" size="1">
-                            <option value="all">All Folders</option>
+                            <option value="all">All folders</option>
                             <?php
                             foreach ($gmz_directories as $gmz_directory) {
                                 $gmz_directory_escaped = esc($gmz_directory);
@@ -92,18 +92,18 @@ $breadcrumbs = breadcrumbs(['search_keyword' => $search_keyword]);
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <label for="sort-by" class="col-sm-2 col-form-label">Sort By</label>
+                    <label for="sort-by" class="col-sm-2 col-form-label">Sort by</label>
                     <div class="col-sm-10">
                         <select id="sort-by" name="by" class="form-select" size="1">
-                            <option value="name"<?php echo $sort_by === 'name' ? ' selected' : ''; ?>>File Name</option>
-                            <option value="size"<?php echo $sort_by === 'size' ? ' selected' : ''; ?>>File Size</option>
-                            <option value="type"<?php echo $sort_by === 'type' ? ' selected' : ''; ?>>File Type</option>
-                            <option value="date"<?php echo $sort_by === 'date' ? ' selected' : ''; ?>>File Date</option>
+                            <option value="name"<?php echo $sort_by === 'name' ? ' selected' : ''; ?>>File name</option>
+                            <option value="size"<?php echo $sort_by === 'size' ? ' selected' : ''; ?>>File size</option>
+                            <option value="type"<?php echo $sort_by === 'type' ? ' selected' : ''; ?>>File type</option>
+                            <option value="date"<?php echo $sort_by === 'date' ? ' selected' : ''; ?>>File date</option>
                         </select>
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <label for="sort-order" class="col-sm-2 col-form-label">Sort Order</label>
+                    <label for="sort-order" class="col-sm-2 col-form-label">Sort order</label>
                     <div class="col-sm-10">
                         <select id="sort-order" name="order" class="form-select" size="1">
                             <option value="asc"<?php echo $sort_order_text === 'Ascending' ? ' selected' : ''; ?>>Ascending</option>

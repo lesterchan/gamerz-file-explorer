@@ -25,7 +25,7 @@ function format_size(int|float $size): string
     if ($size / 1024 > 1) {
         return round($size / 1024, 1) . 'KB';
     }
-    return round($size, 1) . 'b';
+    return round($size, 1) . 'B';
 }
 
 function content_disposition(string $filename): string
@@ -201,7 +201,7 @@ function list_directory(string $path, array $settings, string $prefix): array
 {
     $iterator = dir_iterator($path);
     if ($iterator === null) {
-        display_error('Invalid Directory');
+        display_error('Invalid directory');
     }
     $files = [];
     $directories = [];
@@ -552,14 +552,14 @@ function media_embed(string $ext, string $srcHref, string $downloadUrl, array $s
     }
     if (in_array($ext, $settings['video_ext'], true)) {
         return [
-            'label' => 'Video',
+            'label' => 'video',
             'class' => 'text-center',
             'html' => '<video class="gfe-embed-video" src="' . $src . '" controls preload="metadata">'
                 . 'Your browser cannot play this video.</video>',
         ];
     }
     return [
-        'label' => 'Audio',
+        'label' => 'audio',
         'class' => 'text-center',
         'html' => '<audio class="gfe-embed-audio" src="' . $src . '" controls preload="metadata">'
             . 'Your browser cannot play this audio.</audio>',
@@ -905,7 +905,7 @@ function template_footer(string $fullUrl = '', string $fullUrlHref = ''): void
             </main>
             <footer class="gfe-footer text-center">
                 <small class="text-body-secondary">
-                    Powered By <a href="https://github.com/lesterchan/gamerz-file-explorer">GaMerZ File Explorer Version <?php echo GFE_VERSION; ?></a>. Page Generated In <?php echo $generatedIn; ?>s.
+                    Powered by <a href="https://github.com/lesterchan/gamerz-file-explorer">GaMerZ File Explorer version <?php echo GFE_VERSION; ?></a>. Page generated in <?php echo $generatedIn; ?>s.
                 </small>
                 <br>
                 <small class="text-body-secondary">

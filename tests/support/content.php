@@ -19,7 +19,7 @@ function gfe_make_content(?string $root = null): string
     // An empty directory (covers the "No files found" listing branch).
     @mkdir($root . '/Empty', 0777, true);
     // The two symlinks below need OS symlink support (the CI runs on Linux/macOS). If
-    // symlink() silently fails, their scenarios mis-report as "File Does Not Exist"
+    // symlink() silently fails, their scenarios mis-report as "File does not exist"
     // rather than exercising the broken-symlink and containment branches they target.
     // A dangling symlink — exists but is neither a file nor a directory.
     @symlink($root . '/does-not-exist', $root . '/dangling.link');

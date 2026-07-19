@@ -69,7 +69,7 @@ $scenarios = [
         'href="#gfe-content"', '<main id="gfe-content">', 'rel="canonical" href="http://gfe.test/"',
         'id="gfe-listing"', 'data-gfe-copy'],
         'absent' => ['config.php']], // ignored file is hidden from the listing
-    ['target' => 'index.php', 'query' => 'dir=Sub Folder', 'expect' => ['inner.txt', 'Parent Directory']],
+    ['target' => 'index.php', 'query' => 'dir=Sub Folder', 'expect' => ['inner.txt', 'Parent directory']],
     ['target' => 'index.php', 'query' => 'by=name&order=asc', 'expect' => ['notes.txt']],
     ['target' => 'index.php', 'query' => 'by=size&order=asc', 'expect' => ['notes.txt']],
     ['target' => 'index.php', 'query' => 'by=bogus', 'expect' => ['notes.txt']],
@@ -77,23 +77,23 @@ $scenarios = [
     ['target' => 'index.php', 'query' => 'by=type&order=asc', 'expect' => ['Sub Folder', 'notes.txt']],
     ['target' => 'index.php', 'query' => 'dir=Empty', 'expect' => ['This folder is empty']],
     // Security: path traversal is rejected, not served.
-    ['target' => 'index.php', 'query' => 'dir=../etc', 'expect' => ['Invalid Directory'], 'absent' => ['root:']],
-    ['target' => 'index.php', 'query' => 'dir=%2e%2e/secret', 'expect' => ['Invalid Directory']],
+    ['target' => 'index.php', 'query' => 'dir=../etc', 'expect' => ['Invalid directory'], 'absent' => ['root:']],
+    ['target' => 'index.php', 'query' => 'dir=%2e%2e/secret', 'expect' => ['Invalid directory']],
     // A bare '..' segment (no trailing slash) must not list the parent of the web root.
-    ['target' => 'index.php', 'query' => 'dir=..', 'expect' => ['Invalid Directory']],
-    ['target' => 'index.php', 'query' => 'dir=.', 'expect' => ['Invalid Directory']],
-    ['target' => 'index.php', 'query' => 'dir=Sub Folder/..', 'expect' => ['Invalid Directory']],
-    ['target' => 'index.php', 'query' => 'dir=resources', 'expect' => ['Invalid Directory']], // ignored folder
+    ['target' => 'index.php', 'query' => 'dir=..', 'expect' => ['Invalid directory']],
+    ['target' => 'index.php', 'query' => 'dir=.', 'expect' => ['Invalid directory']],
+    ['target' => 'index.php', 'query' => 'dir=Sub Folder/..', 'expect' => ['Invalid directory']],
+    ['target' => 'index.php', 'query' => 'dir=resources', 'expect' => ['Invalid directory']], // ignored folder
     // A folder nested under an ignored folder must not be listable either.
-    ['target' => 'index.php', 'query' => 'dir=resources/nested', 'expect' => ['Invalid Directory']],
-    ['target' => 'index.php', 'query' => 'dir=nope', 'expect' => ['Invalid Directory']], // unreadable directory
+    ['target' => 'index.php', 'query' => 'dir=resources/nested', 'expect' => ['Invalid directory']],
+    ['target' => 'index.php', 'query' => 'dir=nope', 'expect' => ['Invalid directory']], // unreadable directory
     // Deployment-specific ignores from config.php (GFE_IGNORE_* merged into settings) are hidden.
     ['target' => 'index.php', 'absent' => ['secret-note.txt', 'draft.bak', 'hidden.txt']],
-    ['target' => 'index.php', 'query' => 'dir=private', 'expect' => ['Invalid Directory']], // config.php-ignored folder
+    ['target' => 'index.php', 'query' => 'dir=private', 'expect' => ['Invalid directory']], // config.php-ignored folder
     ['target' => 'index.php', 'env' => ['GFE_TEST_NICE' => 'false'], 'expect' => ['index.php?dir=']],
     ['target' => 'index.php', 'env' => ['GFE_TEST_GA' => ''], 'absent' => ['G-TESTID']], // analytics off
     // --- search.php ---
-    ['target' => 'search.php', 'expect' => ['All Folders', 'Sub Folder']],
+    ['target' => 'search.php', 'expect' => ['All folders', 'Sub Folder']],
     ['target' => 'search.php', 'query' => 'search=notes', 'expect' => ['notes.txt', '<mark>notes</mark>']], // matched term highlighted
     ['target' => 'search.php', 'query' => 'search=zzzzz', 'expect' => ['No files match']],
     ['target' => 'search.php', 'query' => 'search=inner&in=Sub Folder', 'expect' => ['inner.txt']],
@@ -110,55 +110,55 @@ $scenarios = [
     ['target' => 'search.php', 'query' => 'search=%22+onmouseover%3D%22alert(1)',
         'expect' => ['&quot; onmouseover=&quot;'], 'absent' => ['" onmouseover="']],
     ['target' => 'search.php', 'query' => 'search=x', 'env' => ['GFE_TEST_SEARCH' => 'false'],
-        'expect' => ['Disabled']],
+        'expect' => ['disabled']],
     // --- view.php ---
     ['target' => 'view.php', 'query' => 'file=notes.txt',
-        'expect' => ['line one', 'Viewing Text File', 'gfe-code-gutter', 'gfe-copy-code']],
-    ['target' => 'view.php', 'query' => 'file=empty.txt', 'expect' => ['Viewing Text File', '0 Lines']], // zero-line gutter path
+        'expect' => ['line one', 'Viewing text file', 'gfe-code-gutter', 'gfe-copy-code']],
+    ['target' => 'view.php', 'query' => 'file=empty.txt', 'expect' => ['Viewing text file', '0 lines']], // zero-line gutter path
     // Previous/Next follow the chosen sort: by name ascending, code.php sits between clip.mp4 and escape.txt.
     // The sort travels in the query string, and never appears in the path.
     ['target' => 'view.php', 'query' => 'file=code.php&by=name&order=asc',
         'expect' => ['viewing/clip.mp4/?by=name&amp;order=asc', 'viewing/empty.txt/?by=name&amp;order=asc'],
         'absent' => ['sortby/name']],
     ['target' => 'view.php', 'query' => 'file=code.php', 'expect' => ['&lt;?php']], // source shown escaped
-    ['target' => 'view.php', 'query' => 'file=pixel.png', 'expect' => ['Viewing Image', 'img-fluid',
+    ['target' => 'view.php', 'query' => 'file=pixel.png', 'expect' => ['Viewing image', 'img-fluid',
         'gfe-meta', 'fa-ruler-combined', // no-EXIF image still shows dimensions + size chips
         'content="summary_large_image"', 'og:image" content="http://gfe.test/pixel.png"']], // the image is its own social preview
     ['target' => 'view.php', 'query' => 'file=photo.jpg',
-        'expect' => ['Viewing Image', 'gfe-chip', 'fa-camera', 'GFE Cam', '18 Jul 2026']], // EXIF chips (camera + capture date)
+        'expect' => ['Viewing image', 'gfe-chip', 'fa-camera', 'GFE Cam', '18 Jul 2026']], // EXIF chips (camera + capture date)
 
-    ['target' => 'view.php', 'query' => 'file=broken.png', 'expect' => ['File Is Not A Valid Image']],
+    ['target' => 'view.php', 'query' => 'file=broken.png', 'expect' => ['File is not a valid image']],
     ['target' => 'view.php', 'query' => 'file=report.pdf', 'expect' => ['Viewing PDF', 'gfe-embed-pdf']], // inline PDF
     ['target' => 'view.php', 'query' => 'file=report.pdf&dl=1', 'expect' => ['%PDF-1.4 fake']], // download serves bytes
-    ['target' => 'view.php', 'query' => 'file=clip.mp4', 'expect' => ['Viewing Video', 'gfe-embed-video']], // inline video
-    ['target' => 'view.php', 'query' => 'file=song.mp3', 'expect' => ['Viewing Audio', 'gfe-embed-audio']], // inline audio
+    ['target' => 'view.php', 'query' => 'file=clip.mp4', 'expect' => ['Viewing video', 'gfe-embed-video']], // inline video
+    ['target' => 'view.php', 'query' => 'file=song.mp3', 'expect' => ['Viewing audio', 'gfe-embed-audio']], // inline audio
     ['target' => 'view.php', 'query' => 'file=archive.bin',
-        'expect' => ['Viewing File', 'previewed in the browser'], 'absent' => ['binary']], // non-viewable card, no auto-download
+        'expect' => ['Viewing file', 'previewed in the browser'], 'absent' => ['binary']], // non-viewable card, no auto-download
     ['target' => 'view.php', 'query' => 'file=archive.bin&dl=1', 'expect' => ['binary']], // Download button serves bytes
     // Regression: a space encoded as '+' (Apache re-encodes to %2B) must resolve to the real file.
     ['target' => 'view.php', 'query' => 'file=My%2BFile.txt',
-        'expect' => ['spaced filename', 'Viewing Text File'], 'absent' => ['File Does Not Exist']],
+        'expect' => ['spaced filename', 'Viewing text file'], 'absent' => ['File does not exist']],
     // Security: traversal and source/config files cannot be read.
-    ['target' => 'view.php', 'query' => 'file=../etc/passwd', 'expect' => ['Invalid Directory'], 'absent' => ['root:']],
-    ['target' => 'view.php', 'query' => 'file=..', 'expect' => ['Invalid Directory']], // bare '..' segment
-    ['target' => 'view.php', 'query' => 'file=Sub Folder/..', 'expect' => ['Invalid Directory']],
-    ['target' => 'view.php', 'query' => 'file=config.php', 'expect' => ['Invalid Directory'], 'absent' => ['GFE_ROOT_DIR']],
-    ['target' => 'view.php', 'query' => 'file=functions.php', 'expect' => ['Invalid Directory']],
-    ['target' => 'view.php', 'query' => 'file=.htaccess', 'expect' => ['Invalid Directory']], // ignored filename
-    ['target' => 'view.php', 'query' => 'file=backup.htaccess', 'expect' => ['Invalid Extension']], // ignored extension
+    ['target' => 'view.php', 'query' => 'file=../etc/passwd', 'expect' => ['Invalid directory'], 'absent' => ['root:']],
+    ['target' => 'view.php', 'query' => 'file=..', 'expect' => ['Invalid directory']], // bare '..' segment
+    ['target' => 'view.php', 'query' => 'file=Sub Folder/..', 'expect' => ['Invalid directory']],
+    ['target' => 'view.php', 'query' => 'file=config.php', 'expect' => ['Invalid directory'], 'absent' => ['GFE_ROOT_DIR']],
+    ['target' => 'view.php', 'query' => 'file=functions.php', 'expect' => ['Invalid directory']],
+    ['target' => 'view.php', 'query' => 'file=.htaccess', 'expect' => ['Invalid directory']], // ignored filename
+    ['target' => 'view.php', 'query' => 'file=backup.htaccess', 'expect' => ['Invalid extension']], // ignored extension
     // Deployment-specific ignores from config.php cannot be viewed/downloaded either.
-    ['target' => 'view.php', 'query' => 'file=secret-note.txt', 'expect' => ['Invalid Directory']], // config.php-ignored filename
-    ['target' => 'view.php', 'query' => 'file=draft.bak', 'expect' => ['Invalid Extension']], // config.php-ignored extension
-    ['target' => 'view.php', 'query' => 'file=private/hidden.txt', 'expect' => ['Invalid Directory']], // inside config.php-ignored folder
+    ['target' => 'view.php', 'query' => 'file=secret-note.txt', 'expect' => ['Invalid directory']], // config.php-ignored filename
+    ['target' => 'view.php', 'query' => 'file=draft.bak', 'expect' => ['Invalid extension']], // config.php-ignored extension
+    ['target' => 'view.php', 'query' => 'file=private/hidden.txt', 'expect' => ['Invalid directory']], // inside config.php-ignored folder
     // File nested inside an ignored folder is not viewable/downloadable through the viewer.
-    ['target' => 'view.php', 'query' => 'file=resources/icon.png', 'expect' => ['Invalid Directory'], 'absent' => ['img-fluid']],
-    ['target' => 'view.php', 'query' => 'file=dangling.link', 'expect' => ['File Does Not Exist']], // broken symlink
+    ['target' => 'view.php', 'query' => 'file=resources/icon.png', 'expect' => ['Invalid directory'], 'absent' => ['img-fluid']],
+    ['target' => 'view.php', 'query' => 'file=dangling.link', 'expect' => ['File does not exist']], // broken symlink
     // Symlink resolving outside the root is rejected by the realpath containment check.
-    ['target' => 'view.php', 'query' => 'file=escape.txt', 'expect' => ['Invalid Directory'], 'absent' => ['Viewing Text File']],
-    ['target' => 'view.php', 'query' => 'file=nope.txt', 'expect' => ['File Does Not Exist']],
-    ['target' => 'view.php', 'expect' => ['Invalid Directory']], // empty file parameter
+    ['target' => 'view.php', 'query' => 'file=escape.txt', 'expect' => ['Invalid directory'], 'absent' => ['Viewing text file']],
+    ['target' => 'view.php', 'query' => 'file=nope.txt', 'expect' => ['File does not exist']],
+    ['target' => 'view.php', 'expect' => ['Invalid directory']], // empty file parameter
     // --- 404.php ---
-    ['target' => '404.php', 'expect' => ['404 - File Not Found']],
+    ['target' => '404.php', 'expect' => ['404 - File not found']],
 ];
 
 echo '==> Running ' . count($scenarios) . " integration scenarios\n";
