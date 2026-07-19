@@ -262,6 +262,18 @@ final class FunctionsTest extends TestCase
         $this->assertSame(['prev' => '', 'next' => ''], sibling_nav($files, 'missing.txt', ''));
     }
 
+    public function testHighlightMatch(): void
+    {
+        // No keyword: the text is returned escaped, unwrapped.
+        $this->assertSame('a &amp; b', highlight_match('a & b', ''));
+
+        // Case-insensitive matches are wrapped in <mark>; surrounding text stays escaped.
+        $this->assertSame('x<mark>Ab</mark>y<mark>ab</mark>z', highlight_match('xAbyabz', 'ab'));
+
+        // Both the matched fragment and the rest are escaped, so no raw HTML leaks.
+        $this->assertSame('<mark>&lt;b&gt;</mark>!', highlight_match('<b>!', '<b>'));
+    }
+
     public function testSortField(): void
     {
         $this->assertSame('name', sort_field('name'));

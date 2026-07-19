@@ -66,7 +66,8 @@ if ($unitExit !== 0) {
 $scenarios = [
     // --- index.php ---
     ['target' => 'index.php', 'expect' => ['notes.txt', 'Sub Folder', 'My File.txt', 'aria-sort=', 'aria-hidden="true"',
-        'href="#gfe-content"', '<main id="gfe-content">', 'rel="canonical" href="http://gfe.test/"'],
+        'href="#gfe-content"', '<main id="gfe-content">', 'rel="canonical" href="http://gfe.test/"',
+        'gfe-filter-input', 'data-gfe-copy'],
         'absent' => ['config.php']], // ignored file is hidden from the listing
     ['target' => 'index.php', 'query' => 'dir=Sub Folder', 'expect' => ['inner.txt', 'Parent Directory']],
     ['target' => 'index.php', 'query' => 'by=name&order=asc', 'expect' => ['notes.txt']],
@@ -93,13 +94,13 @@ $scenarios = [
     ['target' => 'index.php', 'env' => ['GFE_TEST_GA' => ''], 'absent' => ['G-TESTID']], // analytics off
     // --- search.php ---
     ['target' => 'search.php', 'expect' => ['All Folders', 'Sub Folder']],
-    ['target' => 'search.php', 'query' => 'search=notes', 'expect' => ['notes.txt']],
+    ['target' => 'search.php', 'query' => 'search=notes', 'expect' => ['notes.txt', '<mark>notes</mark>']], // matched term highlighted
     ['target' => 'search.php', 'query' => 'search=zzzzz', 'expect' => ['No files match']],
     ['target' => 'search.php', 'query' => 'search=inner&in=Sub Folder', 'expect' => ['inner.txt']],
     // The 'in' filter matches on a folder boundary: 'Sub' must not match the 'Sub Folder/' path.
     ['target' => 'search.php', 'query' => 'search=inner&in=Sub', 'expect' => ['No files match'], 'absent' => ['inner.txt']],
     // Match against the folder path, not just the name: 'Folder' only hits via the path.
-    ['target' => 'search.php', 'query' => 'search=Folder&match=path', 'expect' => ['inner.txt', 'Sub Folder']],
+    ['target' => 'search.php', 'query' => 'search=Folder&match=path', 'expect' => ['inner.txt', 'Sub <mark>Folder</mark>']],
     ['target' => 'search.php', 'query' => 'search=notes&by=name&order=asc', 'expect' => ['notes.txt']],
     ['target' => 'search.php', 'query' => 'search=notes&by=size', 'expect' => ['notes.txt']],
     ['target' => 'search.php', 'query' => 'search=notes&by=bogus', 'expect' => ['notes.txt']],
@@ -109,11 +110,13 @@ $scenarios = [
     ['target' => 'search.php', 'query' => 'search=x', 'env' => ['GFE_TEST_SEARCH' => 'false'],
         'expect' => ['Disabled']],
     // --- view.php ---
-    ['target' => 'view.php', 'query' => 'file=notes.txt', 'expect' => ['line one', 'Viewing Text File']],
+    ['target' => 'view.php', 'query' => 'file=notes.txt',
+        'expect' => ['line one', 'Viewing Text File', 'gfe-code-gutter', 'gfe-copy-code']],
+    ['target' => 'view.php', 'query' => 'file=empty.txt', 'expect' => ['Viewing Text File', '0 Lines']], // zero-line gutter path
     // Previous/Next follow the chosen sort: by name ascending, code.php sits between clip.mp4 and escape.txt.
     // The sort travels in the query string, and never appears in the path.
     ['target' => 'view.php', 'query' => 'file=code.php&by=name&order=asc',
-        'expect' => ['viewing/clip.mp4/?by=name&amp;order=asc', 'viewing/escape.txt/?by=name&amp;order=asc'],
+        'expect' => ['viewing/clip.mp4/?by=name&amp;order=asc', 'viewing/empty.txt/?by=name&amp;order=asc'],
         'absent' => ['sortby/name']],
     ['target' => 'view.php', 'query' => 'file=code.php', 'expect' => ['&lt;?php']], // source shown escaped
     ['target' => 'view.php', 'query' => 'file=pixel.png', 'expect' => ['Viewing Image', 'img-fluid',

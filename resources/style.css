@@ -468,8 +468,23 @@ a:focus-visible,
     color: var(--gfe-muted);
 }
 .gfe-fullpath a {
+    flex: 1 1 auto;
+    min-width: 0;
     color: var(--gfe-muted);
     text-decoration: none;
+}
+.gfe-fullpath .gfe-copy {
+    flex: none;
+}
+.gfe-copy,
+.gfe-copy-code {
+    padding: .15rem .45rem;
+    line-height: 1;
+}
+.gfe-copied {
+    color: var(--gfe-accent-contrast);
+    background: var(--gfe-accent);
+    border-color: var(--gfe-accent);
 }
 .gfe-fullpath a:hover {
     color: var(--gfe-accent);
@@ -534,4 +549,24 @@ a:focus-visible,
     padding: 1.5rem;
     text-align: center;
     color: var(--gfe-muted);
+}
+.gfe-code {
+    display: flex;
+    align-items: stretch;
+}
+.gfe-code-gutter {
+    flex: 0 0 auto;
+    margin: 0;
+    padding: 1em 0.75em;
+    text-align: right;
+    color: var(--gfe-muted);
+    background: var(--gfe-surface-2);
+    border-right: 1px solid var(--gfe-border);
+    user-select: none;
+    -webkit-user-select: none;
+}
+.gfe-code-body {
+    flex: 1 1 auto;
+    min-width: 0;
+    margin: 0;
 }

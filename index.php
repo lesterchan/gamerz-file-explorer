@@ -60,6 +60,10 @@ $breadcrumbs = breadcrumbs([
 ?>
 <?php template_header($current_directory_name !== '' ? ' - Viewing Directory - ' . $current_directory_name : '', $breadcrumbs, $full_url); ?>
 
+            <div class="gfe-filter mb-3" hidden>
+                <label class="visually-hidden" for="gfe-filter-input">Filter this folder</label>
+                <input type="search" class="form-control" id="gfe-filter-input" placeholder="Filter this folder &hellip;" autocomplete="off">
+            </div>
             <div class="table-responsive gfe-surface">
                 <table class="table gfe-table align-middle">
                     <thead>

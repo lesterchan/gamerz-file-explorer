@@ -90,25 +90,28 @@ if (in_array($file_ext, $settings['text_ext'], true)) {
     $lines = count_lines($text_content);
     $lines_text = $lines === 1 ? 'Line' : 'Lines';
     $text_size = format_size(strlen($text_content));
+    // Drop a single trailing newline so the numbered gutter lines up with the rendered code.
+    $code_display = str_ends_with($text_content, "\n") ? substr($text_content, 0, -1) : $text_content;
+    $gutter = $lines > 0 ? implode("\n", range(1, $lines)) : '';
     ?>
     <?php template_header(' - Viewing Text File - ' . $file_name, $breadcrumbs, $canonical); ?>
 
             <div class="card">
-                <div class="card-header"><?php echo esc($file_name); ?></div>
-                <div class="card-body">
-                    <pre class="mb-0"><code><?php echo esc($text_content); ?></code></pre>
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span><?php echo esc($file_name); ?></span>
+                    <button type="button" class="btn btn-sm btn-outline-primary gfe-copy-code" title="Copy to clipboard" aria-label="Copy to clipboard" hidden><i class="fa-solid fa-copy" aria-hidden="true"></i></button>
+                </div>
+                <div class="card-body p-0">
+                    <div class="gfe-code">
+                        <pre class="gfe-code-gutter" aria-hidden="true"><?php echo $gutter; ?></pre>
+                        <pre class="gfe-code-body mb-0"><code><?php echo esc($code_display); ?></code></pre>
+                    </div>
                 </div>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item"><?php echo $lines . ' ' . $lines_text; ?></li>
                     <li class="list-group-item">Size: <?php echo $text_size; ?></li>
                 </ul>
-                <div class="card-footer">
-                    <div class="d-flex align-items-center" role="group" aria-label="File navigation">
-                        <div class="flex-fill text-start"><?php echo $nav['prev']; ?></div>
-                        <div class="flex-fill text-center"><a href="<?php echo esc(url($file, 'download')); ?>" title="Download" class="btn btn-primary">Download</a></div>
-                        <div class="flex-fill text-end"><?php echo $nav['next']; ?></div>
-                    </div>
-                </div>
+                <?php echo viewer_footer($nav, url($file, 'download')); ?>
             </div>
     <?php template_footer($full_url, $full_url_href); ?>
     <?php
@@ -139,13 +142,7 @@ if (in_array($file_ext, $settings['text_ext'], true)) {
                     <li class="list-group-item"><?php echo esc($fact_label); ?>: <?php echo esc($fact_value); ?></li>
                     <?php endforeach; ?>
                 </ul>
-                <div class="card-footer">
-                    <div class="d-flex align-items-center" role="group" aria-label="File navigation">
-                        <div class="flex-fill text-start"><?php echo $nav['prev']; ?></div>
-                        <div class="flex-fill text-center"><a href="<?php echo esc(url($file, 'download')); ?>" title="Download" class="btn btn-primary">Download</a></div>
-                        <div class="flex-fill text-end"><?php echo $nav['next']; ?></div>
-                    </div>
-                </div>
+                <?php echo viewer_footer($nav, url($file, 'download')); ?>
             </div>
     <?php template_footer($full_url, $full_url_href); ?>
     <?php
@@ -166,13 +163,7 @@ if (in_array($file_ext, $settings['text_ext'], true)) {
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">Size: <?php echo $media_size; ?></li>
                 </ul>
-                <div class="card-footer">
-                    <div class="d-flex align-items-center" role="group" aria-label="File navigation">
-                        <div class="flex-fill text-start"><?php echo $nav['prev']; ?></div>
-                        <div class="flex-fill text-center"><a href="<?php echo esc(url($file, 'download')); ?>" title="Download" class="btn btn-primary">Download</a></div>
-                        <div class="flex-fill text-end"><?php echo $nav['next']; ?></div>
-                    </div>
-                </div>
+                <?php echo viewer_footer($nav, url($file, 'download')); ?>
             </div>
     <?php template_footer($full_url, $full_url_href); ?>
     <?php
@@ -188,13 +179,7 @@ if (in_array($file_ext, $settings['text_ext'], true)) {
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">Size: <?php echo $file_size; ?></li>
                 </ul>
-                <div class="card-footer">
-                    <div class="d-flex align-items-center" role="group" aria-label="File navigation">
-                        <div class="flex-fill text-start"><?php echo $nav['prev']; ?></div>
-                        <div class="flex-fill text-center"><a href="<?php echo esc(url($file, 'download')); ?>" title="Download" class="btn btn-primary">Download</a></div>
-                        <div class="flex-fill text-end"><?php echo $nav['next']; ?></div>
-                    </div>
-                </div>
+                <?php echo viewer_footer($nav, url($file, 'download')); ?>
             </div>
     <?php template_footer($full_url, $full_url_href); ?>
     <?php

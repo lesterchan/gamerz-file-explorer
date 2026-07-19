@@ -136,11 +136,14 @@ if ($search_keyword !== '') {
                         if ($search_results !== []) {
                             foreach ($search_results as $value) {
                                 $folder = dirname((string) ($value['path'] ?? ''));
+                                $folder_label = $search_match === 'path'
+                                    ? highlight_match($folder, $search_keyword)
+                                    : esc($folder);
                                 $folder_html = $folder !== '' && $folder !== '.'
-                                    ? '<div class="small text-body-secondary">' . esc($folder) . '</div>'
+                                    ? '<div class="small text-body-secondary">' . $folder_label . '</div>'
                                     : '';
                                 $total_size += $value['size'];
-                                echo file_row($value, $value['path'] ?? '', $settings['extensions'], $folder_html, $get_sort_by, $get_sort_order);
+                                echo file_row($value, $value['path'] ?? '', $settings['extensions'], $folder_html, $get_sort_by, $get_sort_order, $search_keyword);
                             }
                         } else {
                             echo '<tr class="gfe-row-empty"><td class="text-center" colspan="4">No files match &lsquo;' . esc($search_keyword) . '&rsquo;. Try a different term.</td></tr>';

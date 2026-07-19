@@ -238,19 +238,58 @@ function file_icon(string $ext, array $extensions): string
  * @param GfeEntry                                    $entry
  * @param array<string, array{0: string, 1: string}> $extensions
  */
-function file_row(array $entry, string $linkPath, array $extensions, string $extraHtml = '', string $sortBy = '', string $sortOrder = ''): string
+function file_row(array $entry, string $linkPath, array $extensions, string $extraHtml = '', string $sortBy = '', string $sortOrder = '', string $highlight = ''): string
 {
     $name = esc($entry['name']);
+    $label = $highlight !== '' ? highlight_match($entry['name'], $highlight) : $name;
     $size = format_size($entry['size']);
     $type = esc($entry['type'] ?? 'Unknown');
     $date = date('jS F Y', $entry['date']);
     return '<tr>'
         . '<td><a href="' . esc(url($linkPath, 'file', $sortBy, $sortOrder)) . '" title="File: ' . $name . ' (' . $size . ')">'
-        . '<i class="fa-fw ' . file_icon($entry['ext'] ?? '', $extensions) . '" aria-hidden="true"></i>&nbsp;' . $name . '</a>' . $extraHtml . '</td>'
+        . '<i class="fa-fw ' . file_icon($entry['ext'] ?? '', $extensions) . '" aria-hidden="true"></i>&nbsp;' . $label . '</a>' . $extraHtml . '</td>'
         . '<td>' . $size . '</td>'
         . '<td>' . $type . '</td>'
         . '<td>' . $date . '</td>'
         . '</tr>';
+}
+
+/**
+ * Escapes $text for HTML and wraps each case-insensitive occurrence of $keyword in a
+ * <mark> so search results show why they matched. Slicing on the match boundaries keeps
+ * every emitted segment individually escaped, so no user input reaches the output raw.
+ */
+function highlight_match(string $text, string $keyword): string
+{
+    if ($keyword === '') {
+        return esc($text);
+    }
+    $out = '';
+    $offset = 0;
+    $len = strlen($keyword);
+    while (($pos = stripos($text, $keyword, $offset)) !== false) {
+        $out .= esc(substr($text, $offset, $pos - $offset));
+        $out .= '<mark>' . esc(substr($text, $pos, $len)) . '</mark>';
+        $offset = $pos + $len;
+    }
+    return $out . esc(substr($text, $offset));
+}
+
+/**
+ * The shared card footer for view.php: Previous/Next controls flanking a centred
+ * Download button. All four viewer branches (text/image/media/non-viewable) render
+ * an identical footer through here.
+ *
+ * @param array{prev: string, next: string} $nav
+ */
+function viewer_footer(array $nav, string $downloadUrl): string
+{
+    return '<div class="card-footer">'
+        . '<div class="d-flex align-items-center" role="group" aria-label="File navigation">'
+        . '<div class="flex-fill text-start">' . $nav['prev'] . '</div>'
+        . '<div class="flex-fill text-center"><a href="' . esc($downloadUrl) . '" title="Download" class="btn btn-primary">Download</a></div>'
+        . '<div class="flex-fill text-end">' . $nav['next'] . '</div>'
+        . '</div></div>';
 }
 
 /**
@@ -336,10 +375,10 @@ function sibling_nav(array $files, string $fileName, string $prefix, string $sor
     $next = $files[$index + 1] ?? null;
     return [
         'prev' => $prev !== null
-            ? '<a href="' . esc(url($prefix . $prev['name'], 'file', $sortBy, $sortOrder)) . '" class="btn btn-outline-primary" title="Previous: ' . esc($prev['name']) . '"><i class="fa-solid fa-fw fa-chevron-left" aria-hidden="true"></i>&nbsp;Previous</a>'
+            ? '<a href="' . esc(url($prefix . $prev['name'], 'file', $sortBy, $sortOrder)) . '" class="btn btn-outline-primary" data-gfe-nav="prev" title="Previous: ' . esc($prev['name']) . '"><i class="fa-solid fa-fw fa-chevron-left" aria-hidden="true"></i>&nbsp;Previous</a>'
             : '<span class="btn btn-outline-secondary disabled" aria-disabled="true"><i class="fa-solid fa-fw fa-chevron-left" aria-hidden="true"></i>&nbsp;Previous</span>',
         'next' => $next !== null
-            ? '<a href="' . esc(url($prefix . $next['name'], 'file', $sortBy, $sortOrder)) . '" class="btn btn-outline-primary" title="Next: ' . esc($next['name']) . '">Next&nbsp;<i class="fa-solid fa-fw fa-chevron-right" aria-hidden="true"></i></a>'
+            ? '<a href="' . esc(url($prefix . $next['name'], 'file', $sortBy, $sortOrder)) . '" class="btn btn-outline-primary" data-gfe-nav="next" title="Next: ' . esc($next['name']) . '">Next&nbsp;<i class="fa-solid fa-fw fa-chevron-right" aria-hidden="true"></i></a>'
             : '<span class="btn btn-outline-secondary disabled" aria-disabled="true">Next&nbsp;<i class="fa-solid fa-fw fa-chevron-right" aria-hidden="true"></i></span>',
     ];
 }
@@ -636,6 +675,7 @@ function template_footer(string $fullUrl = '', string $fullUrlHref = ''): void
             <div class="gfe-fullpath">
                 <i class="fa-solid fa-fw fa-link" aria-hidden="true"></i>
                 <a href="<?php echo esc($fullUrlHref); ?>"><?php echo esc($fullUrl); ?></a>
+                <button type="button" class="btn btn-sm btn-outline-primary gfe-copy" data-gfe-copy="<?php echo esc($fullUrlHref); ?>" title="Copy link" aria-label="Copy link" hidden><i class="fa-solid fa-copy" aria-hidden="true"></i></button>
             </div>
     <?php endif; ?>
     <?php if (GFE_CAN_SEARCH && ! $onSearch) : ?>

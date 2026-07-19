@@ -31,6 +31,8 @@ function gfe_make_content(?string $root = null): string
 
     // Text file with several lines (covers get_line_count multi-line path).
     file_put_contents($root . '/notes.txt', "line one\nline two\nline three\n");
+    // Empty text file (covers the viewer's zero-line gutter and no-trailing-newline paths).
+    file_put_contents($root . '/empty.txt', '');
     // Source file (highlight.js text view).
     file_put_contents($root . '/code.php', "<?php\necho 'hi';\n");
     // Filename with spaces — the nice-URL regression case.
