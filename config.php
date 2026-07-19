@@ -39,10 +39,8 @@ define('GFE_DEFAULT_SORT_BY', 'date');
 // asc | desc
 define('GFE_DEFAULT_SORT_ORDER', 'desc');
 
-### Extra Files/Extensions/Folders To Hide From The Listing (Deployment-Specific)
-### These Are Merged Into The settings.php Baseline, So settings.php Stays Identical Across
-### Deployments. Additions Only — They Cannot Un-Hide The Baseline. Leave As Empty Arrays
-### To Add Nothing. Example: define('GFE_IGNORE_FOLDERS', ['private', 'staging']);
+### Extra Files/Extensions/Folders To Hide From The Listing
+// Example: define('GFE_IGNORE_FOLDERS', ['private', 'staging']);
 define('GFE_IGNORE_FILES', []);
 define('GFE_IGNORE_EXT', []);
 define('GFE_IGNORE_FOLDERS', []);
