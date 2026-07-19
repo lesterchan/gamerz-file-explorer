@@ -81,6 +81,9 @@ those `config.php` values to your own path and URL.
 ## Changelog
 
 ### Version 3.2.0 (19-07-2026)
+* IMPROVED: Interface text now uses sentence case consistently — error messages, the search form's labels and options, page titles, and the footer — instead of a mix of Title Case, and the search/filter placeholders share a single ellipsis
+* FIXED: File sizes under 1 KB now display as `B` (bytes) instead of a lowercase `b`
+* DEV: Removed the unused `GFE_DIR` config constant — the app locates its own files via relative includes, so only `GFE_ROOT_DIR` (content path) and `GFE_URL` (app URL) remain
 * DEV: Added a `Dockerfile` that builds a self-contained nginx + PHP-FPM stack for running the app locally (`docker run -p 8080:80 -v "$PWD":/var/www/html gfe`); hidden from the listing and denied at the web-server level
 * NEW: Per-deployment ignore lists — define `GFE_IGNORE_FILES`, `GFE_IGNORE_EXT` and/or `GFE_IGNORE_FOLDERS` in `config.php` to hide extra files/extensions/folders. They are merged into (never replace) the `settings.php` baseline, so `settings.php` can stay identical across deployments
 * IMPROVED: A file that can't be previewed (archives, binaries, and other non-viewable types) now opens a viewing page with a "can't be previewed" message and a Download button, instead of triggering an immediate download — so viewing is consistent across every file type and downloading is always a deliberate action
