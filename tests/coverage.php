@@ -86,6 +86,9 @@ $scenarios = [
     // A folder nested under an ignored folder must not be listable either.
     ['target' => 'index.php', 'query' => 'dir=resources/nested', 'expect' => ['Invalid Directory']],
     ['target' => 'index.php', 'query' => 'dir=nope', 'expect' => ['Invalid Directory']], // unreadable directory
+    // Deployment-specific ignores from config.php (GFE_IGNORE_* merged into settings) are hidden.
+    ['target' => 'index.php', 'absent' => ['secret-note.txt', 'draft.bak', 'hidden.txt']],
+    ['target' => 'index.php', 'query' => 'dir=private', 'expect' => ['Invalid Directory']], // config.php-ignored folder
     ['target' => 'index.php', 'env' => ['GFE_TEST_NICE' => 'false'], 'expect' => ['index.php?dir=']],
     ['target' => 'index.php', 'env' => ['GFE_TEST_GA' => ''], 'absent' => ['G-TESTID']], // analytics off
     // --- search.php ---
@@ -134,6 +137,10 @@ $scenarios = [
     ['target' => 'view.php', 'query' => 'file=functions.php', 'expect' => ['Invalid Directory']],
     ['target' => 'view.php', 'query' => 'file=.htaccess', 'expect' => ['Invalid Directory']], // ignored filename
     ['target' => 'view.php', 'query' => 'file=backup.htaccess', 'expect' => ['Invalid Extension']], // ignored extension
+    // Deployment-specific ignores from config.php cannot be viewed/downloaded either.
+    ['target' => 'view.php', 'query' => 'file=secret-note.txt', 'expect' => ['Invalid Directory']], // config.php-ignored filename
+    ['target' => 'view.php', 'query' => 'file=draft.bak', 'expect' => ['Invalid Extension']], // config.php-ignored extension
+    ['target' => 'view.php', 'query' => 'file=private/hidden.txt', 'expect' => ['Invalid Directory']], // inside config.php-ignored folder
     // File nested inside an ignored folder is not viewable/downloadable through the viewer.
     ['target' => 'view.php', 'query' => 'file=resources/icon.png', 'expect' => ['Invalid Directory'], 'absent' => ['img-fluid']],
     ['target' => 'view.php', 'query' => 'file=dangling.link', 'expect' => ['File Does Not Exist']], // broken symlink

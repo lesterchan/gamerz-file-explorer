@@ -68,7 +68,10 @@ final class FunctionsTest extends TestCase
         $ignoredBytes = (int) filesize($root . '/config.php')       // ignored filename
             + (int) filesize($root . '/.htaccess')                  // ignored extension
             + (int) filesize($root . '/backup.htaccess')            // ignored extension
-            + (int) filesize($root . '/resources/icon.png');        // inside an ignored folder
+            + (int) filesize($root . '/resources/icon.png')         // inside an ignored folder
+            + (int) filesize($root . '/secret-note.txt')            // config.php-ignored filename
+            + (int) filesize($root . '/draft.bak')                  // config.php-ignored extension
+            + (int) filesize($root . '/private/hidden.txt');        // inside a config.php-ignored folder
         $this->assertSame($naive($root) - $ignoredBytes, dir_size($root, $this->settings));
     }
 
@@ -85,6 +88,9 @@ final class FunctionsTest extends TestCase
         $this->assertNotContains('archive.bin', $names, 'unmapped extension');
         $this->assertNotContains('icon.png', $names, 'inside ignored folder');
         $this->assertNotContains('HEAD', $names, 'inside a skipped VCS folder');
+        $this->assertNotContains('secret-note.txt', $names, 'config.php-ignored filename');
+        $this->assertNotContains('draft.bak', $names, 'config.php-ignored extension');
+        $this->assertNotContains('hidden.txt', $names, 'inside a config.php-ignored folder');
         $this->assertSame([], list_files($this->root() . '/nope', $this->settings));
 
         // The optional filter is applied during the walk.
@@ -100,6 +106,7 @@ final class FunctionsTest extends TestCase
         $this->assertContains('Sub Folder', $dirs);
         $this->assertNotContains('resources', $dirs, 'ignored folder');
         $this->assertNotContains('.git', $dirs, 'skipped VCS folder');
+        $this->assertNotContains('private', $dirs, 'config.php-ignored folder');
         $this->assertSame([], list_directories($this->root() . '/nope', $this->settings));
     }
 

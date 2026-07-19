@@ -76,6 +76,15 @@ function gfe_make_content(?string $root = null): string
     // File inside an ignored folder ($ignore_folders contains resources).
     file_put_contents($root . '/resources/icon.png', "icon\n");
 
+    // Deployment-specific ignores contributed by config.php (GFE_IGNORE_* constants),
+    // merged into the settings.php baseline: an ignored filename, an ignored extension,
+    // and a folder ignored by name. All three must be hidden, uncounted and unviewable —
+    // proving the config.php -> settings.php merge reaches every ignore-aware code path.
+    @mkdir($root . '/private', 0777, true);
+    file_put_contents($root . '/private/hidden.txt', "hidden\n");
+    file_put_contents($root . '/secret-note.txt', "top secret\n");
+    file_put_contents($root . '/draft.bak', "backup bytes\n");
+
     return $root;
 }
 

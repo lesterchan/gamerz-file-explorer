@@ -25,3 +25,9 @@ define('GFE_CAN_SEARCH', getenv('GFE_TEST_SEARCH') !== 'false');
 define('GFE_DEFAULT_SORT_BY', 'date');
 define('GFE_DEFAULT_SORT_ORDER', 'desc');
 define('GFE_GA_MEASUREMENT_ID', getenv('GFE_TEST_GA') ?: '');
+
+// Deployment-specific ignores merged into the settings.php baseline. Non-empty here so
+// the tests exercise the config.php -> settings.php merge (a file, an extension, a folder).
+define('GFE_IGNORE_FILES', ['secret-note.txt']);
+define('GFE_IGNORE_EXT', ['bak']);
+define('GFE_IGNORE_FOLDERS', ['private']);

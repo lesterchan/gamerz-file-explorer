@@ -28,6 +28,9 @@ Enables you to browse a folder on the web like Windows Explorer. It has the abil
  * Values can be `name`, `size`, `type` or `date`.
 * `GFE_DEFAULT_SORT_ORDER` - Default sort order.
  * Values can be `asc` or `desc`.
+* `GFE_IGNORE_FILES` / `GFE_IGNORE_EXT` / `GFE_IGNORE_FOLDERS` - Optional per-deployment additions to the ignore lists in `settings.php`. Whatever you list here is merged into (never replaces) the built-in baseline, so `settings.php` can stay identical across every deployment while each site hides its own extra files, extensions and folders. Leave them as empty arrays to add nothing.
+ * Example: `define('GFE_IGNORE_FOLDERS', ['private', 'staging']);`
+ * Note: Hiding a file from the listing is not access control — deny it at the web-server level too (see the Nginx block below) if it must not be served.
 
 #### To Enable Search Engine Friendly URLs
 If you are using Apache, upload `.htaccess` to the folder where you uploaded GaMerZ File Explorer.
@@ -62,6 +65,9 @@ rewrite ^/download/(.+[^/])/?$ /view.php?file=$1&dl=1 last;
 * File: view.php
 
 ## Changelog
+
+### Version 3.2.0 (19-07-2026)
+* NEW: Per-deployment ignore lists — define `GFE_IGNORE_FILES`, `GFE_IGNORE_EXT` and/or `GFE_IGNORE_FOLDERS` in `config.php` to hide extra files/extensions/folders. They are merged into (never replace) the `settings.php` baseline, so `settings.php` can stay identical across deployments
 
 ### Version 3.1.0 (18-07-2026)
 * NEW: Redesigned the interface as a modern file explorer with a light and dark design system tuned for correct contrast

@@ -22,3 +22,6 @@ parameters:
         - GFE_ROOT_FILENAME
         - GFE_DEFAULT_SORT_BY
         - GFE_DEFAULT_SORT_ORDER
+        - GFE_IGNORE_FILES
+        - GFE_IGNORE_EXT
+        - GFE_IGNORE_FOLDERS
