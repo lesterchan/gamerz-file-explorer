@@ -9,10 +9,7 @@ define('GFE_ROOT_DIR', '/var/www/html');
 ### The URL To That Folder (Without Trailing Slash)
 define('GFE_ROOT_URL', 'http://localhost:8080');
 
-### The Absolute Path Of The Folder You Uploaded The Files Of GaMerZ File Explorer (Without Trailing Slash)
-define('GFE_DIR', '/var/www/html');
-
-### The URL To That Folder (Without Trailing Slash)
+### The URL To GaMerZ File Explorer (Without Trailing Slash)
 define('GFE_URL', 'http://localhost:8080');
 
 ### Your Site Name

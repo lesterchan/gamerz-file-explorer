@@ -8,7 +8,7 @@
 #   Browse:                    http://localhost:8080
 #
 # The bind-mount serves your working tree live (edit + refresh, no rebuild). Point config.php's
-# GFE_ROOT_DIR/GFE_DIR at /var/www/html and GFE_ROOT_URL/GFE_URL at http://localhost:8080.
+# GFE_ROOT_DIR at /var/www/html and GFE_ROOT_URL/GFE_URL at http://localhost:8080.
 FROM php:8.5-fpm-alpine
 
 RUN apk add --no-cache nginx \

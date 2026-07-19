@@ -15,7 +15,6 @@ if (PHP_SAPI !== 'cli') {
 
 define('GFE_ROOT_DIR', getenv('GFE_TEST_ROOT') ?: sys_get_temp_dir());
 define('GFE_ROOT_URL', 'http://gfe.test');
-define('GFE_DIR', getenv('GFE_TEST_ROOT') ?: sys_get_temp_dir());
 define('GFE_URL', 'http://gfe.test');
 define('GFE_SITE_NAME', 'Test Files');
 define('GFE_SITE_DESCRIPTION', 'Test description');

@@ -19,7 +19,6 @@ parameters:
         - GFE_ROOT_DIR
         - GFE_ROOT_URL
         - GFE_URL
-        - GFE_DIR
         - GFE_ROOT_FILENAME
         - GFE_DEFAULT_SORT_BY
         - GFE_DEFAULT_SORT_ORDER

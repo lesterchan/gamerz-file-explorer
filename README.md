@@ -11,10 +11,7 @@ Enables you to browse a folder on the web like Windows Explorer. It has the abil
  * Example: `/home/user/public_html/files`
 * `GFE_ROOT_URL` - The URL to that folder (without trailing slash).
  * Example: `http://files.yoursite.com`
-* `GFE_DIR` - The absolute path of the folder you uploaded the files of GaMerZ File Explorer (without trailing slash).
- * Note: You can upload GaMerZ File Explorer into the same folder as the contents that you want to show.
- * Example: `/home/user/public_html/files`
-* `GFE_URL` - The URL to that folder (without trailing slash).
+* `GFE_URL` - The URL to GaMerZ File Explorer (without trailing slash).
  * Note: You can upload GaMerZ File Explorer into the same folder as the contents that you want to show.
  * Example: `http://files.yoursite.com`
 * `GFE_SITE_NAME` - Your site name
@@ -53,7 +50,7 @@ rewrite ^/viewing/(.+[^/])/?$ /view.php?file=$1 last;
 rewrite ^/download/(.+[^/])/?$ /view.php?file=$1&dl=1 last;
 ```
 
-#### Upload These Files To The Directory You Specify In `GFE_DIR`
+#### Upload These Files To The Directory You Serve At `GFE_URL`
 * Folder: resources
 * File: .htaccess (might be hidden)
 * File: 404.php
@@ -76,7 +73,7 @@ docker run --rm -p 8080:80 -v "$PWD":/var/www/html gfe
 ```
 
 Then browse [http://localhost:8080](http://localhost:8080) — the shipped `config.php` already
-points `GFE_ROOT_DIR`/`GFE_DIR` at the container root (`/var/www/html`) and the URLs at
+points `GFE_ROOT_DIR` at the container root (`/var/www/html`) and the URLs at
 `http://localhost:8080`, so no configuration is needed to try it. The bind-mount serves your
 working tree live, so you can edit and refresh without rebuilding. For a real deployment, edit
 those `config.php` values to your own path and URL.
