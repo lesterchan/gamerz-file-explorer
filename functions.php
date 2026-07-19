@@ -245,13 +245,13 @@ function file_icon(string $ext, array $extensions): string
  * @param GfeEntry                                    $entry
  * @param array<string, array{0: string, 1: string}> $extensions
  */
-function file_row(array $entry, string $linkPath, array $extensions, string $extraHtml = '', string $sortBy = '', string $sortOrder = '', string $highlight = ''): string
+function file_row(array $entry, string $linkPath, array $extensions, string $dateFormat, string $extraHtml = '', string $sortBy = '', string $sortOrder = '', string $highlight = ''): string
 {
     $name = esc($entry['name']);
     $label = $highlight !== '' ? highlight_match($entry['name'], $highlight) : $name;
     $size = format_size($entry['size']);
     $type = esc($entry['type'] ?? 'Unknown');
-    $date = date('jS F Y', $entry['date']);
+    $date = date($dateFormat, $entry['date']);
     return '<tr>'
         . '<td><a href="' . esc(url($linkPath, 'file', $sortBy, $sortOrder)) . '" title="File: ' . $name . ' (' . $size . ')">'
         . '<i class="fa-fw ' . file_icon($entry['ext'] ?? '', $extensions) . '" aria-hidden="true"></i>&nbsp;' . $label . '</a>' . $extraHtml . '</td>'
@@ -308,7 +308,7 @@ function viewer_footer(array $nav, string $downloadUrl): string
  *
  * @return list<GfeChip>
  */
-function image_exif(string $path, string $ext): array
+function image_exif(string $path, string $ext, string $dateFormat): array
 {
     if (! in_array($ext, ['jpg', 'jpeg', 'tif', 'tiff'], true) || ! function_exists('exif_read_data')) {
         return [];
@@ -317,7 +317,7 @@ function image_exif(string $path, string $ext): array
     if (! is_array($exif)) {
         return [];
     }
-    return exif_chips($exif);
+    return exif_chips($exif, $dateFormat);
 }
 
 /**
@@ -329,7 +329,7 @@ function image_exif(string $path, string $ext): array
  * @param  array<string, mixed> $exif
  * @return list<GfeChip>
  */
-function exif_chips(array $exif): array
+function exif_chips(array $exif, string $dateFormat): array
 {
     $chips = [];
 
@@ -348,14 +348,18 @@ function exif_chips(array $exif): array
         $chips[] = ['icon' => null, 'text' => $lens, 'href' => null];
     }
 
+    // Aperture, shutter, ISO and focal length are one shot's exposure, so they read as a
+    // single dot-separated chip rather than four fragmentary ones.
+    $exposure = [];
+
     $aperture = exif_rational($exif['FNumber'] ?? null);
     if ($aperture !== null && $aperture > 0) {
-        $chips[] = ['icon' => null, 'text' => "\u{0192}/" . exif_trim_num($aperture), 'href' => null];
+        $exposure[] = "\u{0192}/" . exif_trim_num($aperture);
     }
 
     $shutter = exif_shutter($exif['ExposureTime'] ?? null);
     if ($shutter !== '') {
-        $chips[] = ['icon' => null, 'text' => $shutter, 'href' => null];
+        $exposure[] = $shutter;
     }
 
     $iso = $exif['ISOSpeedRatings'] ?? null;
@@ -363,15 +367,19 @@ function exif_chips(array $exif): array
         $iso = $iso[0] ?? null;
     }
     if (is_numeric($iso) && (int) $iso > 0) {
-        $chips[] = ['icon' => null, 'text' => 'ISO ' . (int) $iso, 'href' => null];
+        $exposure[] = 'ISO ' . (int) $iso;
     }
 
     $focal = exif_rational($exif['FocalLength'] ?? null);
     if ($focal !== null && $focal > 0) {
-        $chips[] = ['icon' => null, 'text' => exif_trim_num($focal) . 'mm', 'href' => null];
+        $exposure[] = exif_trim_num($focal) . 'mm';
     }
 
-    $taken = exif_date($exif['DateTimeOriginal'] ?? null);
+    if ($exposure !== []) {
+        $chips[] = ['icon' => 'fa-sliders', 'text' => implode(" \u{00B7} ", $exposure), 'href' => null];
+    }
+
+    $taken = exif_date($exif['DateTimeOriginal'] ?? null, $dateFormat);
     if ($taken !== '') {
         $chips[] = ['icon' => 'fa-calendar', 'text' => $taken, 'href' => null];
     }
@@ -452,14 +460,14 @@ function exif_shutter($value): string
  *
  * @param  mixed $value
  */
-function exif_date($value): string
+function exif_date($value, string $dateFormat): string
 {
     $raw = exif_text($value);
     if ($raw === '') {
         return '';
     }
     $date = \DateTimeImmutable::createFromFormat('Y:m:d H:i:s', $raw);
-    return $date !== false ? $date->format('j M Y, H:i') : $raw;
+    return $date !== false ? $date->format($dateFormat) : $raw;
 }
 
 /**

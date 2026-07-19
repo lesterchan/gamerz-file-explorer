@@ -5,6 +5,9 @@ declare(strict_types=1);
 ### GaMerZ File Explorer Version (Please Do Not Edit This)
 define('GFE_VERSION', '3.2.0');
 
+### Date Format For Listing Rows And EXIF Capture Dates (PHP date() Syntax)
+$date_format = 'j M Y, H:i';
+
 ### What Files Not To Show In The List
 $ignore_files = [
     '.DS_Store',
@@ -178,6 +181,7 @@ $ignore_ext = array_values(array_unique(array_merge($ignore_ext, defined('GFE_IG
 $ignore_folders = array_values(array_unique(array_merge($ignore_folders, defined('GFE_IGNORE_FOLDERS') ? GFE_IGNORE_FOLDERS : [])));
 
 return [
+    'date_format' => $date_format,
     'ignore_files' => $ignore_files,
     'ignore_ext' => $ignore_ext,
     'ignore_folders' => $ignore_folders,

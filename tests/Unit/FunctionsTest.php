@@ -162,13 +162,13 @@ final class FunctionsTest extends TestCase
     public function testImageExif(): void
     {
         // A non-image extension short-circuits before touching the exif extension.
-        $this->assertSame([], image_exif($this->root() . '/pixel.png', 'png'));
+        $this->assertSame([], image_exif($this->root() . '/pixel.png', 'png', 'j M Y, H:i'));
 
         if (! function_exists('exif_read_data')) {
             $this->markTestSkipped('The exif extension is not loaded.');
         }
         // A file with no EXIF header yields nothing (exif_read_data returns false).
-        $this->assertSame([], image_exif($this->root() . '/notes.txt', 'jpg'));
+        $this->assertSame([], image_exif($this->root() . '/notes.txt', 'jpg', 'j M Y, H:i'));
         // The fixture carries Make ("GFE"), Model ("GFE Cam") and DateTimeOriginal, so the
         // wrapper hands back a de-duplicated camera chip and a formatted capture-date chip.
         $this->assertSame(
@@ -176,7 +176,7 @@ final class FunctionsTest extends TestCase
                 ['icon' => 'fa-camera', 'text' => 'GFE Cam', 'href' => null],
                 ['icon' => 'fa-calendar', 'text' => '18 Jul 2026, 12:34', 'href' => null],
             ],
-            image_exif($this->root() . '/photo.jpg', 'jpg')
+            image_exif($this->root() . '/photo.jpg', 'jpg', 'j M Y, H:i')
         );
     }
 
@@ -195,15 +195,12 @@ final class FunctionsTest extends TestCase
             'GPSLatitude' => ['1/1', '21/1', '4212/100'],
             'GPSLongitudeRef' => 'E',
             'GPSLongitude' => ['103/1', '49/1', '1140/100'],
-        ]);
+        ], 'j M Y, H:i');
 
         $this->assertSame([
             ['icon' => 'fa-camera', 'text' => 'Canon EOS 5D', 'href' => null],
             ['icon' => null, 'text' => 'EF 50mm f/1.8', 'href' => null],
-            ['icon' => null, 'text' => "\u{0192}/2.8", 'href' => null],
-            ['icon' => null, 'text' => '1/200s', 'href' => null],
-            ['icon' => null, 'text' => 'ISO 100', 'href' => null],
-            ['icon' => null, 'text' => '50mm', 'href' => null],
+            ['icon' => 'fa-sliders', 'text' => "\u{0192}/2.8 \u{00B7} 1/200s \u{00B7} ISO 100 \u{00B7} 50mm", 'href' => null],
             ['icon' => 'fa-calendar', 'text' => '14 Mar 2019, 12:01', 'href' => null],
             [
                 'icon' => 'fa-location-dot',
@@ -223,11 +220,11 @@ final class FunctionsTest extends TestCase
             'GPSLatitude' => ['33/1', '52/1', '0/1'],
             'GPSLongitudeRef' => 'W',
             'GPSLongitude' => ['70/1', '40/1', '0/1'],
-        ]);
+        ], 'j M Y, H:i');
 
         $this->assertSame([
             ['icon' => 'fa-camera', 'text' => 'GFE', 'href' => null],       // make only, no model
-            ['icon' => null, 'text' => '2s', 'href' => null],
+            ['icon' => 'fa-sliders', 'text' => '2s', 'href' => null],
             ['icon' => 'fa-calendar', 'text' => 'not a date', 'href' => null],
             [
                 'icon' => 'fa-location-dot',
@@ -252,12 +249,12 @@ final class FunctionsTest extends TestCase
             'GPSLongitude' => ['1/1', '2/1', 'x/1'], // three parts, but one is non-numeric
             'GPSLatitudeRef' => 'N',
             'GPSLongitudeRef' => 'E',
-        ]));
+        ], 'j M Y, H:i'));
 
         // A plain-number aperture/focal length (already a float) also formats.
         $this->assertSame(
-            [['icon' => null, 'text' => "\u{0192}/4", 'href' => null]],
-            exif_chips(['FNumber' => 4.0])
+            [['icon' => 'fa-sliders', 'text' => "\u{0192}/4", 'href' => null]],
+            exif_chips(['FNumber' => 4.0], 'j M Y, H:i')
         );
     }
 

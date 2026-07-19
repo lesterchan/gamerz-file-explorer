@@ -84,7 +84,7 @@ $breadcrumbs = breadcrumbs([
                             $directory_name = $value['name'];
                             $directory_name_escaped = esc($directory_name);
                             $directory_size = format_size($value['size']);
-                            $directory_date = date('jS F Y', $value['date']);
+                            $directory_date = date($settings['date_format'], $value['date']);
                             echo '<tr>';
                             echo '<td><a href="' . esc(url($prefix . $directory_name, 'dir', $get_sort_by, $get_sort_order)) . '" title="Folder: ' . $directory_name_escaped . ' (' . $directory_size . ')"><i class="fa-solid fa-fw fa-folder" aria-hidden="true"></i>&nbsp;' . $directory_name_escaped . '</a></td>';
                             echo '<td>' . $directory_size . '</td>';
@@ -94,7 +94,7 @@ $breadcrumbs = breadcrumbs([
                         }
                         if ($gmz_files !== []) {
                             foreach ($gmz_files as $value) {
-                                echo file_row($value, $prefix . $value['name'], $settings['extensions'], '', $get_sort_by, $get_sort_order);
+                                echo file_row($value, $prefix . $value['name'], $settings['extensions'], $settings['date_format'], '', $get_sort_by, $get_sort_order);
                             }
                         } elseif ($gmz_directories === []) {
                             echo '<tr class="gfe-row-empty"><td class="text-center" colspan="4">This folder is empty.</td></tr>';

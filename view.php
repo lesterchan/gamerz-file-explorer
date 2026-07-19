@@ -127,7 +127,7 @@ if (in_array($file_ext, $settings['text_ext'], true)) {
             ['icon' => 'fa-ruler-combined', 'text' => (int) $image_width . ' × ' . (int) $image_height, 'href' => null],
             ['icon' => 'fa-hard-drive', 'text' => format_size((int) filesize($full_path)), 'href' => null],
         ],
-        image_exif($full_path, $file_ext)
+        image_exif($full_path, $file_ext, $settings['date_format'])
     ));
     $image_name_escaped = esc($file_name);
     ?>
