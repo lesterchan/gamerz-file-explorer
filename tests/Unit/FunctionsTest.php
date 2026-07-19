@@ -385,6 +385,16 @@ final class FunctionsTest extends TestCase
         $this->assertStringContainsString('content="summary"', $html);
         $this->assertStringContainsString('resources/icon.png', $html);
         $this->assertStringContainsString('G-TESTID', $html, 'GA tag rendered when ID is set');
+        $this->assertStringContainsString('id="gfe-search-input"', $html, 'the top-bar search box renders');
+    }
+
+    public function testTemplateHeaderPrefillsSearchValue(): void
+    {
+        ob_start();
+        template_header(' - Search', breadcrumbs([]), '', '', 'holiday');
+        $html = (string) ob_get_clean();
+
+        $this->assertStringContainsString('value="holiday"', $html, 'the top-bar search prefills the current keyword');
     }
 
     public function testTemplateHeaderUsesPreviewImageForCards(): void
@@ -400,20 +410,18 @@ final class FunctionsTest extends TestCase
 
     public function testTemplateFooterBranches(): void
     {
-        // Not on the search page, with a full URL: renders path + search form.
-        $_SERVER['SCRIPT_FILENAME'] = dirname(__DIR__, 2) . '/index.php';
+        // With a full URL: renders the path row and closes the main landmark.
         ob_start();
         template_footer('http://gfe.test/Docs/');
         $withPath = (string) ob_get_clean();
         $this->assertStringContainsString('http://gfe.test/Docs/', $withPath);
+        $this->assertStringContainsString('gfe-fullpath', $withPath);
         $this->assertStringContainsString('</main>', $withPath, 'the main landmark is closed');
-        $this->assertStringContainsString('Search for files', $withPath);
 
-        // On the search page, no full URL: no path row, no bottom search form.
-        $_SERVER['SCRIPT_FILENAME'] = dirname(__DIR__, 2) . '/search.php';
+        // Without a full URL: no path row.
         ob_start();
         template_footer('');
-        $onSearch = (string) ob_get_clean();
-        $this->assertStringNotContainsString('Search for files', $onSearch);
+        $withoutPath = (string) ob_get_clean();
+        $this->assertStringNotContainsString('gfe-fullpath', $withoutPath);
     }
 }

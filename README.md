@@ -76,6 +76,7 @@ rewrite ^/download/(.+[^/])/?$ /view.php?file=$1&dl=1 last;
 * NEW: The text/source viewer now shows line numbers and a one-click Copy button for the file's contents
 * IMPROVED: Search results highlight the matched term in the file name (and in the folder path when matching on path)
 * SECURITY: File search no longer descends into ignored folders (`vendor`, `tests`, `build`, etc.), so files nested inside them can no longer surface in search results
+* IMPROVED: Moved search into the top bar as a compact input-and-button group beside a tighter theme switch, replacing the bottom-of-page search form and its separate "Advanced Search" link
 
 ### Version 3.1.0 (18-07-2026)
 * NEW: Redesigned the interface as a modern file explorer with a light and dark design system tuned for correct contrast

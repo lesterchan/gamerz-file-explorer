@@ -57,7 +57,7 @@ if ($search_keyword !== '') {
 
 $breadcrumbs = breadcrumbs(['search_keyword' => $search_keyword]);
 ?>
-<?php template_header($search_keyword !== '' ? ' - Search - ' . $search_keyword : ' - Search', $breadcrumbs); ?>
+<?php template_header($search_keyword !== '' ? ' - Search - ' . $search_keyword : ' - Search', $breadcrumbs, '', '', $search_keyword); ?>
 
             <form class="gfe-panel mb-4" method="get" action="<?php echo GFE_URL; ?>/search.php">
                 <div class="row mb-3">

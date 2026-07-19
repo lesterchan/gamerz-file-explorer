@@ -557,7 +557,7 @@ function display_error(string $msg): never
     exit();
 }
 
-function template_header(string $title, string $breadcrumbs, string $canonical = '', string $previewImage = ''): void
+function template_header(string $title, string $breadcrumbs, string $canonical = '', string $previewImage = '', string $searchValue = ''): void
 {
     $requestUri = esc(GFE_URL . ($_SERVER['REQUEST_URI'] ?? ''));
     // Prefer the canonical (nice-URL) permalink; fall back to the request URI.
@@ -656,6 +656,13 @@ function template_header(string $title, string $breadcrumbs, string $canonical =
                     </span>
                 </a>
                 <div class="gfe-topbar-actions">
+                    <?php if (GFE_CAN_SEARCH) : ?>
+                    <form class="gfe-search" role="search" method="get" action="<?php echo GFE_URL; ?>/search.php">
+                        <label class="visually-hidden" for="gfe-search-input">Search for files</label>
+                        <input type="search" class="form-control" id="gfe-search-input" name="search" placeholder="Search files &hellip;" value="<?php echo esc($searchValue); ?>">
+                        <button type="submit" class="btn btn-primary" aria-label="Search"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i></button>
+                    </form>
+                    <?php endif; ?>
                     <div class="gfe-theme-switch" role="group" aria-label="Colour theme">
                         <button type="button" data-gfe-set="light" title="Light theme" aria-label="Light theme"><i class="fa-solid fa-sun" aria-hidden="true"></i></button>
                         <button type="button" data-gfe-set="auto" title="Match system" aria-label="Match system theme"><i class="fa-solid fa-circle-half-stroke" aria-hidden="true"></i></button>
@@ -676,7 +683,6 @@ function template_footer(string $fullUrl = '', string $fullUrlHref = ''): void
 {
     $start = defined('GFE_START') ? (float) GFE_START : microtime(true);
     $generatedIn = number_format(microtime(true) - $start, 5);
-    $onSearch = basename($_SERVER['SCRIPT_FILENAME'] ?? '') === 'search.php';
     ?>
     <?php if ($fullUrl !== '') : ?>
             <div class="gfe-fullpath">
@@ -684,20 +690,6 @@ function template_footer(string $fullUrl = '', string $fullUrlHref = ''): void
                 <a href="<?php echo esc($fullUrlHref); ?>"><?php echo esc($fullUrl); ?></a>
                 <button type="button" class="btn btn-sm btn-outline-primary gfe-copy" data-gfe-copy="<?php echo esc($fullUrlHref); ?>" title="Copy link" aria-label="Copy link" hidden><i class="fa-solid fa-copy" aria-hidden="true"></i></button>
             </div>
-    <?php endif; ?>
-    <?php if (GFE_CAN_SEARCH && ! $onSearch) : ?>
-            <form class="row row-cols-lg-auto g-2 align-items-center mb-3" method="get" action="<?php echo GFE_URL; ?>/search.php">
-                <div class="col-12">
-                    <label class="visually-hidden" for="search-bottom-keyword">Search for files</label>
-                    <input type="text" class="form-control" id="search-bottom-keyword" name="search" placeholder="Search for files ...">
-                </div>
-                <div class="col-12">
-                    <button type="submit" class="btn btn-primary">Search</button>
-                </div>
-                <div class="col-12">
-                    <small class="text-body-secondary"><a href="<?php echo GFE_URL; ?>/search.php">Advanced Search</a></small>
-                </div>
-            </form>
     <?php endif; ?>
             </main>
             <footer class="gfe-footer text-center">
