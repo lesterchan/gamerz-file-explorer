@@ -177,5 +177,25 @@ if (in_array($file_ext, $settings['text_ext'], true)) {
     <?php template_footer($full_url, $full_url_href); ?>
     <?php
 } else {
-    stream_download($full_path, $file_name);
+    $file_size = format_size((int) filesize($full_path));
+    $file_name_escaped = esc($file_name);
+    ?>
+    <?php template_header(' - Viewing File - ' . $file_name, $breadcrumbs, $canonical); ?>
+
+            <div class="card">
+                <div class="card-header"><?php echo $file_name_escaped; ?></div>
+                <div class="card-body p-0"><p class="gfe-embed-fallback">This file can&rsquo;t be previewed in the browser. Use the Download button below.</p></div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Size: <?php echo $file_size; ?></li>
+                </ul>
+                <div class="card-footer">
+                    <div class="d-flex align-items-center" role="group" aria-label="File navigation">
+                        <div class="flex-fill text-start"><?php echo $nav['prev']; ?></div>
+                        <div class="flex-fill text-center"><a href="<?php echo esc(url($file, 'download')); ?>" title="Download" class="btn btn-primary">Download</a></div>
+                        <div class="flex-fill text-end"><?php echo $nav['next']; ?></div>
+                    </div>
+                </div>
+            </div>
+    <?php template_footer($full_url, $full_url_href); ?>
+    <?php
 }

@@ -125,7 +125,9 @@ $scenarios = [
     ['target' => 'view.php', 'query' => 'file=report.pdf&dl=1', 'expect' => ['%PDF-1.4 fake']], // download serves bytes
     ['target' => 'view.php', 'query' => 'file=clip.mp4', 'expect' => ['Viewing Video', 'gfe-embed-video']], // inline video
     ['target' => 'view.php', 'query' => 'file=song.mp3', 'expect' => ['Viewing Audio', 'gfe-embed-audio']], // inline audio
-    ['target' => 'view.php', 'query' => 'file=archive.bin', 'expect' => ['binary']], // force-download branch
+    ['target' => 'view.php', 'query' => 'file=archive.bin',
+        'expect' => ['Viewing File', 'previewed in the browser'], 'absent' => ['binary']], // non-viewable card, no auto-download
+    ['target' => 'view.php', 'query' => 'file=archive.bin&dl=1', 'expect' => ['binary']], // Download button serves bytes
     // Regression: a space encoded as '+' (Apache re-encodes to %2B) must resolve to the real file.
     ['target' => 'view.php', 'query' => 'file=My%2BFile.txt',
         'expect' => ['spaced filename', 'Viewing Text File'], 'absent' => ['File Does Not Exist']],
