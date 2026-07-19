@@ -68,6 +68,8 @@ rewrite ^/download/(.+[^/])/?$ /view.php?file=$1&dl=1 last;
 
 ### Version 3.2.0 (19-07-2026)
 * NEW: Per-deployment ignore lists — define `GFE_IGNORE_FILES`, `GFE_IGNORE_EXT` and/or `GFE_IGNORE_FOLDERS` in `config.php` to hide extra files/extensions/folders. They are merged into (never replace) the `settings.php` baseline, so `settings.php` can stay identical across deployments
+* IMPROVED: A file that can't be previewed (archives, binaries, and other non-viewable types) now opens a viewing page with a "can't be previewed" message and a Download button, instead of triggering an immediate download — so viewing is consistent across every file type and downloading is always a deliberate action
+* IMPROVED: The viewing page's Previous/Next controls now show as disabled placeholders when a file is alone in its folder, matching the first/last-file behaviour so the footer looks the same regardless of folder size
 
 ### Version 3.1.0 (18-07-2026)
 * NEW: Redesigned the interface as a modern file explorer with a light and dark design system tuned for correct contrast
