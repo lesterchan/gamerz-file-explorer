@@ -312,16 +312,16 @@ function media_embed(string $ext, string $srcHref, string $downloadUrl, array $s
 /**
  * Locates the current file among its already-sorted folder siblings and returns the
  * markup for the Previous/Next controls. A neighbour that exists links to its viewing
- * page; at a folder edge (or when the file is not found) the corresponding control is
- * a disabled placeholder so the layout stays stable. When the file is alone in its
- * folder both sides are empty, leaving just the Download button.
+ * page; at a folder edge the corresponding control is a disabled placeholder so the
+ * layout stays stable. A file alone in its folder renders both sides disabled, keeping
+ * the footer identical to a multi-file folder. Only a file that is not among its
+ * siblings at all yields empty controls.
  *
  * @param  list<GfeEntry> $files  Sibling files in the same folder, already sorted in listing order.
  * @return array{prev: string, next: string}
  */
 function sibling_nav(array $files, string $fileName, string $prefix, string $sortBy = '', string $sortOrder = ''): array
 {
-    $empty = ['prev' => '', 'next' => ''];
     $index = null;
     foreach ($files as $i => $entry) {
         if ($entry['name'] === $fileName) {
@@ -330,13 +330,10 @@ function sibling_nav(array $files, string $fileName, string $prefix, string $sor
         }
     }
     if ($index === null) {
-        return $empty;
+        return ['prev' => '', 'next' => ''];
     }
     $prev = $files[$index - 1] ?? null;
     $next = $files[$index + 1] ?? null;
-    if ($prev === null && $next === null) {
-        return $empty;
-    }
     return [
         'prev' => $prev !== null
             ? '<a href="' . esc(url($prefix . $prev['name'], 'file', $sortBy, $sortOrder)) . '" class="btn btn-outline-primary" title="Previous: ' . esc($prev['name']) . '"><i class="fa-solid fa-fw fa-chevron-left" aria-hidden="true"></i>&nbsp;Previous</a>'

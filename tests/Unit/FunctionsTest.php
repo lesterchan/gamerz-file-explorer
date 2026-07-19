@@ -251,8 +251,14 @@ final class FunctionsTest extends TestCase
         $this->assertStringContainsString('href="' . esc(url('c.txt', 'file', 'name', 'asc')) . '"', $sorted['next']);
         $this->assertStringContainsString('&amp;', $sorted['next'], 'the ampersand in the query is HTML-escaped');
 
-        // A lone file yields no controls; an unknown file yields none either.
-        $this->assertSame(['prev' => '', 'next' => ''], sibling_nav([$files[0]], 'a.txt', ''));
+        // A lone file renders both sides as disabled placeholders, matching a folder edge.
+        $lone = sibling_nav([$files[0]], 'a.txt', '');
+        $this->assertStringContainsString('disabled', $lone['prev']);
+        $this->assertStringContainsString('disabled', $lone['next']);
+        $this->assertStringNotContainsString('href=', $lone['prev']);
+        $this->assertStringNotContainsString('href=', $lone['next']);
+
+        // A file not among its siblings at all yields no controls.
         $this->assertSame(['prev' => '', 'next' => ''], sibling_nav($files, 'missing.txt', ''));
     }
 
