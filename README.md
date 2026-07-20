@@ -80,6 +80,10 @@ those `config.php` values to your own path and URL.
 
 ## Changelog
 
+### Version 3.2.1 (20-07-2026)
+* NEW: Added file-type labels and icons for more extensions — `apng`, `jfif`, `aac`, `opus`, `heif`, `bz2`, `xz`, `epub`, and Apple iWork `key`/`pages`/`numbers`; the browser-playable additions (`apng`/`jfif` images, `aac`/`opus` audio) preview inline instead of downloading
+* DEV: Tidied the stylesheet — removed an unused rule, de-duplicated the repeated column colours, and consolidated the shared card/surface/panel styling into one selector group (no visual change)
+
 ### Version 3.2.0 (19-07-2026)
 * IMPROVED: Interface text now uses sentence case consistently — error messages, the search form's labels and options, page titles, and the footer — instead of a mix of Title Case, and the search/filter placeholders share a single ellipsis
 * FIXED: File sizes under 1 KB now display as `B` (bytes) instead of a lowercase `b`
