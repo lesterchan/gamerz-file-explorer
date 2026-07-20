@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 ### GaMerZ File Explorer Version (Please Do Not Edit This)
-define('GFE_VERSION', '3.2.0');
+define('GFE_VERSION', '3.2.1');
 
 ### Date Format For Listing Rows And EXIF Capture Dates (PHP date() Syntax)
 $date_format = 'j M Y, H:i';
@@ -76,9 +76,11 @@ $text_ext = [
 
 ### File Extension To Be Parsed As Image
 $image_ext = [
+    'apng',
     'avif',
     'bmp',
     'gif',
+    'jfif',
     'jpeg',
     'jpg',
     'png',
@@ -94,37 +96,46 @@ $video_ext = [
 
 ### File Extension To Be Embedded As Audio (Browser-Playable Formats Only)
 $audio_ext = [
+    'aac',
     'flac',
     'm4a',
     'mp3',
+    'opus',
     'wav',
 ];
 
 ### File Extensions Description => [Label, Font Awesome 6 Icon Class]
 $extensions = [
     '7z' => ['7-Zip Archive', 'fa-solid fa-file-zipper'],
+    'aac' => ['AAC Audio', 'fa-solid fa-file-audio'],
     'ai' => ['Adobe Illustrator Artwork', 'fa-regular fa-file'],
+    'apng' => ['APNG Image', 'fa-solid fa-file-image'],
     'avi' => ['AVI Video', 'fa-solid fa-file-video'],
     'avif' => ['AVIF Image', 'fa-solid fa-file-image'],
     'bmp' => ['Bitmap Image', 'fa-solid fa-file-image'],
+    'bz2' => ['Bzip2 Archive', 'fa-solid fa-file-zipper'],
     'conf' => ['Configuration File', 'fa-solid fa-file-code'],
     'css' => ['Cascading Style Sheet', 'fa-solid fa-file-code'],
     'csv' => ['CSV Document', 'fa-solid fa-file-csv'],
     'doc' => ['Microsoft Word Document', 'fa-solid fa-file-word'],
     'docx' => ['Microsoft Word Document', 'fa-solid fa-file-word'],
+    'epub' => ['EPUB Book', 'fa-regular fa-file'],
     'exe' => ['Application', 'fa-regular fa-file'],
     'flac' => ['FLAC Audio', 'fa-solid fa-file-audio'],
     'gif' => ['GIF Image', 'fa-solid fa-file-image'],
     'gz' => ['Gzip Archive', 'fa-solid fa-file-zipper'],
     'heic' => ['HEIC Image', 'fa-solid fa-file-image'],
+    'heif' => ['HEIF Image', 'fa-solid fa-file-image'],
     'htm' => ['HTML Document', 'fa-solid fa-file-code'],
     'html' => ['HTML Document', 'fa-solid fa-file-code'],
     'ico' => ['Icon', 'fa-solid fa-file-image'],
     'ini' => ['Configuration File', 'fa-solid fa-file-code'],
+    'jfif' => ['JPEG Image', 'fa-solid fa-file-image'],
     'jpeg' => ['JPEG Image', 'fa-solid fa-file-image'],
     'jpg' => ['JPEG Image', 'fa-solid fa-file-image'],
     'js' => ['JavaScript File', 'fa-solid fa-file-code'],
     'json' => ['JSON Document', 'fa-solid fa-file-code'],
+    'key' => ['Apple Keynote Presentation', 'fa-solid fa-file-powerpoint'],
     'less' => ['LESS Stylesheet', 'fa-solid fa-file-code'],
     'm4a' => ['MPEG-4 Audio', 'fa-solid fa-file-audio'],
     'md' => ['Markdown Document', 'fa-solid fa-file-lines'],
@@ -137,8 +148,11 @@ $extensions = [
     'mpeg' => ['MPEG Video', 'fa-solid fa-file-video'],
     'mpg' => ['MPEG Video', 'fa-solid fa-file-video'],
     'msi' => ['Windows Installer Package', 'fa-regular fa-file'],
+    'numbers' => ['Apple Numbers Spreadsheet', 'fa-solid fa-file-excel'],
     'odt' => ['OpenDocument Text', 'fa-solid fa-file-word'],
+    'opus' => ['Opus Audio', 'fa-solid fa-file-audio'],
     'otf' => ['OpenType Font', 'fa-regular fa-file'],
+    'pages' => ['Apple Pages Document', 'fa-solid fa-file-word'],
     'pdf' => ['PDF Document', 'fa-solid fa-file-pdf'],
     'php' => ['PHP File', 'fa-solid fa-file-code'],
     'png' => ['PNG Image', 'fa-solid fa-file-image'],
@@ -170,6 +184,7 @@ $extensions = [
     'xls' => ['Microsoft Excel Worksheet', 'fa-solid fa-file-excel'],
     'xlsx' => ['Microsoft Excel Worksheet', 'fa-solid fa-file-excel'],
     'xml' => ['XML Document', 'fa-solid fa-file-code'],
+    'xz' => ['XZ Archive', 'fa-solid fa-file-zipper'],
     'yaml' => ['YAML Document', 'fa-solid fa-file-code'],
     'yml' => ['YAML Document', 'fa-solid fa-file-code'],
     'zip' => ['ZIP Archive', 'fa-solid fa-file-zipper'],

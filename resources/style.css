@@ -221,21 +221,22 @@ body {
     font-weight: 600;
 }
 
-.gfe-surface {
+.gfe-surface,
+.gfe-panel,
+.card {
     background: var(--gfe-surface);
     border: 1px solid var(--gfe-border);
     border-radius: 14px;
     box-shadow: var(--gfe-shadow);
+}
+.gfe-surface,
+.card {
     overflow: hidden;
 }
 .gfe-surface.table-responsive {
     overflow-x: auto;
 }
 .gfe-panel {
-    background: var(--gfe-surface);
-    border: 1px solid var(--gfe-border);
-    border-radius: 14px;
-    box-shadow: var(--gfe-shadow);
     padding: 1.5rem;
 }
 .gfe-table {
@@ -334,11 +335,9 @@ body {
 .gfe-table td:nth-child(2),
 .gfe-table th:nth-child(2) {
     text-align: right;
-    color: var(--gfe-muted);
 }
-.gfe-table td:nth-child(3) {
-    color: var(--gfe-muted);
-}
+.gfe-table td:nth-child(2),
+.gfe-table td:nth-child(3),
 .gfe-table td:nth-child(4) {
     color: var(--gfe-muted);
 }
@@ -380,13 +379,6 @@ body {
 .fa-file-lines,
 .fa-regular.fa-file { color: var(--ic-generic); }
 
-.card {
-    background: var(--gfe-surface);
-    border: 1px solid var(--gfe-border);
-    border-radius: 14px;
-    box-shadow: var(--gfe-shadow);
-    overflow: hidden;
-}
 .card-header {
     background: var(--gfe-surface-2);
     border-bottom: 1px solid var(--gfe-border);
@@ -404,13 +396,6 @@ body {
 .card-body pre code {
     font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
     font-size: .85rem;
-}
-.list-group-item {
-    background: var(--gfe-surface);
-    border-color: var(--gfe-border);
-    color: var(--gfe-muted);
-    font-size: .875rem;
-    font-variant-numeric: tabular-nums;
 }
 .gfe-meta {
     display: flex;
