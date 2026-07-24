@@ -81,6 +81,7 @@ those `config.php` values to your own path and URL.
 ## Changelog
 
 ### Version 3.2.1 (20-07-2026)
+* FIXED: Viewing a URL that traverses *through* a file (e.g. `/viewing/photo.jpg/anything`) no longer emits an `open_basedir restriction in effect` warning — such requests were already rejected correctly, but crawlers walking stale URLs triggered the warning in bulk. The path is now resolved with `realpath()` before any `is_file()` call
 * NEW: Added file-type labels and icons for more extensions — `apng`, `jfif`, `aac`, `opus`, `heif`, `bz2`, `xz`, `epub`, and Apple iWork `key`/`pages`/`numbers`; the browser-playable additions (`apng`/`jfif` images, `aac`/`opus` audio) preview inline instead of downloading
 * DEV: Tidied the stylesheet — removed an unused rule, de-duplicated the repeated column colours, and consolidated the shared card/surface/panel styling into one selector group (no visual change)
 

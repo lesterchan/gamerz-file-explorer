@@ -156,6 +156,8 @@ $scenarios = [
     // Symlink resolving outside the root is rejected by the realpath containment check.
     ['target' => 'view.php', 'query' => 'file=escape.txt', 'expect' => ['Invalid directory'], 'absent' => ['Viewing text file']],
     ['target' => 'view.php', 'query' => 'file=nope.txt', 'expect' => ['File does not exist']],
+    // Resolves inside the root but is a directory, not a file.
+    ['target' => 'view.php', 'query' => 'file=Sub Folder', 'expect' => ['File does not exist']],
     ['target' => 'view.php', 'expect' => ['Invalid directory']], // empty file parameter
     // --- 404.php ---
     ['target' => '404.php', 'expect' => ['404 - File not found']],

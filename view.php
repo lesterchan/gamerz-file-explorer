@@ -32,15 +32,24 @@ foreach ($settings['ignore_folders'] as $ignored_folder) {
 }
 
 $full_path = GFE_ROOT_DIR . '/' . $file;
-if (! is_file($full_path)) {
+
+// Resolve before any stat call. realpath() fails silently on a path that cannot
+// resolve, whereas is_file() on the same input emits an open_basedir warning --
+// which crawlers trigger in bulk by walking "through" a file, e.g.
+// /viewing/photos/x.jpg/Lester%20Chan's%20Files%20-%20Viewing%20Image%20-%20x.jpg
+$root_real = realpath(GFE_ROOT_DIR);
+$full_path_real = realpath($full_path);
+if ($full_path_real === false) {
     display_error('File does not exist');
 }
 
 // Confirm the resolved path stays inside the root, defeating symlinks that escape it.
-$root_real = realpath(GFE_ROOT_DIR);
-$full_path_real = realpath($full_path);
-if ($root_real === false || $full_path_real === false || ! str_starts_with($full_path_real, $root_real . '/')) {
+if ($root_real === false || ! str_starts_with($full_path_real, $root_real . '/')) {
     display_error('Invalid directory');
+}
+
+if (! is_file($full_path_real)) {
+    display_error('File does not exist');
 }
 
 $full_url = GFE_ROOT_URL . '/' . $file;
